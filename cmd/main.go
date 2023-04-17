@@ -69,7 +69,7 @@ func main() {
 	InitController(api, sql, echoInstance)
 
 	//log export port running app
-	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(":%s", ConfigInfo.Server.Port)))
+	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(":%s", os.Getenv("PORT"))))
 }
 
 func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
