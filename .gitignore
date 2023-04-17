@@ -1,0 +1,7 @@
+.idea
+log_files
+/cmd/go.log
+go.log
+/config/config-golang-test-firebase-adminsdk-864g6-b5aef067ca.json
+env.dev.yml
+env.pro.yml

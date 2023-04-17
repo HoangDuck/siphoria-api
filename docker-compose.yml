@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  hotel-service:
+    container_name: hotel-service
+    build: .
+    image: hotel-service:1.0
+    ports:
+      - "3000:3000"
+    environment:
+      - APP_NAME=github

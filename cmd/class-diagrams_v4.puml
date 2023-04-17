@@ -1,0 +1,230 @@
+@startuml
+namespace class_diagrams {
+    class Account << (S,Aquamarine) >> {
+        + ID string
+        + Email string
+        + Password string
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+        + UserKeyFirebase string
+        + CustomerID string
+        + Customer Customer
+        + Token *Token
+        + Avatar string
+        + AllowNotification bool
+        + AllowSendEmail bool
+        + StatusAccountID int
+        + StatusAccount StatusAccount
+
+    }
+    class Booking << (S,Aquamarine) >> {
+        + ID string
+        + CustomerID string
+        + Customer Customer
+        + CheckInTime time.Time
+        + CheckOutTime time.Time
+        + RoomTypeID string
+        + RoomType RoomType
+        + RatePlanID string
+        + RatePlan RatePlan
+        + NumberRoom int
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+        + CanceledAt time.Time
+        + TotalCost float32
+        + Tax float32
+        + StatusBookingID int
+        + StatusBooking StatusBooking
+        + PaymentStatusID int
+        + StaffIDHandleBooking string
+
+    }
+    class BookingDetail << (S,Aquamarine) >> {
+        + ID string
+        + BookingID string
+        + Booking Booking
+        + RoomCode string
+        + Floor int
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+        + Note string
+
+    }
+    class Customer << (S,Aquamarine) >> {
+        + ID string
+        + CustomerID string
+        + PassportData string
+        + Email string
+        + FirstName string
+        + LastName string
+        + FullName string
+        + Phone string
+        + Gender bool
+        + IdentifierNumber string
+        + DateOfBirth time.Time
+        + Address string
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+
+    }
+    class Payment << (S,Aquamarine) >> {
+        + ID string
+        + CustomerID string
+        + BookingID string
+        + Booking Booking
+        + Amount float32
+        + FineAmount float32
+        + Description string
+        + DueTimePayment time.Time
+        + RequirePaymentDetail string
+        + PaymentMethodID string
+        + PaymentMethod PaymentMethod
+        + PaymentTime time.Time
+        + StatusPaymentCode string
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+
+    }
+    class PaymentMethod << (S,Aquamarine) >> {
+        + ID string
+        + MethodName string
+        + Description string
+        + Provider string
+
+    }
+    class PaymentStatus << (S,Aquamarine) >> {
+        + ID int
+        + StatusCode string
+        + StatusName string
+        + Description string
+
+    }
+    class RatePlan << (S,Aquamarine) >> {
+        + ID string
+        + RoomTypeID string
+        + RoomType RoomType
+        + Description string
+        + Price float32
+
+    }
+    class Room << (S,Aquamarine) >> {
+        + ID string
+        + RoomCode string
+        + RoomTypeID string
+        + RoomType RoomType
+        + Floor int
+
+    }
+    class RoomBusyStatusCategory << (S,Aquamarine) >> {
+        + ID string
+        + StatusCode string
+        + StatusName string
+        + Description string
+
+    }
+    class RoomBusyStatusDetail << (S,Aquamarine) >> {
+        + ID string
+        + RoomID string
+        + Room Room
+        + RoomBusyStatusCategoryID string
+        + RoomBusyStatusCategory RoomBusyStatusCategory
+        + BookingID string
+        + Booking Booking
+        + FromTime time.Time
+        + ToTime time.Time
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+
+    }
+    class RoomType << (S,Aquamarine) >> {
+        + ID string
+        + TypeRoomCode string
+        + TypeRoomName string
+        + Description string
+        + ShortDescription string
+        + NumberAdult int
+        + NumberChildren int
+        + NumberBed int
+        + NumberToilet int
+        + RoomImages string
+        + Rating int
+        + CostType float32
+
+    }
+    class Staff << (S,Aquamarine) >> {
+        + ID string
+        + StaffID string
+        + Position string
+        + StatusWorkID int
+        + StatusWork StatusWork
+        + HomeTown string
+        + Ethnic string
+        + IdentifierNumber string
+        + Email string
+        + FirstName string
+        + LastName string
+        + Phone string
+        + Gender bool
+        + DateOfBirth time.Time
+        + Address string
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+
+    }
+    class StaffAccount << (S,Aquamarine) >> {
+        + ID string
+        + Avatar string
+        + Email string
+        + Password string
+        + Role string
+        + CreatedAt time.Time
+        + UpdatedAt time.Time
+        + UserKeyFirebase string
+        + StaffID string
+        + Staff Staff
+        + Token *Token
+        + StatusAccountID int
+        + StatusAccount StatusAccount
+
+    }
+    class StatusAccount << (S,Aquamarine) >> {
+        + ID int
+        + StatusCode string
+        + StatusName string
+        + Description string
+
+    }
+    class StatusBooking << (S,Aquamarine) >> {
+        + ID int
+        + StatusCode string
+        + StatusName string
+        + Description string
+
+    }
+    class StatusWork << (S,Aquamarine) >> {
+        + ID int
+        + StatusCode string
+        + StatusName string
+        + Description string
+
+    }
+}
+"class_diagrams.Account" "0..1" -- "1..1" "class_diagrams.Customer"
+"class_diagrams.RoomType"  o-- "class_diagrams.Room"
+"class_diagrams.Customer" o-- "class_diagrams.Booking"
+"class_diagrams.Booking" -- "class_diagrams.StatusBooking"
+"class_diagrams.Booking" o-- "class_diagrams.Payment"
+"class_diagrams.Payment" --o "class_diagrams.PaymentMethod"
+"class_diagrams.Booking" -- "1..1" "class_diagrams.RatePlan"
+"class_diagrams.Room" "1..1" -- "class_diagrams.BookingDetail"
+"class_diagrams.RatePlan" o-- "class_diagrams.RoomType"
+"class_diagrams.StaffAccount" "0..1" -- "1..1" "class_diagrams.Staff"
+"class_diagrams.StatusWork" o-- "class_diagrams.Staff"
+"class_diagrams.StatusAccount" o-- "class_diagrams.StaffAccount"
+"class_diagrams.StatusAccount" o-- "class_diagrams.Account"
+"class_diagrams.Room" "0..1" -- "1..1" "class_diagrams.RoomBusyStatusCategory"
+("class_diagrams.Room", "class_diagrams.RoomBusyStatusCategory") . "class_diagrams.RoomBusyStatusDetail"
+("class_diagrams.Booking", "class_diagrams.StatusBooking") . "class_diagrams.BookingDetail"
+
+
+@enduml
