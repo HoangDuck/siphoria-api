@@ -19,6 +19,23 @@ definitions:
       rate_plan_id:
         type: string
     type: object
+  req.RequestNewPasswordReset:
+    properties:
+      new_password:
+        type: string
+      token:
+        type: string
+    required:
+    - new_password
+    - token
+    type: object
+  req.RequestResetPassword:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   req.RequestSignIn:
     properties:
       email:
@@ -87,6 +104,35 @@ info:
   title: HOTEL BOOKING API
   version: "1.0"
 paths:
+  /auth/forgot:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: account
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestResetPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Send Email To Reset Password
+      tags:
+      - auth-service
   /auth/login/general:
     post:
       consumes:
@@ -142,6 +188,35 @@ paths:
       summary: Create access token by refresh token
       tags:
       - auth-service
+  /auth/reset:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: account
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestNewPasswordReset'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle Reset Password
+      tags:
+      - auth-service
   /auth/signup:
     post:
       consumes:
@@ -173,6 +248,28 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Create new account
+      tags:
+      - auth-service
+  /auth/verifyemail/:code:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle Activate Account
       tags:
       - auth-service
   /hotels/:id:

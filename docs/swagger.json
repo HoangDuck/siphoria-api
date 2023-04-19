@@ -18,6 +18,51 @@
     "host": "localhost:3000",
     "basePath": "/api",
     "paths": {
+        "/auth/forgot": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth-service"
+                ],
+                "summary": "Send Email To Reset Password",
+                "parameters": [
+                    {
+                        "description": "account",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestResetPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login/general": {
             "post": {
                 "consumes": [
@@ -103,6 +148,51 @@
                 }
             }
         },
+        "/auth/reset": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth-service"
+                ],
+                "summary": "Handle Reset Password",
+                "parameters": [
+                    {
+                        "description": "account",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestNewPasswordReset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/signup": {
             "post": {
                 "consumes": [
@@ -147,6 +237,40 @@
                     },
                     "409": {
                         "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/verifyemail/:code": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth-service"
+                ],
+                "summary": "Handle Activate Account",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/res.Response"
                         }
@@ -757,6 +881,32 @@
             "type": "object",
             "properties": {
                 "rate_plan_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestNewPasswordReset": {
+            "type": "object",
+            "required": [
+                "new_password",
+                "token"
+            ],
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestResetPassword": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
                     "type": "string"
                 }
             }
