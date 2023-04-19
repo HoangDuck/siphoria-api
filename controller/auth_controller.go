@@ -11,6 +11,7 @@ import (
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
+	"hotel-booking-api/services"
 	"os"
 )
 
@@ -107,6 +108,8 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	}
 	//create password
 	hash := security.HashAndSalt([]byte(reqRegister.Password))
+	// Generate Verification Code
+
 	//Init account
 	account := model.User{
 		ID:        accountId.String(),
@@ -120,6 +123,7 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	}
 	//Save account
 	accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
+
 	if err != nil {
 		logger.Error("Error uuid data", zap.Error(err))
 		return response.InternalServerError(c, "Đăng ký thất bại", nil)
@@ -133,6 +137,20 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	if err != nil {
 		logger.Error("err gen token data", zap.Error(err))
 		return response.InternalServerError(c, "Đăng ký thất bại", nil)
+	}
+	sendResetPasswordEmailService := services.GetEmailServiceInstance()
+	customerPageUrl, err := authReceiver.AccountRepo.GetCustomerActivatePageUrl()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	err = sendResetPasswordEmailService.SendEmailService(
+		[]string{account.Email},
+		sendResetPasswordEmailService.CreateBodyTemplate("Nhấn nút bên dưới để thực hiện kích hoạt",
+			"Xác nhận tài khoản",
+			customerPageUrl+accountId.String()),
+		"Siphoria activate account")
+	if err != nil {
+		return response.InternalServerError(c, "Gửi email thất bại", nil)
 	}
 	return response.Ok(c, "Đăng ký thành công", accountResult.Token)
 }
@@ -247,80 +265,92 @@ func (authReceiver *AuthController) HandleSignIn(c echo.Context) error {
 //		})
 //	}
 //}
-//
-//// HandleSendEmailResetPassword godoc
-//// @Summary Send Email To Reset Password
-//// @Tags auth-service
-//// @Accept  json
-//// @Produce  json
-//// @Param data body req.RequestResetPassword true "account"
-//// @Success 200 {object} res.Response
-//// @Failure 400 {object} res.Response
-//// @Failure 500 {object} res.Response
-//// @Router /auth/forgot-pwd [post]
-//func (authReceiver *AuthController) HandleSendEmailResetPassword(c echo.Context) error {
-//	requestResetPassword := req.RequestResetPassword{}
-//	if err := c.Bind(&requestResetPassword); err != nil {
-//		return response.BadRequest(c, "Yêu cầu không hợp lệ", nil)
-//	}
-//
-//	if err := c.Validate(requestResetPassword); err != nil {
-//		return response.BadRequest(c, "Email không khả dụng", nil)
-//	}
-//	isExistedEmail, _ := authReceiver.AccountRepo.CheckEmailExisted(requestResetPassword.Email)
-//	if isExistedEmail.ID == "-1" {
-//		return response.InternalServerError(c, "Email không tồn tại", nil)
-//	}
-//	//generate token
-//	token, err := security.GenTokenResetPassword(requestResetPassword.Email)
-//	if err != nil {
-//		return response.InternalServerError(c, "Tạo token thất bại", nil)
-//	}
-//	sendResetPasswordEmailService := services.GetEmailServiceInstance()
-//	customerPageUrl, err := authReceiver.AccountRepo.GetCustomerPageUrl()
-//	if err != nil {
-//		return response.InternalServerError(c, err.Error(), nil)
-//	}
-//	err = sendResetPasswordEmailService.SendEmailService(
-//		[]string{requestResetPassword.Email},
-//		sendResetPasswordEmailService.CreateBodyTemplate("Nhấn nút bên dưới để thực hiện đặt lại mật khẩu",
-//			"Đặt lại mật khẩu",
-//			customerPageUrl+token),
-//		"Siphoria reset password")
-//	if err != nil {
-//		return response.InternalServerError(c, "Gửi email thất bại", nil)
-//	}
-//	return response.Ok(c, "Gửi email thành công", nil)
-//}
-//
-//// HandleResetPassword godoc
-//// @Summary Handle Reset Password
-//// @Tags auth-service
-//// @Accept  json
-//// @Produce  json
-//// @Param data body req.RequestNewPasswordReset true "account"
-//// @Success 200 {object} res.Response
-//// @Failure 400 {object} res.Response
-//// @Failure 500 {object} res.Response
-//// @Router /auth/forgot-pwd/reset [post]
-//func (authReceiver *AuthController) HandleResetPassword(c echo.Context) error {
-//	reqNewPassword := req.RequestNewPasswordReset{}
-//	if err := c.Bind(&reqNewPassword); err != nil {
-//		return err
-//	}
-//	err := c.Validate(reqNewPassword)
-//	if err != nil {
-//		return response.BadRequest(c, err.Error(), nil)
-//	}
-//	claims := security.GetClaimsJWT(c)
-//	hash := security.HashAndSalt([]byte(reqNewPassword.Password))
-//	isSuccess, err := authReceiver.AccountRepo.ResetPassword(claims.Email, hash)
-//	if isSuccess == false && err != nil {
-//		return response.InternalServerError(c, "Đặt lại mật khẩu thất bại", nil)
-//	}
-//	return response.Ok(c, "Đặt lại mật khẩu thành công", nil)
-//}
-//
+
+// HandleSendEmailResetPassword godoc
+// @Summary Send Email To Reset Password
+// @Tags auth-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestResetPassword true "account"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /auth/forgot [post]
+func (authReceiver *AuthController) HandleSendEmailResetPassword(c echo.Context) error {
+	requestResetPassword := req.RequestResetPassword{}
+	if err := c.Bind(&requestResetPassword); err != nil {
+		return response.BadRequest(c, "Yêu cầu không hợp lệ", nil)
+	}
+
+	if err := c.Validate(requestResetPassword); err != nil {
+		return response.BadRequest(c, "Email không khả dụng", nil)
+	}
+	isExistedEmail, _ := authReceiver.AccountRepo.CheckEmailExisted(requestResetPassword.Email)
+	if !isExistedEmail {
+		return response.InternalServerError(c, "Email không tồn tại", nil)
+	}
+	//generate token
+	token, err := security.GenTokenResetPassword(requestResetPassword.Email)
+	if err != nil {
+		return response.InternalServerError(c, "Tạo token thất bại", nil)
+	}
+	sendResetPasswordEmailService := services.GetEmailServiceInstance()
+	customerPageUrl, err := authReceiver.AccountRepo.GetCustomerPageUrl()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	err = sendResetPasswordEmailService.SendEmailService(
+		[]string{requestResetPassword.Email},
+		sendResetPasswordEmailService.CreateBodyTemplate("Nhấn nút bên dưới để thực hiện đặt lại mật khẩu",
+			"Đặt lại mật khẩu",
+			customerPageUrl+token),
+		"Siphoria reset password")
+	if err != nil {
+		return response.InternalServerError(c, "Gửi email thất bại", nil)
+	}
+	return response.Ok(c, "Gửi email thành công", nil)
+}
+
+// HandleResetPassword godoc
+// @Summary Handle Reset Password
+// @Tags auth-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestNewPasswordReset true "account"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /auth/reset [post]
+func (authReceiver *AuthController) HandleResetPassword(c echo.Context) error {
+	reqNewPassword := req.RequestNewPasswordReset{}
+	if err := c.Bind(&reqNewPassword); err != nil {
+		return err
+	}
+	err := c.Validate(reqNewPassword)
+	if err != nil {
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	hash := security.HashAndSalt([]byte(reqNewPassword.Password))
+	claims := jwt.MapClaims{}
+	tokenResult, err := jwt.ParseWithClaims(reqNewPassword.Token, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	var email string
+	for key, val := range claims {
+		if key == "email" {
+			email = val.(string)
+		}
+	}
+	if tokenResult.Valid {
+		isSuccess, err := authReceiver.AccountRepo.ResetPassword(email, hash)
+		if isSuccess == false && err != nil {
+			return response.InternalServerError(c, "Đặt lại mật khẩu thất bại", nil)
+		}
+		return response.Ok(c, "Đặt lại mật khẩu thành công", nil)
+	}
+	return response.InternalServerError(c, "Đặt lại mật khẩu thất bại", nil)
+}
+
 //// HandleChangePassword godoc
 //// @Summary Handle Change Password
 //// @Tags auth-service
@@ -356,28 +386,29 @@ func (authReceiver *AuthController) HandleSignIn(c echo.Context) error {
 //	}
 //	return response.Ok(c, "Cập nhật mật khẩu thành công", nil)
 //}
-//
-//// HandleActivateAccount godoc
-//// @Summary Handle Activate Account
-//// @Tags auth-service
-//// @Accept  json
-//// @Produce  json
-//// @Success 200 {object} res.Response
-//// @Failure 400 {object} res.Response
-//// @Failure 422 {object} res.Response
-//// @Router /auth/active/by/account-id [get]
-//func (authReceiver *AuthController) HandleActivateAccount(c echo.Context) error {
-//	claims := security.GetClaimsJWT(c)
-//	account := model.Account{
-//		ID: claims.UserId,
-//	}
-//	account, err := authReceiver.AccountRepo.ActivateAccount(account)
-//	if err != nil {
-//		return response.UnprocessableEntity(c, err.Error(), nil)
-//	}
-//	return response.Ok(c, "Mở khóa thành công", account)
-//}
-//
+
+// HandleActivateAccount godoc
+// @Summary Handle Activate Account
+// @Tags auth-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /auth/verifyemail/:code [get]
+func (authReceiver *AuthController) HandleActivateAccount(c echo.Context) error {
+	emailCode := c.Param("code")
+	account := model.User{
+		ID: emailCode,
+	}
+	account, err := authReceiver.AccountRepo.ActivateAccount(account)
+	if err != nil {
+		logger.Error("err active account data", zap.Error(err))
+		return response.UnprocessableEntity(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Mở khóa thành công", account)
+}
+
 //// HandleDeactivateAccount godoc
 //// @Summary Handle Deactivate Account
 //// @Tags auth-service

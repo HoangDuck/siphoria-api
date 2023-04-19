@@ -28,7 +28,8 @@ type RequestResetPassword struct {
 }
 
 type RequestNewPasswordReset struct {
-	Password string `json:"password" validate:"required"`
+	Password string `json:"new_password" validate:"required"`
+	Token    string `json:"token" validate:"required"`
 }
 
 type RequestChangeSettings struct {

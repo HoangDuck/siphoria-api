@@ -10,4 +10,8 @@ type AccountRepo interface {
 	GetAccountById(userId string) (model.User, error)
 	SaveAccount(account model.User) (model.User, error)
 	CheckEmailExisted(email string) (bool, error)
+	GetCustomerPageUrl() (string, error)
+	GetCustomerActivatePageUrl() (string, error)
+	ResetPassword(userEmail string, hashedPassword string) (bool, error)
+	ActivateAccount(account model.User) (model.User, error)
 }

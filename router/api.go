@@ -36,9 +36,9 @@ func (api *API) SetupRouter() {
 	//authLogin.POST("/gg", api.AuthController.HandleSignInGoogle)
 	auth.POST("/signup", api.AuthController.HandleRegister)
 	//auth.POST("/change-pwd", api.AuthController.HandleChangePassword, middleware.JWTMiddleWare())
-	//auth.POST("/forgot-pwd", api.AuthController.HandleSendEmailResetPassword)
-	//auth.POST("/forgot-pwd/reset", api.AuthController.HandleResetPassword, middleware.JWTMiddleWare())
-	//auth.GET("/active/by/account-id", api.AuthController.HandleActivateAccount, middleware.JWTMiddleWare())
+	auth.POST("/forgot", api.AuthController.HandleSendEmailResetPassword)
+	auth.POST("/reset", api.AuthController.HandleResetPassword)
+	auth.GET("/verifyemail/:code", api.AuthController.HandleActivateAccount)
 	//auth.GET("/deactive/by/account-id", api.AuthController.HandleDeactivateAccount, middleware.JWTMiddleWare())
 
 	//auth.GET("/signGoogle", api.AuthController.HandleAuthenticateWithGoogle)

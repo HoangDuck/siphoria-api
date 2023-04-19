@@ -15,6 +15,59 @@ type AccountRepoImpl struct {
 	sql *db.Sql
 }
 
+func (accountReceiver *AccountRepoImpl) ActivateAccount(account model.User) (model.User, error) {
+	err := accountReceiver.sql.Db.Model(&account).
+		Where("id=?", account.ID).Update("status", 1)
+	if err.Error != nil {
+		if err.Error == gorm.ErrRecordNotFound {
+			return account, err.Error
+		}
+		return account, err.Error
+	}
+	return account, nil
+}
+
+func (accountReceiver *AccountRepoImpl) ResetPassword(email string, password string) (bool, error) {
+	var account = model.User{}
+	err := accountReceiver.sql.Db.Model(&account).Where("email=?", email).Update("password", password)
+	if err.Error != nil {
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, err.Error
+		}
+		return false, err.Error
+	}
+	if err.RowsAffected == 0 {
+		return false, err.Error
+	}
+	return true, nil
+}
+
+func (accountReceiver *AccountRepoImpl) GetCustomerPageUrl() (string, error) {
+	var customerPageConfig model.ConfigurationUrlDefine
+	err := accountReceiver.sql.Db.Where("id=?", 2).Find(&customerPageConfig)
+	logger.Error("Error get template email url ", zap.Error(err.Error))
+	if err.Error == gorm.ErrRecordNotFound {
+		return "https://siphoria.com/auth/reset?token=", err.Error
+	}
+	if customerPageConfig.Key == "" && customerPageConfig.Value == "" {
+		return "https://siphoria.com/auth/reset?token=", err.Error
+	}
+	return customerPageConfig.Value, nil
+}
+
+func (accountReceiver *AccountRepoImpl) GetCustomerActivatePageUrl() (string, error) {
+	var customerPageConfig model.ConfigurationUrlDefine
+	err := accountReceiver.sql.Db.Where("id=?", 6).Find(&customerPageConfig)
+	logger.Error("Error get template email url ", zap.Error(err.Error))
+	if err.Error == gorm.ErrRecordNotFound {
+		return "https://siphoria.com/auth/verifyemail/", err.Error
+	}
+	if customerPageConfig.Key == "" && customerPageConfig.Value == "" {
+		return "https://siphoria.com/auth/verifyemail/", err.Error
+	}
+	return customerPageConfig.Value, nil
+}
+
 func (accountReceiver *AccountRepoImpl) CheckEmailExisted(email string) (bool, error) {
 	var user = model.User{}
 	err := accountReceiver.sql.Db.Where("email in (?)", email).Find(&user)
