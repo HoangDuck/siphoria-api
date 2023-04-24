@@ -105,3 +105,11 @@ type RequestAddStatusWork struct {
 	StatusName  string `json:"status_name" validate:"required"`
 	Description string `json:"description" validate:"required"`
 }
+
+type RequestCreateAccountByAdmin struct {
+	Email     string `json:"email,omitempty" validate:"required"`
+	Password  string `json:"password,omitempty" validate:"required"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Role      string `json:"role" validate:"required"`
+}

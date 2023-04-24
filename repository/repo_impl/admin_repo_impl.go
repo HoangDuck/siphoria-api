@@ -1,27 +1,20 @@
 package repo_impl
 
-//
-//import (
-//	"go.uber.org/zap"
-//	"gorm.io/gorm"
-//	"hotel-booking-api/custom_error"
-//	"hotel-booking-api/db"
-//	"hotel-booking-api/logger"
-//	"hotel-booking-api/model"
-//	"hotel-booking-api/model/query"
-//	"hotel-booking-api/repository"
-//)
-//
-//type AdminRepoImpl struct {
-//	sql *db.Sql
-//}
-//
-//func NewAdminRepo(sql *db.Sql) repository.AdminRepo {
-//	return &AdminRepoImpl{
-//		sql: sql,
-//	}
-//}
-//
+import (
+	"hotel-booking-api/db"
+	"hotel-booking-api/repository"
+)
+
+type AdminRepoImpl struct {
+	sql *db.Sql
+}
+
+func NewAdminRepo(sql *db.Sql) repository.AdminRepo {
+	return &AdminRepoImpl{
+		sql: sql,
+	}
+}
+
 //func (u *AdminRepoImpl) SavePaymentStatus(paymentStatus model.PaymentStatus) (model.PaymentStatus, error) {
 //	result := u.sql.Db.Create(&paymentStatus)
 //	if result.Error != nil {

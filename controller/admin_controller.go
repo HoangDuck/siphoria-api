@@ -1,25 +1,80 @@
 package controller
 
-//
-//import (
-//	"github.com/golang-jwt/jwt"
-//	"github.com/google/uuid"
-//	"github.com/labstack/echo/v4"
-//	"go.uber.org/zap"
-//	"hotel-booking-api/logger"
-//	"hotel-booking-api/model"
-//	"hotel-booking-api/model/model_func"
-//	"hotel-booking-api/model/req"
-//	"hotel-booking-api/model/res"
-//	"hotel-booking-api/repository"
-//	"hotel-booking-api/security"
-//	"time"
-//)
-//
-//type AdminController struct {
-//	AdminRepo repository.AdminRepo
-//}
-//
+import (
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
+	"hotel-booking-api/logger"
+	"hotel-booking-api/model"
+	response "hotel-booking-api/model/model_func"
+	"hotel-booking-api/model/req"
+	"hotel-booking-api/repository"
+)
+
+type AdminController struct {
+	AdminRepo repository.AdminRepo
+}
+
+// HandleCreateAccount godoc
+// @Summary create account by admin
+// @Tags admin-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCreateStaffAccount true "staffaccount"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /admin/create-staff-account [post]
+func (adminController *AdminController) HandleCreateAccount(c echo.Context) error {
+	reqRegister := req.RequestCreateAccountByAdmin{}
+	//binding
+	if err := c.Bind(&reqRegister); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	//Validate
+	if err := c.Validate(reqRegister); err != nil {
+		logger.Error("Error validate data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String()) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	//validate existed email
+	//_, err := adminController.AdminRepo.CheckEmail(reqRegister.Email)
+	//if err != nil {
+	//	return response.Conflict(c, "Email đã tồn tại", nil)
+	//}
+	////Generate UUID
+	//accountId, err := uuid.NewUUID()
+	//if err != nil {
+	//	logger.Error("Error uuid data", zap.Error(err))
+	//	return response.Forbidden(c, err.Error(), nil)
+	//}
+	////create password
+	//hash := security.HashAndSalt([]byte(reqRegister.Password))
+	////Init account
+	//account := model.User{
+	//	ID:              accountId.String(),
+	//	Email:           reqRegister.Email,
+	//	Password:        hash,
+	//	StaffID:         reqRegister.StaffID,
+	//	CreatedAt:       time.Now(),
+	//	UpdatedAt:       time.Now(),
+	//	Role:            reqRegister.Role,
+	//	Status: 1,
+	//}
+	//
+	////Save account
+	//account, err = adminController.AdminRepo.SaveStaffAccount(account)
+	//if err != nil {
+	//	return response.Conflict(c, err.Error(), nil)
+	//}
+	return response.Ok(c, "Đăng ký thành công", nil)
+}
+
 //// HandleSaveBookingStatus godoc
 //// @Summary Save booking status
 //// @Tags admin-service

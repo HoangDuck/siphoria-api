@@ -6,6 +6,8 @@ replace github.com/googleapis/google-api-go-client => google.golang.org/api v0.1
 
 require (
 	firebase.google.com/go v3.13.0+incompatible
+	firebase.google.com/go/v4 v4.11.0
+	github.com/cloudinary/cloudinary-go/v2 v2.2.0
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.11.1
@@ -37,11 +39,9 @@ require (
 	cloud.google.com/go/iam v0.13.0 // indirect
 	cloud.google.com/go/longrunning v0.4.1 // indirect
 	cloud.google.com/go/storage v1.30.1 // indirect
-	firebase.google.com/go/v4 v4.11.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/MicahParks/keyfunc v1.9.0 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
-	github.com/cloudinary/cloudinary-go/v2 v2.2.0 // indirect
 	github.com/creasty/defaults v1.5.1 // indirect
 	github.com/elastic/go-licenser v0.3.1 // indirect
 	github.com/elastic/go-sysinfo v1.1.1 // indirect

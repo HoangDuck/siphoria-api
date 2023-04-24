@@ -16,7 +16,7 @@ type API struct {
 	//RoomController      controller.RoomController
 	//BookingController   controller.BookingController
 	RatePlanController controller.RatePlanController
-	//AdminController     controller.AdminController
+	AdminController    controller.AdminController
 	//StaffController     controller.StaffController
 	HotelController     controller.HotelController
 	UploadFileService   services.FileUploadService
@@ -57,6 +57,7 @@ func (api *API) SetupRouter() {
 	user.PATCH("/update-profile", api.UserController.HandleUpdateProfile, middleware.JWTMiddleWare())
 	user.POST("/add-to-cart", api.UserController.HandleAddToCart, middleware.JWTMiddleWare())
 	user.GET("/carts", api.UserController.HandleGetCart, middleware.JWTMiddleWare())
+	user.GET("/notifications", api.UserController.HandleGetCart, middleware.JWTMiddleWare())
 	//user.PATCH("/cancel-payment", api.PaymentController.HandleCancelPayment, middleware.JWTMiddleWare())
 	//user.POST("/create-payment-session", api.PaymentController.HandleCreatePayment, middleware.JWTMiddleWare())
 
@@ -138,7 +139,10 @@ func (api *API) SetupRouter() {
 	//staff.POST("/update-profile", api.StaffController.HandleUpdateStaffProfile, middleware.JWTMiddleWare())
 	//staff.POST("/change-avatar", api.StaffController.HandleUpdateAvatarStaffProfile, middleware.JWTMiddleWare())
 
-	//admin := request.Group("/admin")
+	admin := request.Group("/admin")
+	admin.POST("/create-account", api.AdminController.HandleCreateAccount, middleware.JWTMiddleWare())
+	admin.PATCH("/update-account", api.AdminController.HandleCreateAccount, middleware.JWTMiddleWare())
+	admin.POST("/accounts", api.AdminController.HandleCreateAccount, middleware.JWTMiddleWare())
 	//admin.POST("/sign-in", api.AdminController.HandleSignIn)
 	//admin.POST("/account-info", api.AdminController.HandleGetAccountInfo, middleware.JWTMiddleWare())
 	//admin.POST("/staff-info", api.AdminController.HandleGetStaffProfileInfo, middleware.JWTMiddleWare())
