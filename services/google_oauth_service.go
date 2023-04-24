@@ -62,7 +62,6 @@ func (oauth *GoogleOauthService) GoogleAuthenticationService(w http.ResponseWrit
 func (oauth *GoogleOauthService) GetUserInfoWithToken(token string) map[string]interface{} {
 	response, err := http.Get(OauthGoogleUrlAPI + token)
 
-	// ERROR : Unable to get user data from google
 	if err != nil {
 		return nil
 	}

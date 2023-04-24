@@ -1,24 +1,47 @@
 package controller
 
-//
-//import (
-//	"github.com/golang-jwt/jwt"
-//	"github.com/google/uuid"
-//	"github.com/labstack/echo/v4"
-//	"go.uber.org/zap"
-//	"hotel-booking-api/logger"
-//	"hotel-booking-api/model"
-//	"hotel-booking-api/model/model_func"
-//	"hotel-booking-api/model/req"
-//	"hotel-booking-api/model/res"
-//	"hotel-booking-api/repository"
-//	"hotel-booking-api/security"
-//	"time"
-//)
-//
-//type AdminController struct {
-//	AdminRepo repository.AdminRepo
-//}
+import (
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
+	"hotel-booking-api/logger"
+	"hotel-booking-api/model"
+	response "hotel-booking-api/model/model_func"
+	"hotel-booking-api/model/req"
+	"hotel-booking-api/repository"
+)
+
+type AdminController struct {
+	AdminRepo repository.AdminRepo
+}
+
+// HandleRegisterAccountAdmin godoc
+// @Summary Register account Admin
+// @Tags admin-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestAddStatusBooking true "status booking"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /admin/add-status-booking [post]
+func (adminController *AdminController) HandleRegisterAccountAdmin(c echo.Context) error {
+	reqAddStatusBooking := req.RequestAddStatusBooking{}
+	//binding
+	if err := c.Bind(&reqAddStatusBooking); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String()) {
+		logger.Error("Role is not available")
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+
+	return response.Ok(c, "Lưu thành công", nil)
+}
+
 //
 //// HandleSaveBookingStatus godoc
 //// @Summary Save booking status

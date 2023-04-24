@@ -16,7 +16,7 @@ type API struct {
 	//RoomController      controller.RoomController
 	//BookingController   controller.BookingController
 	RatePlanController controller.RatePlanController
-	//AdminController     controller.AdminController
+	AdminController    controller.AdminController
 	//StaffController     controller.StaffController
 	HotelController     controller.HotelController
 	UploadFileService   services.FileUploadService
@@ -138,8 +138,9 @@ func (api *API) SetupRouter() {
 	//staff.POST("/update-profile", api.StaffController.HandleUpdateStaffProfile, middleware.JWTMiddleWare())
 	//staff.POST("/change-avatar", api.StaffController.HandleUpdateAvatarStaffProfile, middleware.JWTMiddleWare())
 
-	//admin := request.Group("/admin")
+	admin := request.Group("/admin")
 	//admin.POST("/sign-in", api.AdminController.HandleSignIn)
+	admin.POST("/create-account", api.AdminController.HandleRegisterAccountAdmin,middleware.JWTMiddleWare())
 	//admin.POST("/account-info", api.AdminController.HandleGetAccountInfo, middleware.JWTMiddleWare())
 	//admin.POST("/staff-info", api.AdminController.HandleGetStaffProfileInfo, middleware.JWTMiddleWare())
 	//admin.POST("/change-pwd", api.AdminController.HandleChangePassword, middleware.JWTMiddleWare())

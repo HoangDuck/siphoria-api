@@ -48,7 +48,7 @@ func init() {
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:3000
+// @host https://siphoria-api-production.up.railway.app
 // @BasePath /api
 func main() {
 	services.InitFirebase()
@@ -69,7 +69,7 @@ func main() {
 	InitController(api, sql, echoInstance)
 
 	//log export port running app
-	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(":%s", os.Getenv("PORT"))))
+	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(":%s" /*os.Getenv("PORT")*/, "3000")))
 }
 
 func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
@@ -92,9 +92,9 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	//ratePlanController := controller.RatePlanController{
 	//	RatePlanRepo: repo_impl.NewRatePlanRepo(sql),
 	//}
-	//adminController := controller.AdminController{
-	//	AdminRepo: repo_impl.NewAdminRepo(sql),
-	//}
+	adminController := controller.AdminController{
+		AdminRepo: repo_impl.NewAdminRepo(sql),
+	}
 	//staffController := controller.StaffController{
 	//	StaffRepo: repo_impl.NewStaffRepo(sql),
 	//}
@@ -119,7 +119,7 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		//RoomController:      roomController,
 		//BookingController:   bookingController,
 		//RatePlanController:  ratePlanController,
-		//AdminController:     adminController,
+		AdminController: adminController,
 		//StaffController:     staffController,
 		HotelController:     hotelController,
 		UploadFileService:   uploadService,

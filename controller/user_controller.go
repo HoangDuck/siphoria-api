@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
@@ -11,6 +12,7 @@ import (
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
+	"strings"
 )
 
 type UserController struct {
@@ -41,7 +43,7 @@ func (userReceiver *UserController) HandleUpdateAvatar(c echo.Context) error {
 	//find customer id by userid(account id)
 	customer := model.User{
 		ID:     claims.UserId,
-		Avatar: urls[0],
+		Avatar: fmt.Sprintf("[%s]", strings.Join(urls, ",")),
 	}
 	customer, err := userReceiver.UserRepo.UpdateProfileCustomer(customer)
 	if err != nil {
