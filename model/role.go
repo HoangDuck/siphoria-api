@@ -12,7 +12,9 @@ func (r Role) String() string {
 	return []string{"CUSTOMER", "STAFF", "ADMIN"}[r]
 }
 
-type RoleUserGroup struct {
+type RoleModel struct {
+	ID    int    `json:"-" gorm:"primary_key;autoIncrement"`
+	Role  string `json:"role" gorm:"role"`
 	Label string `json:"label" gorm:"label"`
-	Value int    `json:"id" gorm:"primary_key"`
+	Value int    `json:"value" gorm:"values"`
 }

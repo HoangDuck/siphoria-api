@@ -37,7 +37,7 @@ func (s *Sql) Connect(config *model.Config) {
 }
 
 func (s *Sql) SetupDB() {
-	err := s.Db.AutoMigrate(model.RoleUserGroup{}, model.ConfigurationUrlDefine{}, model.User{}, model.PaymentStatus{},
+	err := s.Db.AutoMigrate(model.RoleModel{}, model.ConfigurationUrlDefine{}, model.User{}, model.PaymentStatus{},
 		model.PaymentMethod{}, model.StatusUser{}, model.Hotel{}, model.HotelWork{}, model.HotelType{}, model.HotelFacility{},
 		model.PayoutRequest{}, model.PaymentMethod{}, model.Payment{}, model.RoomType{}, model.RoomTypeViews{},
 		model.RoomTypeFacility{}, model.RoomNights{}, model.LockRoom{}, model.Voucher{},
