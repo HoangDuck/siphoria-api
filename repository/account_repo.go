@@ -14,4 +14,5 @@ type AccountRepo interface {
 	GetCustomerActivatePageUrl() (string, error)
 	ResetPassword(userEmail string, hashedPassword string) (bool, error)
 	ActivateAccount(account model.User) (model.User, error)
+	UpdatePassword(userId string, newPassword string) (bool, error)
 }

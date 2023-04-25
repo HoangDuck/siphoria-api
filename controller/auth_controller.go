@@ -351,41 +351,41 @@ func (authReceiver *AuthController) HandleResetPassword(c echo.Context) error {
 	return response.InternalServerError(c, "Đặt lại mật khẩu thất bại", nil)
 }
 
-//// HandleChangePassword godoc
-//// @Summary Handle Change Password
-//// @Tags auth-service
-//// @Accept  json
-//// @Produce  json
-//// @Param data body req.RequestUpdatePassword true "account"
-//// @Success 200 {object} res.Response
-//// @Failure 400 {object} res.Response
-//// @Failure 500 {object} res.Response
-//// @Router /auth/change-pwd [post]
-//func (authReceiver *AuthController) HandleChangePassword(c echo.Context) error {
-//	reqUpdatePassword := req.RequestUpdatePassword{}
-//	if err := c.Bind(&reqUpdatePassword); err != nil {
-//		return err
-//	}
-//	err := c.Validate(reqUpdatePassword)
-//	if err != nil {
-//		return response.BadRequest(c, err.Error(), nil)
-//	}
-//	claims := security.GetClaimsJWT(c)
-//	if !security.CheckRole(claims, model.CUSTOMER) {
-//		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-//	}
-//	account, err := authReceiver.AccountRepo.GetAccountById(claims.UserId)
-//	isTheSamePass := security.ComparePasswords(account.Password, []byte(reqUpdatePassword.OldPassword))
-//	if !isTheSamePass {
-//		return response.BadRequest(c, "Mật khẩu không khớp", nil)
-//	}
-//	hash := security.HashAndSalt([]byte(reqUpdatePassword.NewPassword))
-//	isSuccess, _ := authReceiver.AccountRepo.UpdatePassword(account.ID, hash)
-//	if !isSuccess {
-//		return response.InternalServerError(c, "Cập nhật mật khẩu thất bại", nil)
-//	}
-//	return response.Ok(c, "Cập nhật mật khẩu thành công", nil)
-//}
+// HandleChangePassword godoc
+// @Summary Handle Change Password
+// @Tags auth-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestUpdatePassword true "account"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /auth/change-pwd [post]
+func (authReceiver *AuthController) HandleChangePassword(c echo.Context) error {
+	reqUpdatePassword := req.RequestUpdatePassword{}
+	if err := c.Bind(&reqUpdatePassword); err != nil {
+		return err
+	}
+	err := c.Validate(reqUpdatePassword)
+	if err != nil {
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	claims := security.GetClaimsJWT(c)
+	if !security.CheckRole(claims, model.CUSTOMER) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	account, err := authReceiver.AccountRepo.GetAccountById(claims.UserId)
+	isTheSamePass := security.ComparePasswords(account.Password, []byte(reqUpdatePassword.OldPassword))
+	if !isTheSamePass {
+		return response.BadRequest(c, "Mật khẩu không khớp", nil)
+	}
+	hash := security.HashAndSalt([]byte(reqUpdatePassword.NewPassword))
+	isSuccess, _ := authReceiver.AccountRepo.UpdatePassword(account.ID, hash)
+	if !isSuccess {
+		return response.InternalServerError(c, "Cập nhật mật khẩu thất bại", nil)
+	}
+	return response.Ok(c, "Cập nhật mật khẩu thành công", nil)
+}
 
 // HandleActivateAccount godoc
 // @Summary Handle Activate Account

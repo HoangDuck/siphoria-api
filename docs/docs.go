@@ -25,6 +25,96 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/add-status-booking": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-service"
+                ],
+                "summary": "Register account Admin",
+                "parameters": [
+                    {
+                        "description": "status booking",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestAddStatusBooking"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/change-pwd": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth-service"
+                ],
+                "summary": "Handle Change Password",
+                "parameters": [
+                    {
+                        "description": "account",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestUpdatePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/forgot": {
             "post": {
                 "consumes": [
@@ -876,6 +966,25 @@ const docTemplate = `{
                 }
             }
         },
+        "req.RequestAddStatusBooking": {
+            "type": "object",
+            "required": [
+                "description",
+                "status_code",
+                "status_name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "string"
+                },
+                "status_name": {
+                    "type": "string"
+                }
+            }
+        },
         "req.RequestDeleteRatePlan": {
             "type": "object",
             "properties": {
@@ -956,6 +1065,21 @@ const docTemplate = `{
                 }
             }
         },
+        "req.RequestUpdatePassword": {
+            "type": "object",
+            "required": [
+                "new_password",
+                "password"
+            ],
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "req.RequestUpdateProfile": {
             "type": "object",
             "properties": {
@@ -1005,7 +1129,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000",
+	Host:             "https://siphoria-api-production.up.railway.app",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "HOTEL BOOKING API",

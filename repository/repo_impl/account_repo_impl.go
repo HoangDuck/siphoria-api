@@ -15,6 +15,19 @@ type AccountRepoImpl struct {
 	sql *db.Sql
 }
 
+func (accountReceiver *AccountRepoImpl) UpdatePassword(userId string, newPassword string) (bool, error) {
+	var account = model.User{}
+	err := accountReceiver.sql.Db.Model(&account).
+		Where("id=?", userId).Update("password", newPassword)
+	if err.Error != nil {
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, err.Error
+		}
+		return false, err.Error
+	}
+	return true, nil
+}
+
 func (accountReceiver *AccountRepoImpl) ActivateAccount(account model.User) (model.User, error) {
 	err := accountReceiver.sql.Db.Model(&account).
 		Where("id=?", account.ID).Update("status", 1)

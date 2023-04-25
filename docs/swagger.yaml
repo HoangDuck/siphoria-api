@@ -9,6 +9,19 @@ definitions:
       room_type_code:
         type: string
     type: object
+  req.RequestAddStatusBooking:
+    properties:
+      description:
+        type: string
+      status_code:
+        type: string
+      status_name:
+        type: string
+    required:
+    - description
+    - status_code
+    - status_name
+    type: object
   req.RequestDeleteRatePlan:
     properties:
       rate_plan_id:
@@ -62,6 +75,16 @@ definitions:
     - last_name
     - password
     type: object
+  req.RequestUpdatePassword:
+    properties:
+      new_password:
+        type: string
+      password:
+        type: string
+    required:
+    - new_password
+    - password
+    type: object
   req.RequestUpdateProfile:
     properties:
       first_name:
@@ -90,7 +113,7 @@ definitions:
       status_code:
         type: integer
     type: object
-host: localhost:3000
+host: https://siphoria-api-production.up.railway.app
 info:
   contact:
     email: support@swagger.io
@@ -104,6 +127,64 @@ info:
   title: HOTEL BOOKING API
   version: "1.0"
 paths:
+  /admin/add-status-booking:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: status booking
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestAddStatusBooking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Register account Admin
+      tags:
+      - admin-service
+  /auth/change-pwd:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: account
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdatePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle Change Password
+      tags:
+      - auth-service
   /auth/forgot:
     post:
       consumes:
