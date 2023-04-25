@@ -31,7 +31,7 @@ func (service *EmailService) CreateBodyTemplate(content string, buttonName strin
 		"><a style=\"text-decoration: none; color: white;\" href=\"" + url + "\">" + buttonName + "</a> </button>" +
 		"<br><p>Nếu không phải là bạn yêu cầu, xin vui lòng bỏ qua email</p>" +
 		"<br><div style=\"text-align: center;\"> Cảm ơn, " +
-		"<div>Đội ngũ Siphoria</div> </div> " +
+		"<div>Đội ngũ Siphoria</div> </div>    " +
 		"</div>"
 }
 
