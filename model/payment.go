@@ -63,7 +63,7 @@ type PayoutRequest struct {
 	TotalPrice   float32   `json:"total_price" gorm:"total_price"`
 	CreatedAt    time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at" gorm:"updated_at"`
-	HotelId      int       `json:"hotel_id"`
+	HotelId      string    `json:"hotel_id"`
 	Hotel        Hotel     `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PettionerId  string    `json:"pettioner_id"`
 	Pettioner    User      `json:"pettioner" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`

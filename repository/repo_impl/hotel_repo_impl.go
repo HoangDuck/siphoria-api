@@ -10,6 +10,11 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
+func (h *HotelRepoImpl) CreateRequestPayout(payoutRequest model.PayoutRequest, paymentIds string) (model.PayoutRequest, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (h *HotelRepoImpl) UpdateHotelBusinessLicensePhotos(hotel model.Hotel) (model.Hotel, error) {
 	//TODO implement me
 	panic("implement me")

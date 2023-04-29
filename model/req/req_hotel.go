@@ -27,9 +27,9 @@ type RequestCreateHotel struct {
 	Breakfast        bool   `json:"breakfast"`
 	Casio            bool   `json:"casio"`
 	Parking          bool   `json:"parking"`
-	District         int64  `json:"district"`
-	Province         int64  `json:"province"`
-	Ward             int64  `json:"ward"`
+	District         int    `json:"district"`
+	Province         int    `json:"province"`
+	Ward             int    `json:"ward"`
 	BussinessLicense string `json:"bussiness_license"`
 }
 
@@ -58,7 +58,11 @@ type RequestUpdateHotel struct {
 	Breakfast       bool   `json:"breakfast"`
 	Casio           bool   `json:"casio"`
 	Parking         bool   `json:"parking"`
-	District        int64  `json:"district"`
-	Province        int64  `json:"province"`
-	Ward            int64  `json:"ward"`
+	District        int    `json:"district"`
+	Province        int    `json:"province"`
+	Ward            int    `json:"ward"`
+}
+
+type RequestCreatePayout struct {
+	Payments string `json:"payments"`
 }

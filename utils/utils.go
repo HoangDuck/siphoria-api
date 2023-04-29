@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
+	"hotel-booking-api/logger"
 	"hotel-booking-api/model/query"
 	"math"
 	"strconv"
@@ -45,4 +48,14 @@ func GetQueryDataModel(c echo.Context) query.DataQueryModel {
 func GetFilterQueryDataModel(c echo.Context, queryDataModel query.DataQueryModel) query.DataQueryModel {
 
 	return queryDataModel
+}
+
+func GetNewId() (string, error) {
+	//Generate UUID
+	newId, err := uuid.NewUUID()
+	if err != nil {
+		logger.Error("Error uuid data", zap.Error(err))
+		return "", err
+	}
+	return newId.String(), nil
 }

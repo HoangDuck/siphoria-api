@@ -7,9 +7,11 @@ import (
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	response "hotel-booking-api/model/model_func"
+	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
+	"hotel-booking-api/utils"
 	"strings"
 )
 
@@ -169,11 +171,32 @@ func (hotelReceiver *HotelController) HandleDeleteHotelBusinessLicense(c echo.Co
 // @Failure 422 {object} res.Response
 // @Router /hotels/:hotel_id/payout [post]
 func (hotelReceiver *HotelController) HandleSendRequestPaymentHotel(c echo.Context) error {
+	reqCreatePayout := req.RequestCreatePayout{}
+	//binding
+	if err := c.Bind(&reqCreatePayout); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
 	if !(security.CheckRole(claims, model.ADMIN)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	return response.Ok(c, "Tạo yêu cầu thanh toán thành công", nil)
+	payoutRequestId, err := utils.GetNewId()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	payoutRequest := model.PayoutRequest{
+		ID:          payoutRequestId,
+		HotelId:     c.Param("hotel_id"),
+		PettionerId: claims.UserId,
+	}
+	payoutRequestResult, err := hotelReceiver.HotelRepo.CreateRequestPayout(payoutRequest, reqCreatePayout.Payments)
+
+	if err != nil {
+		logger.Error("Error uuid data", zap.Error(err))
+		return response.InternalServerError(c, "Tạo yêu cầu thanh toán thất bại", nil)
+	}
+	return response.Ok(c, "Tạo yêu cầu thanh toán thành công", payoutRequestResult)
 }
