@@ -14,10 +14,9 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
-func NewUserRepo(sql *db.Sql) repository.UserRepo {
-	return &UserRepoImpl{
-		sql: sql,
-	}
+func (u *UserRepoImpl) GetUserNotifications() (model.Notification, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 //func (u *UserRepoImpl) CheckProfileCustomerExistByIdentify(user model.Customer) (model.Customer, error) {
@@ -115,4 +114,10 @@ func (u *UserRepoImpl) GetUserRank(customer model.User) (model.UserRank, error) 
 		return userRank, err.Error
 	}
 	return userRank, nil
+}
+
+func NewUserRepo(sql *db.Sql) repository.UserRepo {
+	return &UserRepoImpl{
+		sql: sql,
+	}
 }

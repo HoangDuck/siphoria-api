@@ -226,3 +226,26 @@ func (userReceiver *UserController) HandleGetCustomerProfileInfo(c echo.Context)
 	}
 	return response.Ok(c, "Lấy thông tin thành công", customerResult)
 }
+
+// HandleGetUserNotifications godoc
+// @Summary Get User Notifications
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/notifications [get]
+func (userReceiver *UserController) HandleGetUserNotifications(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	customer := model.User{
+		ID: claims.UserId,
+	}
+	customerResult, err := userReceiver.UserRepo.GetProfileCustomer(customer)
+	if err != nil {
+		logger.Error("Error get profile data", zap.Error(err))
+		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
+	}
+	return response.Ok(c, "Lấy thông tin thành công", customerResult)
+}

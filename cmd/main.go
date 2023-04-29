@@ -79,25 +79,15 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	userController := controller.UserController{
 		UserRepo: repo_impl.NewUserRepo(sql),
 	}
+
 	logsHandler := controller.LogsHandler{}
-	//paymentController := controller.PaymentController{
-	//	PaymentRepo: repo_impl.NewPaymentRepo(sql),
-	//}
-	//roomController := controller.RoomController{
-	//	RoomRepo: repo_impl.NewRoomRepo(sql),
-	//}
-	//bookingController := controller.BookingController{
-	//	BookingRepo: repo_impl.NewBookingRepo(sql),
-	//}
-	//ratePlanController := controller.RatePlanController{
-	//	RatePlanRepo: repo_impl.NewRatePlanRepo(sql),
-	//}
+
 	adminController := controller.AdminController{
 		AdminRepo: repo_impl.NewAdminRepo(sql),
 	}
-	//staffController := controller.StaffController{
-	//	StaffRepo: repo_impl.NewStaffRepo(sql),
-	//}
+	notificationController := controller.NotificationController{
+		NotificationRepo: repo_impl.NewNotificationRepo(sql),
+	}
 	hotelController := controller.HotelController{
 		HotelRepo: repo_impl.NewHotelRepo(sql),
 	}
@@ -111,19 +101,15 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	}
 	//init routers
 	api = &router.API{
-		Echo:           echoInstance,
-		AuthController: accountController,
-		UserController: userController,
-		LogsHandler:    logsHandler,
-		//PaymentController:   paymentController,
-		//RoomController:      roomController,
-		//BookingController:   bookingController,
-		//RatePlanController:  ratePlanController,
-		AdminController: adminController,
-		//StaffController:     staffController,
-		HotelController:     hotelController,
-		UploadFileService:   uploadService,
-		NotificationService: pushNotificationService,
+		Echo:                   echoInstance,
+		AuthController:         accountController,
+		UserController:         userController,
+		LogsHandler:            logsHandler,
+		AdminController:        adminController,
+		HotelController:        hotelController,
+		UploadFileService:      uploadService,
+		NotificationService:    pushNotificationService,
+		NotificationController: notificationController,
 	}
 	api.SetupRouter()
 }

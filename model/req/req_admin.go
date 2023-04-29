@@ -27,10 +27,12 @@ type RequestCreateStaffAccount struct {
 	StatusAccount int    `json:"status_account"`
 }
 
-type RequestUpdateStaffAccount struct {
-	ID     string `json:"id"`
-	Avatar string `json:"avatar"`
-	Email  string `json:"email"`
+type RequestUpdateAccount struct {
+	ID        string `json:"id"`
+	Status    int    `json:"status"`
+	Password  string `json:"password"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
 type RequestActivateAccountStaff struct {
@@ -112,4 +114,16 @@ type RequestCreateAccountByAdmin struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Role      string `json:"role" validate:"required"`
+}
+type RequestUpdateCommissionRating struct {
+	CommissionRate float32 `json:"commission_rate,omitempty" validate:"required"`
+}
+
+type RequestUpdateRating struct {
+	Rating float32 `json:"rating,omitempty" validate:"required"`
+}
+type RequestPushNotificationAdmin struct {
+	Title       string `json:"title" validate:"required"`
+	Description string `json:"description" validate:"required"`
+	FCMKey      string `json:"fcm_key" validate:"required"`
 }

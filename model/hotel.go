@@ -6,7 +6,7 @@ type Hotel struct {
 	ID              string    `json:"id" gorm:"primary_key"`
 	Name            string    `json:"name" gorm:"name"`
 	Overview        string    `json:"overview" gorm:"overview"`
-	Rating          int       `json:"rating" gorm:"rating"`
+	Rating          float32   `json:"rating" gorm:"rating"`
 	CommissionRate  float32   `json:"commission_rate" gorm:"commission_rate"`
 	CreatedAt       time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt       time.Time `json:"updated_at" gorm:"updated_at"`

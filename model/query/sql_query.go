@@ -2,6 +2,19 @@ package query
 
 import "time"
 
+type DataQueryModel struct {
+	Limit         int
+	Page          int
+	Filter        map[string]string
+	Search        string
+	Sort          string
+	Order         string
+	Start         string
+	End           string
+	IsShowDeleted bool
+	Role          string
+}
+
 type GroupNumberRoomByRoomType struct {
 	TypeRoomCode string `gorm:"type_room_code"`
 	Count        int    `gorm:"count"`

@@ -39,7 +39,7 @@ func InitFirebase() {
 	}
 }
 
-func PushNotificationMessage(FcmKey string, Message map[string]string) {
+func PushNotificationMessage(FcmKey string, Message map[string]string) string {
 	GetClientFirebase()
 
 	registrationToken := FcmKey
@@ -58,9 +58,10 @@ func PushNotificationMessage(FcmKey string, Message map[string]string) {
 	}
 	// Response is a message ID string.
 	log.Fatal(responseMessage)
+	return responseMessage
 }
 
-func (notification *NotificationService) PushNotificationMessageAPI(c echo.Context) error {
+func (notification *NotificationService) PushNotificationMessageAPITest(c echo.Context) error {
 	GetClientFirebase()
 	reqMessageNotification := req.RequestMessageNotification{}
 	if err := c.Bind(&reqMessageNotification); err != nil {

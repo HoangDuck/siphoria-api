@@ -1,28 +1,12 @@
 package repository
 
+import "hotel-booking-api/model"
+
 type AdminRepo interface {
-	//CheckLogin(email string) (model.StaffAccount, error)
-	//CheckEmail(email string) (model.StaffAccount, error)
-	//UpdatePassword(accountId string, hashedPassword string) (bool, error)
-	//GetAccountById(userId string) (model.StaffAccount, error)
-	//GetStaffProfile(staffId string) (model.Staff, error)
-	//SaveStaffAccount(accountStaff model.StaffAccount) (model.StaffAccount, error)
-	//UpdateStaffAccount(accountStaff model.StaffAccount) (model.StaffAccount, error)
-	//ActivateStaffAccount(account model.StaffAccount) (model.StaffAccount, error)
-	//DeactivateStaffAccount(account model.StaffAccount) (model.StaffAccount, error)
-	//SaveStaffProfile(staffProfile model.Staff) (model.Staff, error)
-	//UpdateStaffProfile(staffProfile model.Staff) (model.Staff, error)
-	//ChangeRoleAccount(accountId string, roleName string) (bool, error)
-	//SaveStatusBooking(statusBooking model.StatusBooking) (model.StatusBooking, error)
-	//SaveStatusAccount(statusAccount model.StatusAccount) (model.StatusAccount, error)
-	//SaveStatusWork(statusWork model.StatusWork) (model.StatusWork, error)
-	//SavePaymentStatus(paymentStatus model.PaymentStatus) (model.PaymentStatus, error)
-	//GetAccountStatusList() ([]model.StatusAccount, error)
-	//GetWorkStatusList() ([]model.StatusWork, error)
-	//GetStatisticRevenueByDay(condition map[string]interface{}) ([]query.StatisticRevenueByTimeQuery, error)
-	//GetStatisticRevenueByRoomTypeCode(condition map[string]interface{}) ([]query.StatisticRevenueByTypeRoomCode, error)
-	//GetAllCustomer() ([]model.Customer, error)
-	//GetAllStaff() ([]model.Staff, error)
-	//GetAllStaffAccount() ([]model.StaffAccount, error)
-	//GetAllCustomerAccount() ([]model.Account, error)
+	CheckEmail(email string) (model.User, error)
+	SaveAccount(account model.User) (model.User, error)
+	UpdateAccount(accountStaff model.User) (model.User, error)
+	GetAccountFilter() ([]model.User, error)
+	GetHotelFilter() ([]model.Hotel, error)
+	AcceptHotel(hotel model.Hotel) (model.Hotel, error)
 }

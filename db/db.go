@@ -42,7 +42,7 @@ func (s *Sql) SetupDB() {
 		model.PayoutRequest{}, model.PaymentMethod{}, model.Payment{}, model.RoomType{}, model.RoomTypeViews{},
 		model.RoomTypeFacility{}, model.RoomNights{}, model.LockRoom{}, model.Voucher{},
 		model.VoucherExcept{}, model.RatePlan{}, model.Wallet{}, model.WalletTransaction{}, model.RatePackage{}, model.Rank{}, model.UserRank{},
-		model.PaymentDetail{}, model.Cart{}, model.CartDetail{})
+		model.PaymentDetail{}, model.Cart{}, model.CartDetail{}, model.Notification{})
 	if err != nil {
 		logger.Error("Error migrate DB", zap.Error(err))
 	}

@@ -10,6 +10,7 @@ type UserRepo interface {
 	UpdateRankCustomer(userRank model.UserRank) (model.UserRank, error)
 	GetProfileCustomer(user model.User) (model.User, error)
 	GetUserRank(user model.User) (model.UserRank, error)
+	GetUserNotifications() (model.Notification, error)
 	//GetUserCart(user model.User) (query.RoomAvailableQuery, error)
 	//CheckProfileCustomerExistByIdentify(user model.User) (model.User, error)
 }
