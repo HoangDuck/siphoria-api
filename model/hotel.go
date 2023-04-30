@@ -21,8 +21,8 @@ type Hotel struct {
 	BankBeneficiary string    `json:"bank_beneficiary" gorm:"bank_beneficiary"`
 	BankName        string    `json:"bank_name" gorm:"bank_name"`
 	BusinessLicence string    `json:"business_licence" gorm:"business_licence"`
-	HotelierId      int       `json:"hotelier_id"`
-	Hotelier        User      `json:"hotelier" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	HotelierId      string    `json:"hotelier_id,omitempty"`
+	Hotelier        *User     `json:"hotelier,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type HotelWork struct {
@@ -34,6 +34,7 @@ type HotelWork struct {
 
 type HotelType struct {
 	HotelId   string    `json:"hotel_id" gorm:"primary_key"`
+	Hotel     bool      `json:"hotel" gorm:"hotel"`
 	Apartment bool      `json:"apartment" gorm:"apartment"`
 	Resort    bool      `json:"resort" gorm:"resort"`
 	Villa     bool      `json:"villa" gorm:"villa"`

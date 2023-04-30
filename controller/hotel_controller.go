@@ -51,12 +51,36 @@ func (hotelReceiver *HotelController) HandleGetHotelById(c echo.Context) error {
 // @Tags hotel-service
 // @Accept  json
 // @Produce  json
+// @Param data body req.RequestCreateHotel true "hotel"
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
+// @Failure 500 {object} res.Response
 // @Router /hotels [post]
 func (hotelReceiver *HotelController) HandleCreateHotel(c echo.Context) error {
-	return response.Ok(c, "Cập nhật thành công", nil)
+	reqCreateHotel := req.RequestCreateHotel{}
+	//binding
+	if err := c.Bind(&reqCreateHotel); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.ADMIN)) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	hotelId, err := utils.GetNewId()
+	if err != nil {
+		return response.Forbidden(c, "Đăng ký thất bại", nil)
+	}
+	reqCreateHotel.ID = hotelId
+	reqCreateHotel.HotelierID = claims.UserId
+	result, err := hotelReceiver.HotelRepo.SaveHotel(reqCreateHotel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Đăng ký khách sạn thành công", result)
 }
 
 // HandleUpdateHotelPhoto godoc

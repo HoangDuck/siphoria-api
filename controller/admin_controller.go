@@ -268,3 +268,38 @@ func (adminController *AdminController) HandleUpdateCommissionRateHotel(c echo.C
 	}
 	return response.Ok(c, "Cập nhật khách sạn thành công", hotel)
 }
+
+// HandleApprovePayoutHotel godoc
+// @Summary Approve request payout
+// @Tags admin-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /admin/payouts/:payout-request-id [patch]
+func (adminController *AdminController) HandleApprovePayoutHotel(c echo.Context) error {
+	reqApprovePayout := req.RequestApprovePayout{}
+	//binding
+	if err := c.Bind(&reqApprovePayout); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	var hotelPayoutRequest model.PayoutRequest
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String()) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+
+	hotelPayoutRequest = model.PayoutRequest{
+		PayerId: claims.UserId,
+		Resolve: reqApprovePayout.Resolve,
+	}
+
+	hotelPayoutRequest, err := adminController.AdminRepo.ApprovePayoutRequestHotel(hotelPayoutRequest)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), hotelPayoutRequest)
+	}
+	return response.Ok(c, "Duyệt yêu cầu thanh toán thành công", hotelPayoutRequest)
+}

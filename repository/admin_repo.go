@@ -9,4 +9,5 @@ type AdminRepo interface {
 	GetAccountFilter() ([]model.User, error)
 	GetHotelFilter() ([]model.Hotel, error)
 	AcceptHotel(hotel model.Hotel) (model.Hotel, error)
+	ApprovePayoutRequestHotel(hotelPayoutRequest model.PayoutRequest) (model.PayoutRequest, error)
 }

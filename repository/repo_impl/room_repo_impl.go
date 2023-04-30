@@ -1,29 +1,27 @@
 package repo_impl
 
-//
-//import (
-//	"fmt"
-//	"go.uber.org/zap"
-//	"gorm.io/gorm"
-//	"hotel-booking-api/custom_error"
-//	"hotel-booking-api/db"
-//	"hotel-booking-api/logger"
-//	"hotel-booking-api/model"
-//	"hotel-booking-api/model/query"
-//	"hotel-booking-api/model/req"
-//	"hotel-booking-api/repository"
-//)
-//
-//type RoomRepoImpl struct {
-//	sql *db.Sql
-//}
-//
-//func NewRoomRepo(sql *db.Sql) repository.RoomRepo {
-//	return &RoomRepoImpl{
-//		sql: sql,
-//	}
-//}
-//
+import (
+	"hotel-booking-api/db"
+	"hotel-booking-api/model"
+	"hotel-booking-api/model/req"
+	"hotel-booking-api/repository"
+)
+
+type RoomRepoImpl struct {
+	sql *db.Sql
+}
+
+func (roomReceiver *RoomRepoImpl) SaveRoomType(requestAddRoomType req.RequestCreateRoomType) (model.RoomType, error) {
+
+	panic("implement me")
+}
+
+func NewRoomRepo(sql *db.Sql) repository.RoomRepo {
+	return &RoomRepoImpl{
+		sql: sql,
+	}
+}
+
 //func (roomReceiver *RoomRepoImpl) GetListRatePlanByRoomTypeCode(roomTypeID string) ([]model.RatePlan, error) {
 //	var listRatePlan []model.RatePlan
 //	err := roomReceiver.sql.Db.Where("room_type_id=?", roomTypeID).Preload("RoomType").Find(&listRatePlan)

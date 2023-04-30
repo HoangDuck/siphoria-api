@@ -12,7 +12,7 @@ dbdev:
 	swag init -g cmd/main.go --output docs
 	cd cmd && go run main.go -env dbdev
 
-migratem:
+migrate:
 	cd cmd && go run main.go -env dbdev
 swag:
 	swag init -g cmd/main.go --output docs

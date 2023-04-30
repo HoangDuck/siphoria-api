@@ -18,6 +18,7 @@ type API struct {
 	UploadFileService      services.FileUploadService
 	NotificationService    services.NotificationService
 	NotificationController controller.NotificationController
+	RoomController         controller.RoomController
 }
 
 func (api *API) SetupRouter() {
@@ -60,7 +61,7 @@ func (api *API) SetupRouter() {
 	user.GET("/notifications", api.UserController.HandleGetUserNotifications, middleware.JWTMiddleWare())
 
 	hotel := request.Group("/hotels")
-	hotel.POST("/", api.HotelController.HandleGetHotelById, middleware.JWTMiddleWare())
+	hotel.POST("/", api.HotelController.HandleCreateHotel, middleware.JWTMiddleWare())
 	hotel.POST("/search", api.HotelController.HandleSearchHotel)
 	hotel.GET("/:id", api.HotelController.HandleGetHotelById)
 	hotel.POST("/:id/photos", api.HotelController.HandleUpdateHotelPhoto, middleware.JWTMiddleWare())
@@ -69,10 +70,12 @@ func (api *API) SetupRouter() {
 	hotel.POST("/:hotel_id/payout", api.HotelController.HandleSendRequestPaymentHotel, middleware.JWTMiddleWare())
 
 	//////OLD API
-	room := request.Group("/room")
+	room := request.Group("/rooms")
 	room.GET("/welcome-room", func(context echo.Context) error {
 		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
 	})
+	room.POST("/", api.RoomController.HandleSaveRoomType, middleware.JWTMiddleWare())
+	//room.PATCH("/:hotel_id")
 
 	ratePlan := request.Group("/ratePlan")
 	ratePlan.GET("/rateplans", api.RatePlanController.HandleGetListRatePlan)
@@ -98,6 +101,7 @@ func (api *API) SetupRouter() {
 	admin.PATCH("/accept/:hotel-id", api.AdminController.HandleAcceptHotel, middleware.JWTMiddleWare())
 	admin.PATCH("/update-rating/:hotel-id", api.AdminController.HandleUpdateRatingHotel, middleware.JWTMiddleWare())
 	admin.PATCH("/update-cmsrate/:hotel-id", api.AdminController.HandleUpdateCommissionRateHotel, middleware.JWTMiddleWare())
+	admin.PATCH("/payouts/:payout-request-id", api.AdminController.HandleApprovePayoutHotel, middleware.JWTMiddleWare())
 
 	log := api.Echo.Group("/manager/log")
 	log.GET("/checkViewLogs", api.LogsHandler.CheckLogs)

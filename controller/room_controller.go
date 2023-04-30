@@ -1,30 +1,22 @@
 package controller
 
-//
-//import (
-//	"fmt"
-//	"github.com/golang-jwt/jwt"
-//	"github.com/google/uuid"
-//	"github.com/labstack/echo/v4"
-//	"go.uber.org/zap"
-//	"hotel-booking-api/logger"
-//	"hotel-booking-api/model"
-//	"hotel-booking-api/model/model_func"
-//	"hotel-booking-api/model/query"
-//	"hotel-booking-api/model/req"
-//	"hotel-booking-api/model/res"
-//	"hotel-booking-api/repository"
-//	"math/rand"
-//	_ "math/rand"
-//	"net/http"
-//	"strings"
-//	"time"
-//)
-//
-//type RoomController struct {
-//	RoomRepo repository.RoomRepo
-//}
-//
+import (
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
+	"hotel-booking-api/logger"
+	"hotel-booking-api/model"
+	response "hotel-booking-api/model/model_func"
+	"hotel-booking-api/model/req"
+	"hotel-booking-api/repository"
+	"hotel-booking-api/utils"
+	_ "math/rand"
+)
+
+type RoomController struct {
+	RoomRepo repository.RoomRepo
+}
+
 //// HandleSaveRoomBusyStatusCategory godoc
 //// @Summary Save room busy status category
 //// @Tags room-service
@@ -63,54 +55,41 @@ package controller
 //	}
 //	return response.Ok(c, "Lưu thành công", nil)
 //}
-//
-//// HandleSaveRoomType godoc
-//// @Summary Save room type
-//// @Tags room-service
-//// @Accept  json
-//// @Produce  json
-//// @Param data body req.RequestAddRoomType true "room"
-//// @Success 200 {object} res.Response
-//// @Failure 400 {object} res.Response
-//// @Failure 500 {object} res.Response
-//// @Router /room/add-room-type [post]
-//func (roomReceiver *RoomController) HandleSaveRoomType(c echo.Context) error {
-//	reqAddRoomType := req.RequestAddRoomType{}
-//	//binding
-//	if err := c.Bind(&reqAddRoomType); err != nil {
-//		logger.Error("Error binding data", zap.Error(err))
-//		return response.BadRequest(c, err.Error(), nil)
-//	}
-//	token := c.Get("user").(*jwt.Token)
-//	claims := token.Claims.(*model.JwtCustomClaims)
-//	if !(claims.Role == model.ADMIN.String()) {
-//		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-//	}
-//	roomTypeId, err := uuid.NewUUID()
-//	if err != nil {
-//		return response.InternalServerError(c, err.Error(), nil)
-//	}
-//	roomType := model.RoomType{
-//		ID: roomTypeId.String(),
-//		//TypeRoomCode:     reqAddRoomType.TypeRoomCode,
-//		//TypeRoomName:     reqAddRoomType.TypeRoomName,
-//		Description: reqAddRoomType.Description,
-//		//NumberAdult:      reqAddRoomType.NumberAdult,
-//		//NumberChildren:   reqAddRoomType.NumberChildren,
-//		//NumberBed:        reqAddRoomType.NumberBed,
-//		//NumberToilet:     reqAddRoomType.NumberToilet,
-//		//CostType:         reqAddRoomType.CostType,
-//		//RoomImages:       reqAddRoomType.RoomImages,
-//		//Rating:           reqAddRoomType.Rating,
-//		//ShortDescription: reqAddRoomType.ShortDescription,
-//	}
-//	result, err := roomReceiver.RoomRepo.SaveRoomType(roomType)
-//	if err != nil || !result {
-//		return response.InternalServerError(c, err.Error(), nil)
-//	}
-//	return response.Ok(c, "Lưu thành công", nil)
-//}
-//
+
+// HandleSaveRoomType godoc
+// @Summary Save room type
+// @Tags room-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCreateRoomType true "room"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /rooms [post]
+func (roomReceiver *RoomController) HandleSaveRoomType(c echo.Context) error {
+	reqAddRoomType := req.RequestCreateRoomType{}
+	//binding
+	if err := c.Bind(&reqAddRoomType); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String()) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	roomTypeId, err := utils.GetNewId()
+	if err != nil {
+		return response.Forbidden(c, "Đăng ký thất bại", nil)
+	}
+	reqAddRoomType.ID = roomTypeId
+	result, err := roomReceiver.RoomRepo.SaveRoomType(reqAddRoomType)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Lưu thành công", result)
+}
+
 //// HandleGetListRoomType godoc
 //// @Summary Get list room type
 //// @Tags room-service

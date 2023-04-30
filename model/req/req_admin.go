@@ -122,8 +122,13 @@ type RequestUpdateCommissionRating struct {
 type RequestUpdateRating struct {
 	Rating float32 `json:"rating,omitempty" validate:"required"`
 }
+
 type RequestPushNotificationAdmin struct {
 	Title       string `json:"title" validate:"required"`
 	Description string `json:"description" validate:"required"`
 	FCMKey      string `json:"fcm_key" validate:"required"`
+}
+
+type RequestApprovePayout struct {
+	Resolve bool `json:"resolve,omitempty"`
 }

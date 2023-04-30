@@ -12,6 +12,11 @@ type AdminRepoImpl struct {
 	sql *db.Sql
 }
 
+func (u *AdminRepoImpl) ApprovePayoutRequestHotel(hotelPayoutRequest model.PayoutRequest) (model.PayoutRequest, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
 	//TODO implement me
 	panic("implement me")

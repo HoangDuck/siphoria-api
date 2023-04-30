@@ -16,6 +16,7 @@ type RoomType struct {
 	UpdatedAt    time.Time `json:"updated_at" gorm:"updated_at"`
 	HotelId      string    `json:"hotel_id"`
 	Hotel        Hotel     `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	IsDeleted    bool      `json:"-" gorm:"is_deleted"`
 }
 
 type RoomTypeViews struct {
@@ -30,6 +31,7 @@ type RoomTypeViews struct {
 	PrivateBalcony bool      `json:"private_balcony" gorm:"private_balcony"`
 	CreatedAt      time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at" gorm:"updated_at"`
+	IsDeleted      bool      `json:"-" gorm:"is_deleted"`
 }
 
 type RoomTypeFacility struct {
@@ -55,6 +57,7 @@ type RoomTypeFacility struct {
 	KitchenTools   bool      `json:"kitchen_tools" gorm:"kitchen_tools"`
 	CreatedAt      time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at" gorm:"updated_at"`
+	IsDeleted      bool      `json:"-" gorm:"is_deleted"`
 }
 
 type RoomNights struct {

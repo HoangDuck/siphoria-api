@@ -63,20 +63,6 @@ type RequestAddRoom struct {
 	Floor        int    `json:"floor"`
 }
 
-type RequestAddRoomType struct {
-	TypeRoomCode     string  `json:"type_room_code"`
-	TypeRoomName     string  `json:"type_room_name"`
-	Description      string  `json:"description"`
-	ShortDescription string  `json:"short_description"`
-	NumberAdult      int     `json:"number_adult"`
-	NumberChildren   int     `json:"number_children"`
-	NumberBed        int     `json:"bed_number"`
-	NumberToilet     int     `json:"number_toilet"`
-	CostType         float32 `json:"cost_type"`
-	RoomImages       string  `json:"room_images"`
-	Rating           int     `json:"rating"`
-}
-
 type RequestAddRoomBusyStatusCategory struct {
 	StatusCode  string `json:"status_code"`
 	StatusName  string `json:"status_name"`
@@ -138,4 +124,44 @@ type RequestGetRoomRatePlan struct {
 
 type RequestGetRoomAvailable struct {
 	RoomTypeID string `json:"room_type_id"`
+}
+
+type RequestCreateRoomType struct {
+	ID             string
+	Name           string `json:"name"`
+	Description    string `json:"description"`
+	BedNums        int    `json:"bed_nums"`
+	BathroomNums   int    `json:"bathroom_nums"`
+	Activated      bool   `json:"activated"`
+	MaxChildren    int    `json:"max_children"`
+	MaxAdult       int    `json:"max_adult"`
+	HotelID        string `json:"hotel_id"`
+	Photos         string `json:"photos"`
+	Bay            bool   `json:"bay"`
+	Ocean          bool   `json:"ocean"`
+	Sea            bool   `json:"sea"`
+	City           bool   `json:"city"`
+	Garden         bool   `json:"garden"`
+	Lake           bool   `json:"lake"`
+	Mountain       bool   `json:"mountain"`
+	River          bool   `json:"river"`
+	PrivateBalcony bool   `json:"private_balcony"`
+	AirConditional bool   `json:"air_conditional"`
+	Tivi           bool   `json:"tivi"`
+	Kitchen        bool   `json:"kitchen"`
+	PrivatePool    bool   `json:"private_pool"`
+	Iron           bool   `json:"iron"`
+	Sofa           bool   `json:"sofa"`
+	Desk           bool   `json:"desk"`
+	Soundproof     bool   `json:"soundproof"`
+	Towels         bool   `json:"towels"`
+	Toiletries     bool   `json:"toiletries"`
+	Shower         bool   `json:"shower"`
+	Slippers       bool   `json:"slippers"`
+	Hairdry        bool   `json:"hairdry"`
+	Fruit          bool   `json:"fruit"`
+	Bbq            bool   `json:"bbq"`
+	Wine           bool   `json:"wine"`
+	Fryer          bool   `json:"fryer"`
+	KitchenTool    bool   `json:"kitchen_tool"`
 }
