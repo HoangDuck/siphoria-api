@@ -2,11 +2,21 @@ basePath: /api
 definitions:
   req.RequestAddRatePlan:
     properties:
-      description:
+      activated:
+        type: boolean
+      free_breakfast:
+        type: boolean
+      free_dinner:
+        type: boolean
+      free_lunch:
+        type: boolean
+      name:
         type: string
-      price:
-        type: number
-      room_type_code:
+      room_type_id:
+        type: string
+      status:
+        type: integer
+      type:
         type: string
     type: object
   req.RequestAddStatusBooking:
@@ -940,35 +950,6 @@ paths:
       summary: Get rateplan list
       tags:
       - rateplan-service
-  /ratePlan/save-rateplan:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: rateplan
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/req.RequestAddRatePlan'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/res.Response'
-      summary: Save rateplan
-      tags:
-      - rateplan-service
   /ratePlan/update-rateplan:
     post:
       consumes:
@@ -996,6 +977,35 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Update rateplan
+      tags:
+      - rateplan-service
+  /rateplans:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: rateplan
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestAddRatePlan'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Save rateplan
       tags:
       - rateplan-service
   /rooms:

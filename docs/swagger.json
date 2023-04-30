@@ -1033,7 +1033,7 @@
                 }
             }
         },
-        "/ratePlan/save-rateplan": {
+        "/ratePlan/update-rateplan": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1044,7 +1044,7 @@
                 "tags": [
                     "rateplan-service"
                 ],
-                "summary": "Save rateplan",
+                "summary": "Update rateplan",
                 "parameters": [
                     {
                         "description": "rateplan",
@@ -1052,7 +1052,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.RequestAddRatePlan"
+                            "$ref": "#/definitions/req.RequestUpdateRatePlan"
                         }
                     }
                 ],
@@ -1078,7 +1078,7 @@
                 }
             }
         },
-        "/ratePlan/update-rateplan": {
+        "/rateplans": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1089,7 +1089,7 @@
                 "tags": [
                     "rateplan-service"
                 ],
-                "summary": "Update rateplan",
+                "summary": "Save rateplan",
                 "parameters": [
                     {
                         "description": "rateplan",
@@ -1097,7 +1097,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.RequestUpdateRatePlan"
+                            "$ref": "#/definitions/req.RequestAddRatePlan"
                         }
                     }
                 ],
@@ -1489,13 +1489,28 @@
         "req.RequestAddRatePlan": {
             "type": "object",
             "properties": {
-                "description": {
+                "activated": {
+                    "type": "boolean"
+                },
+                "free_breakfast": {
+                    "type": "boolean"
+                },
+                "free_dinner": {
+                    "type": "boolean"
+                },
+                "free_lunch": {
+                    "type": "boolean"
+                },
+                "name": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "number"
+                "room_type_id": {
+                    "type": "string"
                 },
-                "room_type_code": {
+                "status": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }

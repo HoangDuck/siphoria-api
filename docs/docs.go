@@ -1040,7 +1040,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/ratePlan/save-rateplan": {
+        "/ratePlan/update-rateplan": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1051,7 +1051,7 @@ const docTemplate = `{
                 "tags": [
                     "rateplan-service"
                 ],
-                "summary": "Save rateplan",
+                "summary": "Update rateplan",
                 "parameters": [
                     {
                         "description": "rateplan",
@@ -1059,7 +1059,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.RequestAddRatePlan"
+                            "$ref": "#/definitions/req.RequestUpdateRatePlan"
                         }
                     }
                 ],
@@ -1085,7 +1085,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/ratePlan/update-rateplan": {
+        "/rateplans": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1096,7 +1096,7 @@ const docTemplate = `{
                 "tags": [
                     "rateplan-service"
                 ],
-                "summary": "Update rateplan",
+                "summary": "Save rateplan",
                 "parameters": [
                     {
                         "description": "rateplan",
@@ -1104,7 +1104,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.RequestUpdateRatePlan"
+                            "$ref": "#/definitions/req.RequestAddRatePlan"
                         }
                     }
                 ],
@@ -1496,13 +1496,28 @@ const docTemplate = `{
         "req.RequestAddRatePlan": {
             "type": "object",
             "properties": {
-                "description": {
+                "activated": {
+                    "type": "boolean"
+                },
+                "free_breakfast": {
+                    "type": "boolean"
+                },
+                "free_dinner": {
+                    "type": "boolean"
+                },
+                "free_lunch": {
+                    "type": "boolean"
+                },
+                "name": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "number"
+                "room_type_id": {
+                    "type": "string"
                 },
-                "room_type_code": {
+                "status": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }

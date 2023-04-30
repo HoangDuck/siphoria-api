@@ -76,8 +76,8 @@ func (api *API) SetupRouter() {
 	room.POST("/", api.RoomController.HandleSaveRoomType, middleware.JWTMiddleWare())
 	//room.PATCH("/:hotel_id")
 
-	ratePlan := request.Group("/ratePlan")
-	ratePlan.GET("/rateplans", api.RatePlanController.HandleGetListRatePlan)
+	ratePlan := request.Group("/rateplans")
+	ratePlan.POST("/", api.RatePlanController.HandleSaveRatePlan, middleware.JWTMiddleWare())
 	ratePlan.POST("/rateplan-info", api.RatePlanController.HandleGetRatePlanInfo)
 	ratePlan.POST("/update-rateplan", api.RatePlanController.HandleUpdateRatePlan, middleware.JWTMiddleWare())
 	ratePlan.POST("/delete-rateplan", api.RatePlanController.HandleDeleteRatePlan, middleware.JWTMiddleWare())

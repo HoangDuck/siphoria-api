@@ -15,7 +15,12 @@ type RequestDeleteRatePlan struct {
 }
 
 type RequestAddRatePlan struct {
-	RoomTypeCode string  `json:"room_type_code"`
-	Description  string  `json:"description"`
-	Price        float32 `json:"price"`
+	RoomTypeID    string `json:"room_type_id"`
+	Name          string `json:"name"`
+	Type          string `json:"type"`
+	Status        int    `json:"status"`
+	Activated     bool   `json:"activated"`
+	FreeBreakfast bool   `json:"free_breakfast"`
+	FreeLunch     bool   `json:"free_lunch"`
+	FreeDinner    bool   `json:"free_dinner"`
 }

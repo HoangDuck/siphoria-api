@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/golang-jwt/jwt"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"hotel-booking-api/logger"
@@ -11,7 +10,9 @@ import (
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
+	"hotel-booking-api/utils"
 	"net/http"
+	"time"
 )
 
 type RatePlanController struct {
@@ -164,7 +165,7 @@ func (ratePlanController *RatePlanController) HandleDeleteRatePlan(c echo.Contex
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /ratePlan/save-rateplan [post]
+// @Router /rateplans [post]
 func (ratePlanController *RatePlanController) HandleSaveRatePlan(c echo.Context) error {
 	reqAddRatePlan := req.RequestAddRatePlan{}
 	//binding
@@ -177,26 +178,26 @@ func (ratePlanController *RatePlanController) HandleSaveRatePlan(c echo.Context)
 	if !(claims.Role == model.STAFF.String() || claims.Role == model.ADMIN.String()) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	roomType := model.RoomType{
-		//TypeRoomCode: reqAddRatePlan.RoomTypeCode,
-	}
-	_, err := ratePlanController.RatePlanRepo.GetRoomTypeInfo(roomType)
-	if err != nil {
-		return response.InternalServerError(c, err.Error(), nil)
-	}
-	ratePlanId, err := uuid.NewUUID()
+	ratePlanId, err := utils.GetNewId()
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
 	ratePlan := model.RatePlan{
-		ID: ratePlanId.String(),
-		//RoomTypeID:  roomTypeModel.ID,
-		//Description: reqAddRatePlan.Description,
-		//Price:       reqAddRatePlan.Price,
+		ID:            ratePlanId,
+		RoomTypeId:    reqAddRatePlan.RoomTypeID,
+		Name:          reqAddRatePlan.Name,
+		TypeRatePlan:  reqAddRatePlan.Type,
+		Status:        reqAddRatePlan.Status,
+		Activate:      reqAddRatePlan.Activated,
+		FreeBreakfast: reqAddRatePlan.FreeBreakfast,
+		FreeLunch:     reqAddRatePlan.FreeLunch,
+		FreeDinner:    reqAddRatePlan.FreeDinner,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
 	}
 	result, err := ratePlanController.RatePlanRepo.SaveRatePlan(ratePlan)
-	if err != nil || !result {
+	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
-	return response.Ok(c, "Lưu thành công", nil)
+	return response.Ok(c, "Lưu thành công", result)
 }

@@ -66,12 +66,12 @@ func (ratePlanReceiver *RatePlanRepoImpl) DeleteRatePlanInfo(condition map[strin
 	return true, nil
 }
 
-func (ratePlanReceiver *RatePlanRepoImpl) SaveRatePlan(ratePlan model.RatePlan) (bool, error) {
+func (ratePlanReceiver *RatePlanRepoImpl) SaveRatePlan(ratePlan model.RatePlan) (model.RatePlan, error) {
 	result := ratePlanReceiver.sql.Db.Create(&ratePlan)
 	if result.Error != nil {
-		return false, result.Error
+		return ratePlan, result.Error
 	}
-	return true, nil
+	return ratePlan, nil
 }
 
 func (ratePlanReceiver *RatePlanRepoImpl) GetRoomTypeInfo(roomType model.RoomType) (model.RoomType, error) {
