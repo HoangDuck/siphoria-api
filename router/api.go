@@ -69,7 +69,6 @@ func (api *API) SetupRouter() {
 	hotel.DELETE("/:id/photos", api.HotelController.HandleDeleteHotelBusinessLicense, middleware.JWTMiddleWare())
 	hotel.POST("/:hotel_id/payout", api.HotelController.HandleSendRequestPaymentHotel, middleware.JWTMiddleWare())
 
-	//////OLD API
 	room := request.Group("/rooms")
 	room.GET("/welcome-room", func(context echo.Context) error {
 		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
