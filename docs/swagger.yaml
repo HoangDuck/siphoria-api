@@ -22,6 +22,150 @@ definitions:
     - status_code
     - status_name
     type: object
+  req.RequestCreateHotel:
+    properties:
+      activate:
+        type: boolean
+      apartment:
+        type: boolean
+      bankAccount:
+        type: string
+      bankBeneficiary:
+        type: string
+      bankName:
+        type: string
+      bar:
+        type: boolean
+      bath:
+        type: boolean
+      beach:
+        type: boolean
+      breakfast:
+        type: boolean
+      bussiness_license:
+        type: string
+      camping:
+        type: boolean
+      casio:
+        type: boolean
+      district:
+        type: integer
+      fitness:
+        type: boolean
+      homestay:
+        type: boolean
+      hotel:
+        type: boolean
+      hotelierID:
+        type: string
+      id:
+        type: string
+      motel:
+        type: boolean
+      name:
+        type: string
+      no_smoking_room:
+        type: boolean
+      overview:
+        type: string
+      parking:
+        type: boolean
+      photos:
+        type: string
+      pool:
+        type: boolean
+      province:
+        type: integer
+      raw_address:
+        type: string
+      resort:
+        type: boolean
+      spa:
+        type: boolean
+      villa:
+        type: boolean
+      ward:
+        type: integer
+      wifi:
+        type: boolean
+    type: object
+  req.RequestCreateRoomType:
+    properties:
+      activated:
+        type: boolean
+      air_conditional:
+        type: boolean
+      bathroom_nums:
+        type: integer
+      bay:
+        type: boolean
+      bbq:
+        type: boolean
+      bed_nums:
+        type: integer
+      city:
+        type: boolean
+      description:
+        type: string
+      desk:
+        type: boolean
+      fruit:
+        type: boolean
+      fryer:
+        type: boolean
+      garden:
+        type: boolean
+      hairdry:
+        type: boolean
+      hotel_id:
+        type: string
+      id:
+        type: string
+      iron:
+        type: boolean
+      kitchen:
+        type: boolean
+      kitchen_tool:
+        type: boolean
+      lake:
+        type: boolean
+      max_adult:
+        type: integer
+      max_children:
+        type: integer
+      mountain:
+        type: boolean
+      name:
+        type: string
+      ocean:
+        type: boolean
+      photos:
+        type: string
+      private_balcony:
+        type: boolean
+      private_pool:
+        type: boolean
+      river:
+        type: boolean
+      sea:
+        type: boolean
+      shower:
+        type: boolean
+      slippers:
+        type: boolean
+      sofa:
+        type: boolean
+      soundproof:
+        type: boolean
+      tivi:
+        type: boolean
+      toiletries:
+        type: boolean
+      towels:
+        type: boolean
+      wine:
+        type: boolean
+    type: object
   req.RequestDeleteRatePlan:
     properties:
       rate_plan_id:
@@ -75,6 +219,19 @@ definitions:
     - last_name
     - password
     type: object
+  req.RequestUpdateAccount:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      status:
+        type: integer
+    type: object
   req.RequestUpdatePassword:
     properties:
       new_password:
@@ -127,7 +284,47 @@ info:
   title: HOTEL BOOKING API
   version: "1.0"
 paths:
-  /admin/add-status-booking:
+  /admin/accept/:hotel-id:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Accept
+      tags:
+      - admin-service
+  /admin/account-statuses:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get all account status list
+      tags:
+      - admin-service
+  /admin/create-account:
     post:
       consumes:
       - application/json
@@ -153,7 +350,146 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.Response'
-      summary: Register account Admin
+      summary: create account by admin
+      tags:
+      - admin-service
+  /admin/hotels:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get all hotel list
+      tags:
+      - admin-service
+  /admin/payouts/:payout-request-id:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Approve request payout
+      tags:
+      - admin-service
+  /admin/push-notification:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Admin push notifications
+      tags:
+      - admin-service
+  /admin/update-account:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: staffaccount
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: update account
+      tags:
+      - admin-service
+  /admin/update-cmsrate/:hotel-id:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update commission rate hotel
+      tags:
+      - admin-service
+  /admin/update-rating/:hotel-id:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update rating hotel
       tags:
       - admin-service
   /auth/change-pwd:
@@ -353,6 +689,61 @@ paths:
       summary: Handle Activate Account
       tags:
       - auth-service
+  /hotels:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: hotel
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestCreateHotel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Create hotel
+      tags:
+      - hotel-service
+  /hotels/:hotel_id/payout:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Send request payment hotel
+      tags:
+      - hotel-service
   /hotels/:id:
     get:
       consumes:
@@ -373,6 +764,71 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Get hotel by Id
+      tags:
+      - hotel-service
+  /hotels/:id/business-license:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update hotel business license photos
+      tags:
+      - hotel-service
+  /hotels/:id/photos:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Delete hotel photos
+      tags:
+      - hotel-service
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update hotel photos
       tags:
       - hotel-service
   /hotels/search:
@@ -542,6 +998,35 @@ paths:
       summary: Update rateplan
       tags:
       - rateplan-service
+  /rooms:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: room
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestCreateRoomType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Save room type
+      tags:
+      - room-service
   /users/add-to-cart:
     post:
       consumes:
@@ -642,6 +1127,28 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Get user rank
+      tags:
+      - user-service
+  /users/notifications:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get User Notifications
       tags:
       - user-service
   /users/update-avatar:
