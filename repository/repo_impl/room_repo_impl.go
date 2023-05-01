@@ -1,19 +1,108 @@
 package repo_impl
 
 import (
+	"gorm.io/gorm/clause"
 	"hotel-booking-api/db"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
+	"hotel-booking-api/utils"
+	"time"
 )
 
 type RoomRepoImpl struct {
 	sql *db.Sql
 }
 
-func (roomReceiver *RoomRepoImpl) SaveRoomType(requestAddRoomType req.RequestCreateRoomType) (model.RoomType, error) {
+func (roomReceiver *RoomRepoImpl) UpdateRoomNight(requestUpdateRoomNight req.RequestUpdateRoomNight) ([]model.RoomNights, error) {
+	listDayAvailable := utils.DecodeJSONArray(requestUpdateRoomNight.SelectedDate)
+	var listRoomNights []model.RoomNights
+	listRoomNights = []model.RoomNights{}
+	for _, roomNightDay := range listDayAvailable {
+		roomNightId, err := utils.GetNewId()
+		date, err := time.Parse("2006-01-02", roomNightDay)
+		if err != nil {
+			continue
+		}
+		listRoomNights = append(listRoomNights, model.RoomNights{
+			ID:             roomNightId,
+			AvailabilityAt: date,
+			RoomTypeId:     requestUpdateRoomNight.RoomTypeID,
+			Inventory:      requestUpdateRoomNight.Quantity,
+			Remain:         requestUpdateRoomNight.Quantity,
+			CreatedAt:      time.Now(),
+			UpdatedAt:      time.Now(),
+		})
+	}
+	if len(listRoomNights) == 0 {
+		return listRoomNights, nil
+	}
+	err := roomReceiver.sql.Db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "room_type_id"}, {Name: "availability_at"}},
+		DoUpdates: clause.AssignmentColumns([]string{"inventory", "remain", "updated_at"}),
+	}).Create(&listRoomNights).Error
+	if err != nil {
+		return listRoomNights, err
+	}
+	return listRoomNights, nil
+}
 
-	panic("implement me")
+func (roomReceiver *RoomRepoImpl) SaveRoomType(requestAddRoomType req.RequestCreateRoomType) (model.RoomType, error) {
+	err := roomReceiver.sql.Db.Exec("call sp_addroomtype(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+		requestAddRoomType.ID,
+		requestAddRoomType.Name,
+		requestAddRoomType.Description,
+		requestAddRoomType.BedNums,
+		requestAddRoomType.BathroomNums,
+		requestAddRoomType.Activated,
+		requestAddRoomType.MaxChildren,
+		requestAddRoomType.MaxAdult,
+		requestAddRoomType.HotelID,
+		requestAddRoomType.Photos,
+		requestAddRoomType.Bay,
+		requestAddRoomType.Ocean,
+		requestAddRoomType.City,
+		requestAddRoomType.Garden,
+		requestAddRoomType.Lake,
+		requestAddRoomType.Mountain,
+		requestAddRoomType.River,
+		requestAddRoomType.PrivateBalcony,
+		requestAddRoomType.AirConditional,
+		requestAddRoomType.Tivi,
+		requestAddRoomType.Kitchen,
+		requestAddRoomType.PrivatePool,
+		requestAddRoomType.Heater,
+		requestAddRoomType.Iron,
+		requestAddRoomType.Sofa,
+		requestAddRoomType.Desk,
+		requestAddRoomType.Soundproof,
+		requestAddRoomType.Towels,
+		requestAddRoomType.Toiletries,
+		requestAddRoomType.Shower,
+		requestAddRoomType.Slippers,
+		requestAddRoomType.Hairdry,
+		requestAddRoomType.Fruit,
+		requestAddRoomType.Bbq,
+		requestAddRoomType.Wine,
+		requestAddRoomType.Fryer,
+		requestAddRoomType.KitchenTool)
+	var roomType model.RoomType
+	if err.Error != nil {
+		return roomType, err.Error
+	} else {
+		roomType = model.RoomType{
+			ID:           requestAddRoomType.ID,
+			Name:         requestAddRoomType.Name,
+			Description:  requestAddRoomType.Description,
+			MaxAdult:     requestAddRoomType.MaxAdult,
+			MaxChildren:  requestAddRoomType.MaxChildren,
+			BedNums:      requestAddRoomType.BedNums,
+			BathroomNums: requestAddRoomType.BathroomNums,
+			Photos:       requestAddRoomType.Photos,
+			HotelId:      requestAddRoomType.HotelID,
+		}
+	}
+	return roomType, nil
 }
 
 func NewRoomRepo(sql *db.Sql) repository.RoomRepo {

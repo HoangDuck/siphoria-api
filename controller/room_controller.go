@@ -17,6 +17,69 @@ type RoomController struct {
 	RoomRepo repository.RoomRepo
 }
 
+// HandleSaveRoomType godoc
+// @Summary Save room type
+// @Tags room-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCreateRoomType true "room"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /rooms [post]
+func (roomReceiver *RoomController) HandleSaveRoomType(c echo.Context) error {
+	reqAddRoomType := req.RequestCreateRoomType{}
+	//binding
+	if err := c.Bind(&reqAddRoomType); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String()) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	roomTypeId, err := utils.GetNewId()
+	if err != nil {
+		return response.InternalServerError(c, "Đăng ký thất bại", nil)
+	}
+	reqAddRoomType.ID = roomTypeId
+	result, err := roomReceiver.RoomRepo.SaveRoomType(reqAddRoomType)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Lưu room type thành công", result)
+}
+
+// HandleUpdateRoomNight godoc
+// @Summary Update room nights
+// @Tags room-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestUpdateRoomNight true "room"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /rooms/roomnights [post]
+func (roomReceiver *RoomController) HandleUpdateRoomNight(c echo.Context) error {
+	reqUpdateRoomNight := req.RequestUpdateRoomNight{}
+	//binding
+	if err := c.Bind(&reqUpdateRoomNight); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String()) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	result, err := roomReceiver.RoomRepo.UpdateRoomNight(reqUpdateRoomNight)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Cập nhật room nights thành công", result)
+}
+
 //// HandleSaveRoomBusyStatusCategory godoc
 //// @Summary Save room busy status category
 //// @Tags room-service
@@ -55,40 +118,6 @@ type RoomController struct {
 //	}
 //	return response.Ok(c, "Lưu thành công", nil)
 //}
-
-// HandleSaveRoomType godoc
-// @Summary Save room type
-// @Tags room-service
-// @Accept  json
-// @Produce  json
-// @Param data body req.RequestCreateRoomType true "room"
-// @Success 200 {object} res.Response
-// @Failure 400 {object} res.Response
-// @Failure 500 {object} res.Response
-// @Router /rooms [post]
-func (roomReceiver *RoomController) HandleSaveRoomType(c echo.Context) error {
-	reqAddRoomType := req.RequestCreateRoomType{}
-	//binding
-	if err := c.Bind(&reqAddRoomType); err != nil {
-		logger.Error("Error binding data", zap.Error(err))
-		return response.BadRequest(c, err.Error(), nil)
-	}
-	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
-		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-	}
-	roomTypeId, err := utils.GetNewId()
-	if err != nil {
-		return response.Forbidden(c, "Đăng ký thất bại", nil)
-	}
-	reqAddRoomType.ID = roomTypeId
-	result, err := roomReceiver.RoomRepo.SaveRoomType(reqAddRoomType)
-	if err != nil {
-		return response.InternalServerError(c, err.Error(), nil)
-	}
-	return response.Ok(c, "Lưu thành công", result)
-}
 
 //// HandleGetListRoomType godoc
 //// @Summary Get list room type

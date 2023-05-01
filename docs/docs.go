@@ -1175,6 +1175,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/rooms/roomnights": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "room-service"
+                ],
+                "summary": "Update room nights",
+                "parameters": [
+                    {
+                        "description": "room",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestUpdateRoomNight"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/users/add-to-cart": {
             "post": {
                 "consumes": [
@@ -1684,6 +1729,9 @@ const docTemplate = `{
                 "hairdry": {
                     "type": "boolean"
                 },
+                "heater": {
+                    "type": "boolean"
+                },
                 "hotel_id": {
                     "type": "string"
                 },
@@ -1727,9 +1775,6 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "river": {
-                    "type": "boolean"
-                },
-                "sea": {
                     "type": "boolean"
                 },
                 "shower": {
@@ -1900,6 +1945,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "room_type_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestUpdateRoomNight": {
+            "type": "object",
+            "properties": {
+                "quantity": {
+                    "type": "integer"
+                },
+                "room_type_id": {
+                    "type": "string"
+                },
+                "selected_date": {
                     "type": "string"
                 }
             }

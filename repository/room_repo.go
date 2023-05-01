@@ -7,4 +7,5 @@ import (
 
 type RoomRepo interface {
 	SaveRoomType(requestAddRoomType req.RequestCreateRoomType) (model.RoomType, error)
+	UpdateRoomNight(requestAddRoomType req.RequestUpdateRoomNight) ([]model.RoomNights, error)
 }

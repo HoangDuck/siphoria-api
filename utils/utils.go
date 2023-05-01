@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
@@ -8,6 +9,7 @@ import (
 	"hotel-booking-api/model/query"
 	"math"
 	"strconv"
+	"strings"
 )
 
 func GetQueryDataModel(c echo.Context) query.DataQueryModel {
@@ -58,4 +60,17 @@ func GetNewId() (string, error) {
 		return "", err
 	}
 	return newId.String(), nil
+}
+
+func DecodeJSONArray(value string) []string {
+	var listStringDecode []string
+	logger.Info(value)
+	value = strings.Replace(value, "\"", "`", -1)
+	value = strings.Replace(value, "'", "\"", -1)
+	err := json.Unmarshal([]byte(value), &listStringDecode)
+	if err != nil {
+		logger.Error("Error decode json array data", zap.Error(err))
+		return []string{}
+	}
+	return listStringDecode
 }

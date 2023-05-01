@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type RoomType struct {
 	ID           string    `json:"id" gorm:"primary_key"`
@@ -67,11 +69,13 @@ type RoomNights struct {
 	Remain         int       `json:"remain" gorm:"remain"`
 	CreatedAt      time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at" gorm:"updated_at"`
+	DeletedAt      time.Time `json:"deleted_at" gorm:"updated_at"`
 	RoomTypeId     string    `json:"room_type_id"`
-	RoomType       RoomType  `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomType       *RoomType `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type LockRoom struct {
+	ID         string    `json:"id" gorm:"primary_key"`
 	RoomTypeID string    `json:"room_type_id"`
 	RoomType   RoomType  `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserId     string    `json:"user_id"`

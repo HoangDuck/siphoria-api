@@ -139,7 +139,6 @@ type RequestCreateRoomType struct {
 	Photos         string `json:"photos"`
 	Bay            bool   `json:"bay"`
 	Ocean          bool   `json:"ocean"`
-	Sea            bool   `json:"sea"`
 	City           bool   `json:"city"`
 	Garden         bool   `json:"garden"`
 	Lake           bool   `json:"lake"`
@@ -148,6 +147,7 @@ type RequestCreateRoomType struct {
 	PrivateBalcony bool   `json:"private_balcony"`
 	AirConditional bool   `json:"air_conditional"`
 	Tivi           bool   `json:"tivi"`
+	Heater         bool   `json:"heater"`
 	Kitchen        bool   `json:"kitchen"`
 	PrivatePool    bool   `json:"private_pool"`
 	Iron           bool   `json:"iron"`
@@ -164,4 +164,10 @@ type RequestCreateRoomType struct {
 	Wine           bool   `json:"wine"`
 	Fryer          bool   `json:"fryer"`
 	KitchenTool    bool   `json:"kitchen_tool"`
+}
+
+type RequestUpdateRoomNight struct {
+	RoomTypeID   string `json:"room_type_id"`
+	SelectedDate string `json:"selected_date"`
+	Quantity     int    `json:"quantity"`
 }
