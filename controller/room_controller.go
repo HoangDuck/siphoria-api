@@ -10,6 +10,7 @@ import (
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/utils"
+	"io"
 	_ "math/rand"
 )
 
@@ -78,6 +79,36 @@ func (roomReceiver *RoomController) HandleUpdateRoomNight(c echo.Context) error 
 		return response.InternalServerError(c, err.Error(), nil)
 	}
 	return response.Ok(c, "Cập nhật room nights thành công", result)
+}
+
+// HandleUpdateRatePackages godoc
+// @Summary Update ratepackages
+// @Tags room-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestUpdateRatePackage true "room"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /rooms/ratepackages [post]
+func (roomReceiver *RoomController) HandleUpdateRatePackages(c echo.Context) error {
+	reqUpdateRatePackages := req.RequestUpdateRatePackage{}
+	body, err := io.ReadAll(c.Request().Body)
+	if err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	reqUpdateRatePackages, err = req.UnmarshalRequestUpdateRatePackage(body)
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String()) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	result, err := roomReceiver.RoomRepo.UpdateRatePackages(reqUpdateRatePackages)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Cập nhật rate packages thành công", result)
 }
 
 //// HandleSaveRoomBusyStatusCategory godoc

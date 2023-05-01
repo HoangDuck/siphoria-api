@@ -1,5 +1,14 @@
 basePath: /api
 definitions:
+  req.RatePackageItem:
+    properties:
+      date:
+        type: string
+      price:
+        type: number
+      ratePlan:
+        type: string
+    type: object
   req.RequestAddRatePlan:
     properties:
       activated:
@@ -260,6 +269,13 @@ definitions:
         type: string
       phone:
         type: string
+    type: object
+  req.RequestUpdateRatePackage:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/req.RatePackageItem'
+        type: array
     type: object
   req.RequestUpdateRatePlan:
     properties:
@@ -1044,6 +1060,35 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Save room type
+      tags:
+      - room-service
+  /rooms/ratepackages:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: room
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateRatePackage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update ratepackages
       tags:
       - room-service
   /rooms/roomnights:

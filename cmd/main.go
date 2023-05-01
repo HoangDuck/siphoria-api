@@ -103,6 +103,10 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	roomController := controller.RoomController{
 		RoomRepo: repo_impl.NewRoomRepo(sql),
 	}
+
+	ratePlanController := controller.RatePlanController{
+		RatePlanRepo: repo_impl.NewRatePlanRepo(sql),
+	}
 	//init routers
 	api = &router.API{
 		Echo:                   echoInstance,
@@ -115,6 +119,7 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		NotificationService:    pushNotificationService,
 		NotificationController: notificationController,
 		RoomController:         roomController,
+		RatePlanController:     ratePlanController,
 	}
 	api.SetupRouter()
 }

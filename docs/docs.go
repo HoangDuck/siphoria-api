@@ -1175,6 +1175,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/rooms/ratepackages": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "room-service"
+                ],
+                "summary": "Update ratepackages",
+                "parameters": [
+                    {
+                        "description": "room",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestUpdateRatePackage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms/roomnights": {
             "post": {
                 "consumes": [
@@ -1538,6 +1583,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "req.RatePackageItem": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "ratePlan": {
+                    "type": "string"
+                }
+            }
+        },
         "req.RequestAddRatePlan": {
             "type": "object",
             "properties": {
@@ -1929,6 +1988,17 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "req.RequestUpdateRatePackage": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/req.RatePackageItem"
+                    }
                 }
             }
         },

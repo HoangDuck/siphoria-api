@@ -14,6 +14,38 @@ type RoomRepoImpl struct {
 	sql *db.Sql
 }
 
+func (roomReceiver *RoomRepoImpl) UpdateRatePackages(requestAddRatePackages req.RequestUpdateRatePackage) ([]model.RatePackage, error) {
+	var listRatePackages []model.RatePackage
+	listRatePackages = []model.RatePackage{}
+	for _, dataRatePackageItem := range requestAddRatePackages.Data {
+		ratePackageId, err := utils.GetNewId()
+		date, err := time.Parse("2006-01-02", dataRatePackageItem.Date)
+		if err != nil {
+			continue
+		}
+		listRatePackages = append(listRatePackages, model.RatePackage{
+			ID:             ratePackageId,
+			AvailabilityAt: date,
+			Price:          dataRatePackageItem.Price,
+			RatePlanId:     dataRatePackageItem.RatePlan,
+			Currency:       "VND",
+			CreatedAt:      time.Now(),
+			UpdatedAt:      time.Now(),
+		})
+	}
+	if len(listRatePackages) == 0 {
+		return listRatePackages, nil
+	}
+	err := roomReceiver.sql.Db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "rate_plan_id"}, {Name: "availability_at"}},
+		DoUpdates: clause.AssignmentColumns([]string{"price", "updated_at"}),
+	}).Create(&listRatePackages).Error
+	if err != nil {
+		return listRatePackages, err
+	}
+	return listRatePackages, nil
+}
+
 func (roomReceiver *RoomRepoImpl) UpdateRoomNight(requestUpdateRoomNight req.RequestUpdateRoomNight) ([]model.RoomNights, error) {
 	listDayAvailable := utils.DecodeJSONArray(requestUpdateRoomNight.SelectedDate)
 	var listRoomNights []model.RoomNights

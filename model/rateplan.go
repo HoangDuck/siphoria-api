@@ -14,7 +14,7 @@ type RatePlan struct {
 	FreeLunch     bool      `json:"free_lunch" gorm:"free_lunch"`
 	FreeDinner    bool      `json:"free_dinner" gorm:"free_dinner"`
 	RoomTypeId    string    `json:"room_type_id"`
-	RoomType      RoomType  `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomType      *RoomType `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type RatePackage struct {
@@ -25,5 +25,5 @@ type RatePackage struct {
 	CreatedAt      time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at" gorm:"updated_at"`
 	RatePlanId     string    `json:"rate_plan_id"`
-	RatePlan       RatePlan  `json:"rate_plan" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RatePlan       *RatePlan `json:"rate_plan,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
