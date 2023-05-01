@@ -6,10 +6,14 @@ const (
 	CUSTOMER Role = iota
 	STAFF
 	ADMIN
+	MANAGER
+	HOTELIER
+	ACCOUNTANT
+	SUPERADMIN
 )
 
 func (r Role) String() string {
-	return []string{"CUSTOMER", "STAFF", "ADMIN"}[r]
+	return []string{"1", "4", "51", "5", "2", "3", "66"}[r]
 }
 
 type RoleModel struct {
