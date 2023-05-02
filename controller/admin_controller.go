@@ -122,12 +122,12 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 // @Produce  json
 // @Success 200 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /admin/account-statuses [get]
+// @Router /admin/accounts?s= [get]
 func (adminController *AdminController) HandleGetAccountByAdmin(c echo.Context) error {
 	var listUser []model.User
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
+	if !(claims.Role == model.ADMIN.String() || claims.Role == model.SUPERADMIN.String()) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	listUser, err := adminController.AdminRepo.GetAccountFilter()
