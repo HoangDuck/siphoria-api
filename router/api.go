@@ -28,7 +28,7 @@ func (api *API) SetupRouter() {
 
 	request := api.Echo.Group("/api")
 
-	request.Group("/map").GET("/test", controller.GetEmbeddedMap)
+	request.Group("/map").GET("/test/:id", controller.GetEmbeddedMap)
 
 	auth := request.Group("/auth")
 	authLogin := auth.Group("/login")

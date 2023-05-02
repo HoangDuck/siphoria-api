@@ -10,6 +10,7 @@ type Notification struct {
 	Title     string    `json:"title"`
 	Body      string    `json:"body"`
 	Data      string    `json:"data"`
+	Seen      bool      `json:"seen"`
 	CreatedAt time.Time `json:"created_at" gorm:"created_at"`
 	TimeSent  time.Time `json:"time_sent" gorm:"xtime_sent"`
 }
