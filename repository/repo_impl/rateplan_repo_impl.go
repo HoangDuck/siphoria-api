@@ -47,13 +47,13 @@ func (ratePlanReceiver *RatePlanRepoImpl) GetRatePlanInfo(ratePlan model.RatePla
 
 func (ratePlanReceiver *RatePlanRepoImpl) UpdateRatePlanInfo(ratePlan model.RatePlan) (model.RatePlan, error) {
 	var ratePlanResult = model.RatePlan{}
-	err := ratePlanReceiver.sql.Db.Model(&ratePlanResult).Where("id=?", ratePlan.ID).Preload("RoomType").Updates(ratePlan)
+	err := ratePlanReceiver.sql.Db.Model(&ratePlanResult).Updates(ratePlan)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return ratePlanResult, err.Error
 		}
 
-		return ratePlanResult, custom_error.RoomNotUpdated
+		return ratePlanResult, custom_error.RateplanNotUpdated
 	}
 	return ratePlanResult, nil
 }

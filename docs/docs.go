@@ -652,6 +652,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/hotel/:id": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "update hotel info",
+                "parameters": [
+                    {
+                        "description": "hotel",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestUpdateHotel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/hotels": {
             "post": {
                 "consumes": [
@@ -916,51 +961,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/ratePlan/delete-rateplan": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "rateplan-service"
-                ],
-                "summary": "Delete rateplan",
-                "parameters": [
-                    {
-                        "description": "rateplan",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.RequestDeleteRatePlan"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/ratePlan/rateplan-info": {
             "post": {
                 "consumes": [
@@ -1040,51 +1040,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/ratePlan/update-rateplan": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "rateplan-service"
-                ],
-                "summary": "Update rateplan",
-                "parameters": [
-                    {
-                        "description": "rateplan",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.RequestUpdateRatePlan"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/rateplans": {
             "post": {
                 "consumes": [
@@ -1130,6 +1085,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/rateplans/:rate_plan_id": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rateplan-service"
+                ],
+                "summary": "Update rateplan",
+                "parameters": [
+                    {
+                        "description": "rateplan",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestUpdateRatePlan"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms": {
             "post": {
                 "consumes": [
@@ -1150,6 +1150,51 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/req.RequestCreateRoomType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/:id": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "room-service"
+                ],
+                "summary": "update room type",
+                "parameters": [
+                    {
+                        "description": "RoomType",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestUpdateRoomType"
                         }
                     }
                 ],
@@ -1862,14 +1907,6 @@ const docTemplate = `{
                 }
             }
         },
-        "req.RequestDeleteRatePlan": {
-            "type": "object",
-            "properties": {
-                "rate_plan_id": {
-                    "type": "string"
-                }
-            }
-        },
         "req.RequestGetRatePlan": {
             "type": "object",
             "properties": {
@@ -1962,6 +1999,95 @@ const docTemplate = `{
                 }
             }
         },
+        "req.RequestUpdateHotel": {
+            "type": "object",
+            "properties": {
+                "activate": {
+                    "type": "boolean"
+                },
+                "apartment": {
+                    "type": "boolean"
+                },
+                "bankAccount": {
+                    "type": "string"
+                },
+                "bankBeneficiary": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                },
+                "bar": {
+                    "type": "boolean"
+                },
+                "bath": {
+                    "type": "boolean"
+                },
+                "beach": {
+                    "type": "boolean"
+                },
+                "breakfast": {
+                    "type": "boolean"
+                },
+                "camping": {
+                    "type": "boolean"
+                },
+                "casio": {
+                    "type": "boolean"
+                },
+                "district": {
+                    "type": "integer"
+                },
+                "fitness": {
+                    "type": "boolean"
+                },
+                "homestay": {
+                    "type": "boolean"
+                },
+                "hotel": {
+                    "type": "boolean"
+                },
+                "motel": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "no_smoking_room": {
+                    "type": "boolean"
+                },
+                "overview": {
+                    "type": "string"
+                },
+                "parking": {
+                    "type": "boolean"
+                },
+                "pool": {
+                    "type": "boolean"
+                },
+                "province": {
+                    "type": "integer"
+                },
+                "raw_address": {
+                    "type": "string"
+                },
+                "resort": {
+                    "type": "boolean"
+                },
+                "spa": {
+                    "type": "boolean"
+                },
+                "villa": {
+                    "type": "boolean"
+                },
+                "ward": {
+                    "type": "integer"
+                },
+                "wifi": {
+                    "type": "boolean"
+                }
+            }
+        },
         "req.RequestUpdatePassword": {
             "type": "object",
             "required": [
@@ -2005,16 +2131,28 @@ const docTemplate = `{
         "req.RequestUpdateRatePlan": {
             "type": "object",
             "properties": {
-                "description": {
+                "activated": {
+                    "type": "boolean"
+                },
+                "free_breakfast": {
+                    "type": "boolean"
+                },
+                "free_dinner": {
+                    "type": "boolean"
+                },
+                "free_lunch": {
+                    "type": "boolean"
+                },
+                "is_delete": {
+                    "type": "boolean"
+                },
+                "name": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "number"
+                "status": {
+                    "type": "integer"
                 },
-                "rate_plan_id": {
-                    "type": "string"
-                },
-                "room_type_id": {
+                "type": {
                     "type": "string"
                 }
             }
@@ -2030,6 +2168,119 @@ const docTemplate = `{
                 },
                 "selected_date": {
                     "type": "string"
+                }
+            }
+        },
+        "req.RequestUpdateRoomType": {
+            "type": "object",
+            "properties": {
+                "activated": {
+                    "type": "boolean"
+                },
+                "air_conditional": {
+                    "type": "boolean"
+                },
+                "bathroom_nums": {
+                    "type": "integer"
+                },
+                "bay": {
+                    "type": "boolean"
+                },
+                "bbq": {
+                    "type": "boolean"
+                },
+                "bed_nums": {
+                    "type": "integer"
+                },
+                "city": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "desk": {
+                    "type": "boolean"
+                },
+                "fryer": {
+                    "type": "boolean"
+                },
+                "fuirt": {
+                    "type": "boolean"
+                },
+                "garden": {
+                    "type": "boolean"
+                },
+                "hairdry": {
+                    "type": "boolean"
+                },
+                "heater": {
+                    "type": "boolean"
+                },
+                "iron": {
+                    "type": "boolean"
+                },
+                "is_delete": {
+                    "type": "boolean"
+                },
+                "kitchen": {
+                    "type": "boolean"
+                },
+                "kitchen_tool": {
+                    "type": "boolean"
+                },
+                "lake": {
+                    "type": "boolean"
+                },
+                "max_adult": {
+                    "type": "integer"
+                },
+                "max_children": {
+                    "type": "integer"
+                },
+                "mountain": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "ocean": {
+                    "type": "boolean"
+                },
+                "private_balcony": {
+                    "type": "boolean"
+                },
+                "private_pool": {
+                    "type": "boolean"
+                },
+                "river": {
+                    "type": "boolean"
+                },
+                "sea": {
+                    "type": "boolean"
+                },
+                "shower": {
+                    "type": "boolean"
+                },
+                "slippers": {
+                    "type": "boolean"
+                },
+                "sofa": {
+                    "type": "boolean"
+                },
+                "soundproof": {
+                    "type": "boolean"
+                },
+                "tivi": {
+                    "type": "boolean"
+                },
+                "toiletries": {
+                    "type": "boolean"
+                },
+                "towels": {
+                    "type": "boolean"
+                },
+                "wine": {
+                    "type": "boolean"
                 }
             }
         },

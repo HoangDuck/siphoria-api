@@ -1,131 +1,5 @@
 package req
 
-import "time"
-
-type RequestGetRoomTypeInfo struct {
-	TypeRoomCode string `json:"type_room_code"`
-}
-
-type RequestGetListRoomType struct {
-}
-
-type RequestGetRoomList struct {
-}
-
-type RequestGetRoomListFilterSearch struct {
-	RoomTypeCode   string `json:"room_type_code"`
-	NumberAdult    int    `json:"number_adult"`
-	NumberChildren int    `json:"number_children"`
-	NumberBed      int    `json:"bed_number"`
-	NumberToilet   int    `json:"number_toilet"`
-}
-
-type RequestGetRoomListAvailable struct {
-	TimeStart      string `json:"time_start"`
-	TimeEnd        string `json:"time_end"`
-	RoomTypeCode   string `json:"room_type_code"`
-	NumberAdult    int    `json:"number_adult"`
-	NumberChildren int    `json:"number_children"`
-	NumberBed      int    `json:"bed_number"`
-	NumberToilet   int    `json:"number_toilet"`
-}
-
-type RequestSearchGetRoomListAvailable struct {
-	TimeStart      string `json:"time_start"`
-	TimeEnd        string `json:"time_end"`
-	NumberAdult    int    `json:"number_adult"`
-	NumberChildren int    `json:"number_children"`
-	NumberBed      int    `json:"bed_number"`
-	NumberToilet   int    `json:"number_toilet"`
-}
-
-type RequestCheckRoomAvailable struct {
-	TypeRoomCode string `json:"room_code"`
-	TimeStart    string `json:"time_start"`
-	TimeEnd      string `json:"time_end"`
-}
-
-type RequestUpdateRoomInfo struct {
-	RoomCode     string `json:"room_code"`
-	TypeRoomCode string `json:"type_room_code"`
-}
-
-type RequestGetRoomInfoByID struct {
-	RoomCode string `json:"room_code"`
-}
-
-type RequestDeleteRoom struct {
-	RoomCode string `json:"room_code"`
-}
-
-type RequestAddRoom struct {
-	TypeRoomCode string `json:"type_room_code"`
-	Floor        int    `json:"floor"`
-}
-
-type RequestAddRoomBusyStatusCategory struct {
-	StatusCode  string `json:"status_code"`
-	StatusName  string `json:"status_name"`
-	Description string `json:"description"`
-}
-
-type RequestSearchRoomListByCapacityAndTimeCheck struct {
-	TimeStart      string `json:"time_start"`
-	TimeEnd        string `json:"time_end"`
-	NumberAdult    int    `json:"number_adult"`
-	NumberChildren int    `json:"number_children"`
-}
-
-type RequestSearchRoomAvailable struct {
-	TimeStart      string `json:"time_start"`
-	TimeEnd        string `json:"time_end"`
-	NumberAdult    int    `json:"number_adult"`
-	NumberChildren int    `json:"number_children"`
-	NumberRoom     int    `json:"number_room"`
-}
-
-type RequestSearchRoomAvailableAtReception struct {
-	TimeStart    string `json:"time_start"`
-	TimeEnd      string `json:"time_end"`
-	RoomTypeCode string `json:"room_type_code"`
-}
-
-type RequestAddRoomBusyStatusDetail struct {
-	RoomID    string `json:"room_id"`
-	StatusID  string `json:"status_id"`
-	BookingID string `json:"booking_id"`
-	FromTime  string `json:"from_time"`
-	ToTime    string `json:"to_time"`
-}
-
-type RequestUpdateRoomBusyStatusDetail struct {
-	ID       string    `json:"-"`
-	RoomID   string    `json:"room_id"`
-	StatusID string    `json:"status_id"`
-	FromTime time.Time `json:"from_time"`
-	ToTime   time.Time `json:"to_time"`
-}
-
-type RequestCheckOutBooking struct {
-	//RoomStatusDetailID string `json:"room_status_detail_id"`
-	RoomID    string `json:"room_id"`
-	BookingID string `json:"booking_id"`
-	FromTime  string `json:"from_time"`
-	ToTime    string `json:"to_time"`
-}
-
-type RequestGetRoomStatusInfo struct {
-	BookingID string `json:"booking_id"`
-}
-
-type RequestGetRoomRatePlan struct {
-	RoomTypeCode string `json:"room_type_code"`
-}
-
-type RequestGetRoomAvailable struct {
-	RoomTypeID string `json:"room_type_id"`
-}
-
 type RequestCreateRoomType struct {
 	ID             string
 	Name           string `json:"name"`
@@ -170,4 +44,43 @@ type RequestUpdateRoomNight struct {
 	RoomTypeID   string `json:"room_type_id"`
 	SelectedDate string `json:"selected_date"`
 	Quantity     int    `json:"quantity"`
+}
+
+type RequestUpdateRoomType struct {
+	Name           string `json:"name,omitempty"`
+	Description    string `json:"description,omitempty"`
+	BedNums        int    `json:"bed_nums,omitempty"`
+	BathroomNums   int    `json:"bathroom_nums,omitempty"`
+	Activated      bool   `json:"activated,omitempty"`
+	MaxChildren    int    `json:"max_children,omitempty"`
+	MaxAdult       int    `json:"max_adult,omitempty"`
+	Ocean          bool   `json:"ocean,omitempty"`
+	Sea            bool   `json:"sea,omitempty"`
+	Bay            bool   `json:"bay,omitempty"`
+	City           bool   `json:"city,omitempty"`
+	Garden         bool   `json:"garden,omitempty"`
+	Lake           bool   `json:"lake,omitempty"`
+	Mountain       bool   `json:"mountain,omitempty"`
+	River          bool   `json:"river,omitempty"`
+	PrivateBalcony bool   `json:"private_balcony,omitempty"`
+	AirConditional bool   `json:"air_conditional,omitempty"`
+	Tivi           bool   `json:"tivi,omitempty"`
+	Kitchen        bool   `json:"kitchen,omitempty"`
+	PrivatePool    bool   `json:"private_pool,omitempty"`
+	Heater         bool   `json:"heater,omitempty"`
+	Iron           bool   `json:"iron,omitempty"`
+	Sofa           bool   `json:"sofa,omitempty"`
+	Desk           bool   `json:"desk,omitempty"`
+	Soundproof     bool   `json:"soundproof,omitempty"`
+	Towels         bool   `json:"towels,omitempty"`
+	Toiletries     bool   `json:"toiletries,omitempty"`
+	Shower         bool   `json:"shower,omitempty"`
+	Slippers       bool   `json:"slippers,omitempty"`
+	Hairdry        bool   `json:"hairdry,omitempty"`
+	Fuirt          bool   `json:"fuirt,omitempty"`
+	Bbq            bool   `json:"bbq,omitempty"`
+	Wine           bool   `json:"wine,omitempty"`
+	Fryer          bool   `json:"fryer,omitempty"`
+	KitchenTool    bool   `json:"kitchen_tool,omitempty"`
+	IsDelete       bool   `json:"is_delete,omitempty"`
 }

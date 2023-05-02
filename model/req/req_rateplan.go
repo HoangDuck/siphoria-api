@@ -7,11 +7,16 @@ type RequestGetRatePlan struct {
 }
 
 type RequestUpdateRatePlan struct {
-	RatePlanID  string  `json:"rate_plan_id"`
-	RoomTypeID  string  `json:"room_type_id"`
-	Description string  `json:"description"`
-	Price       float32 `json:"price"`
+	Name          string `json:"name,omitempty"`
+	Type          string `json:"type,omitempty"`
+	Status        int    `json:"status,omitempty"`
+	Activated     bool   `json:"activated,omitempty"`
+	FreeBreakfast bool   `json:"free_breakfast,omitempty"`
+	FreeLunch     bool   `json:"free_lunch,omitempty"`
+	FreeDinner    bool   `json:"free_dinner,omitempty"`
+	IsDelete      bool   `json:"is_delete,omitempty"`
 }
+
 type RequestDeleteRatePlan struct {
 	RatePlanID string `json:"rate_plan_id"`
 }

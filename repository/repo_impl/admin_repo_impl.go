@@ -54,7 +54,7 @@ func (u *AdminRepoImpl) CheckEmail(email string) (model.User, error) {
 
 func (u *AdminRepoImpl) UpdateAccount(staffAccount model.User) (model.User, error) {
 	var staffAccountResult = model.User{}
-	err := u.sql.Db.Model(&staffAccountResult).Where("id=?", staffAccount.ID).Updates(staffAccount)
+	err := u.sql.Db.Model(&staffAccountResult).Updates(staffAccount)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return staffAccountResult, err.Error

@@ -98,7 +98,7 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
+	if !(claims.Role == model.ADMIN.String() || claims.Role == model.HOTELIER.String() || claims.Role == model.SUPERADMIN.String()) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	account := model.User{

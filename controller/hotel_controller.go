@@ -224,3 +224,31 @@ func (hotelReceiver *HotelController) HandleSendRequestPaymentHotel(c echo.Conte
 	}
 	return response.Ok(c, "Tạo yêu cầu thanh toán thành công", payoutRequestResult)
 }
+
+// HandleUpdateHotel godoc
+// @Summary update hotel info
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestUpdateHotel true "hotel"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /hotel/:id [patch]
+func (hotelReceiver *HotelController) HandleUpdateHotel(c echo.Context) error {
+	reqUpdateHotel := req.RequestUpdateHotel{}
+	if err := c.Bind(&reqUpdateHotel); err != nil {
+		return response.BadRequest(c, "Yêu cầu không hợp lệ", nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.ADMIN.String() || claims.Role == model.HOTELIER.String() || claims.Role == model.SUPERADMIN.String()) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+
+	hotel, err := hotelReceiver.HotelRepo.UpdateHotel(reqUpdateHotel, c.Param("id"))
+	if err != nil {
+		return response.UnprocessableEntity(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Cập nhật thông tin khách sạn thành công", hotel)
+}

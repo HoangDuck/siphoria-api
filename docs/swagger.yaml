@@ -185,11 +185,6 @@ definitions:
       wine:
         type: boolean
     type: object
-  req.RequestDeleteRatePlan:
-    properties:
-      rate_plan_id:
-        type: string
-    type: object
   req.RequestGetRatePlan:
     properties:
       rate_plan_id:
@@ -251,6 +246,65 @@ definitions:
       status:
         type: integer
     type: object
+  req.RequestUpdateHotel:
+    properties:
+      activate:
+        type: boolean
+      apartment:
+        type: boolean
+      bankAccount:
+        type: string
+      bankBeneficiary:
+        type: string
+      bankName:
+        type: string
+      bar:
+        type: boolean
+      bath:
+        type: boolean
+      beach:
+        type: boolean
+      breakfast:
+        type: boolean
+      camping:
+        type: boolean
+      casio:
+        type: boolean
+      district:
+        type: integer
+      fitness:
+        type: boolean
+      homestay:
+        type: boolean
+      hotel:
+        type: boolean
+      motel:
+        type: boolean
+      name:
+        type: string
+      no_smoking_room:
+        type: boolean
+      overview:
+        type: string
+      parking:
+        type: boolean
+      pool:
+        type: boolean
+      province:
+        type: integer
+      raw_address:
+        type: string
+      resort:
+        type: boolean
+      spa:
+        type: boolean
+      villa:
+        type: boolean
+      ward:
+        type: integer
+      wifi:
+        type: boolean
+    type: object
   req.RequestUpdatePassword:
     properties:
       new_password:
@@ -279,13 +333,21 @@ definitions:
     type: object
   req.RequestUpdateRatePlan:
     properties:
-      description:
+      activated:
+        type: boolean
+      free_breakfast:
+        type: boolean
+      free_dinner:
+        type: boolean
+      free_lunch:
+        type: boolean
+      is_delete:
+        type: boolean
+      name:
         type: string
-      price:
-        type: number
-      rate_plan_id:
-        type: string
-      room_type_id:
+      status:
+        type: integer
+      type:
         type: string
     type: object
   req.RequestUpdateRoomNight:
@@ -296,6 +358,81 @@ definitions:
         type: string
       selected_date:
         type: string
+    type: object
+  req.RequestUpdateRoomType:
+    properties:
+      activated:
+        type: boolean
+      air_conditional:
+        type: boolean
+      bathroom_nums:
+        type: integer
+      bay:
+        type: boolean
+      bbq:
+        type: boolean
+      bed_nums:
+        type: integer
+      city:
+        type: boolean
+      description:
+        type: string
+      desk:
+        type: boolean
+      fryer:
+        type: boolean
+      fuirt:
+        type: boolean
+      garden:
+        type: boolean
+      hairdry:
+        type: boolean
+      heater:
+        type: boolean
+      iron:
+        type: boolean
+      is_delete:
+        type: boolean
+      kitchen:
+        type: boolean
+      kitchen_tool:
+        type: boolean
+      lake:
+        type: boolean
+      max_adult:
+        type: integer
+      max_children:
+        type: integer
+      mountain:
+        type: boolean
+      name:
+        type: string
+      ocean:
+        type: boolean
+      private_balcony:
+        type: boolean
+      private_pool:
+        type: boolean
+      river:
+        type: boolean
+      sea:
+        type: boolean
+      shower:
+        type: boolean
+      slippers:
+        type: boolean
+      sofa:
+        type: boolean
+      soundproof:
+        type: boolean
+      tivi:
+        type: boolean
+      toiletries:
+        type: boolean
+      towels:
+        type: boolean
+      wine:
+        type: boolean
     type: object
   res.Response:
     properties:
@@ -724,6 +861,35 @@ paths:
       summary: Handle Activate Account
       tags:
       - auth-service
+  /hotel/:id:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: hotel
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateHotel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: update hotel info
+      tags:
+      - hotel-service
   /hotels:
     post:
       consumes:
@@ -895,35 +1061,6 @@ paths:
       summary: Search Hotel
       tags:
       - hotel-service
-  /ratePlan/delete-rateplan:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: rateplan
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/req.RequestDeleteRatePlan'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/res.Response'
-      summary: Delete rateplan
-      tags:
-      - rateplan-service
   /ratePlan/rateplan-info:
     post:
       consumes:
@@ -975,35 +1112,6 @@ paths:
       summary: Get rateplan list
       tags:
       - rateplan-service
-  /ratePlan/update-rateplan:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: rateplan
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/req.RequestUpdateRatePlan'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/res.Response'
-      summary: Update rateplan
-      tags:
-      - rateplan-service
   /rateplans:
     post:
       consumes:
@@ -1033,6 +1141,35 @@ paths:
       summary: Save rateplan
       tags:
       - rateplan-service
+  /rateplans/:rate_plan_id:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: rateplan
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateRatePlan'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update rateplan
+      tags:
+      - rateplan-service
   /rooms:
     post:
       consumes:
@@ -1060,6 +1197,35 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Save room type
+      tags:
+      - room-service
+  /rooms/:id:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: RoomType
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateRoomType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: update room type
       tags:
       - room-service
   /rooms/ratepackages:

@@ -66,6 +66,7 @@ func (api *API) SetupRouter() {
 	hotel.POST("/", api.HotelController.HandleCreateHotel, middleware.JWTMiddleWare())
 	hotel.POST("/search", api.HotelController.HandleSearchHotel)
 	hotel.GET("/:id", api.HotelController.HandleGetHotelById)
+	hotel.PATCH("/:id", api.HotelController.HandleUpdateHotel, middleware.JWTMiddleWare())
 	hotel.POST("/:id/photos", api.HotelController.HandleUpdateHotelPhoto, middleware.JWTMiddleWare())
 	hotel.PATCH("/:id/business-license", api.HotelController.HandleUpdateHotelBusinessLicense, middleware.JWTMiddleWare())
 	hotel.DELETE("/:id/photos", api.HotelController.HandleDeleteHotelBusinessLicense, middleware.JWTMiddleWare())
@@ -78,14 +79,12 @@ func (api *API) SetupRouter() {
 	room.POST("/", api.RoomController.HandleSaveRoomType, middleware.JWTMiddleWare())
 	room.POST("/roomnights", api.RoomController.HandleUpdateRoomNight, middleware.JWTMiddleWare())
 	room.POST("/ratepackages", api.RoomController.HandleUpdateRatePackages, middleware.JWTMiddleWare())
-	//room.PATCH("/:hotel_id")
+	room.PATCH("/:id", api.RoomController.HandleUpdateRoomType, middleware.JWTMiddleWare())
 
 	ratePlan := request.Group("/rateplans")
 	ratePlan.POST("/", api.RatePlanController.HandleSaveRatePlan, middleware.JWTMiddleWare())
 	ratePlan.POST("/rateplan-info", api.RatePlanController.HandleGetRatePlanInfo)
-	ratePlan.POST("/update-rateplan", api.RatePlanController.HandleUpdateRatePlan, middleware.JWTMiddleWare())
-	ratePlan.POST("/delete-rateplan", api.RatePlanController.HandleDeleteRatePlan, middleware.JWTMiddleWare())
-	ratePlan.POST("/save-rateplan", api.RatePlanController.HandleSaveRatePlan, middleware.JWTMiddleWare())
+	ratePlan.POST("/:rate_plan_id", api.RatePlanController.HandleUpdateRatePlan, middleware.JWTMiddleWare())
 
 	booking := request.Group("/booking")
 	booking.GET("/welcome-booking", func(context echo.Context) error {

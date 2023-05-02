@@ -86,7 +86,7 @@ func (u *UserRepoImpl) UpdateRankCustomer(userRank model.UserRank) (model.UserRa
 }
 
 func (u *UserRepoImpl) UpdateProfileCustomer(user model.User) (model.User, error) {
-	err := u.sql.Db.Model(&user).Where("id=?", user.ID).Updates(user)
+	err := u.sql.Db.Model(&user).Updates(user)
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {

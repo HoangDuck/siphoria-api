@@ -85,7 +85,7 @@ func (ratePlanController *RatePlanController) HandleGetRatePlanInfo(c echo.Conte
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /ratePlan/update-rateplan [post]
+// @Router /rateplans/:rate_plan_id [patch]
 func (ratePlanController *RatePlanController) HandleUpdateRatePlan(c echo.Context) error {
 	reqUpdateRatePlan := req.RequestUpdateRatePlan{}
 	if err := c.Bind(&reqUpdateRatePlan); err != nil {
@@ -97,63 +97,25 @@ func (ratePlanController *RatePlanController) HandleUpdateRatePlan(c echo.Contex
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.STAFF.String() || claims.Role == model.ADMIN.String()) {
+	if !(claims.Role == model.ADMIN.String() || claims.Role == model.HOTELIER.String() || claims.Role == model.SUPERADMIN.String() || claims.Role == model.MANAGER.String()) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	ratePlanModel := model.RatePlan{
-		ID: reqUpdateRatePlan.RatePlanID,
-		//RoomTypeID:  reqUpdateRatePlan.RoomTypeID,
-		//Description: reqUpdateRatePlan.Description,
-		//Price:       reqUpdateRatePlan.Price,
+		ID:            c.Param("rate_plan_id"),
+		Name:          reqUpdateRatePlan.Name,
+		TypeRatePlan:  reqUpdateRatePlan.Type,
+		Status:        reqUpdateRatePlan.Status,
+		Activate:      reqUpdateRatePlan.Activated,
+		FreeBreakfast: reqUpdateRatePlan.FreeBreakfast,
+		FreeLunch:     reqUpdateRatePlan.FreeLunch,
+		FreeDinner:    reqUpdateRatePlan.FreeDinner,
+		IsDeleted:     reqUpdateRatePlan.IsDelete,
 	}
 	ratePlan, err := ratePlanController.RatePlanRepo.UpdateRatePlanInfo(ratePlanModel)
 	if err != nil {
-		return response.UnprocessableEntity(c, err.Error(), nil)
-	}
-	return c.JSON(http.StatusOK, res.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Cập nhật thành công",
-		Data:       ratePlan,
-	})
-}
-
-// HandleDeleteRatePlan godoc
-// @Summary Delete rateplan
-// @Tags rateplan-service
-// @Accept  json
-// @Produce  json
-// @Param data body req.RequestDeleteRatePlan true "rateplan"
-// @Success 200 {object} res.Response
-// @Failure 400 {object} res.Response
-// @Failure 500 {object} res.Response
-// @Router /ratePlan/delete-rateplan [post]
-func (ratePlanController *RatePlanController) HandleDeleteRatePlan(c echo.Context) error {
-	reqDeleteRatePlan := req.RequestDeleteRatePlan{}
-	//binding
-	if err := c.Bind(&reqDeleteRatePlan); err != nil {
-		logger.Error("Error binding data", zap.Error(err))
-		return response.BadRequest(c, err.Error(), nil)
-	}
-	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.STAFF.String() || claims.Role == model.ADMIN.String()) {
-		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-	}
-	condition := map[string]interface{}{
-		"ID": reqDeleteRatePlan.RatePlanID,
-	}
-	result, err := ratePlanController.RatePlanRepo.DeleteRatePlanInfo(condition)
-	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
-	if result != true {
-		return response.InternalServerError(c, err.Error(), nil)
-	}
-	return c.JSON(http.StatusOK, res.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Xóa gói ưu đãi, tiện ích thành công",
-		Data:       nil,
-	})
+	return response.Ok(c, "Cập nhật thành công", ratePlan)
 }
 
 // HandleSaveRatePlan godoc

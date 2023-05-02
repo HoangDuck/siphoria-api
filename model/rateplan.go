@@ -15,6 +15,7 @@ type RatePlan struct {
 	FreeDinner    bool      `json:"free_dinner" gorm:"free_dinner"`
 	RoomTypeId    string    `json:"room_type_id"`
 	RoomType      *RoomType `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	IsDeleted     bool      `json:"-" gorm:"is_deleted"`
 }
 
 type RatePackage struct {
