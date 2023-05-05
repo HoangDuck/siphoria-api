@@ -20,6 +20,13 @@ func (u *AdminRepoImpl) ApprovePayoutRequestHotel(hotelPayoutRequest model.Payou
 func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
 	//TODO implement me
 	panic("implement me")
+	//err := u.sql.Db.Where("role = ?", "admin")
+	//err = err.Or("role = ?", "super_admin")
+	//err = err.Find(&users)
+	//if err != nil {
+	//	return hotel, err.Error
+	//}
+	//return hotel, err.Error
 }
 
 func (u *AdminRepoImpl) GetHotelFilter() ([]model.Hotel, error) {

@@ -117,7 +117,7 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 		Password:  hash,
 		FirstName: reqRegister.FirstName,
 		LastName:  reqRegister.LastName,
-		FullName:  reqRegister.FirstName + reqRegister.LastName,
+		FullName:  reqRegister.FirstName + " " + reqRegister.LastName,
 		Role:      model.CUSTOMER.String(),
 		Status:    1,
 	}

@@ -212,10 +212,6 @@ func (userReceiver *UserController) HandleUpdateProfile(c echo.Context) error {
 func (userReceiver *UserController) HandleGetCustomerProfileInfo(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.CUSTOMER.String()) {
-		logger.Error("Error role access", zap.Error(nil))
-		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-	}
 	customer := model.User{
 		ID: claims.UserId,
 	}

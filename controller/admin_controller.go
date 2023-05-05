@@ -42,7 +42,7 @@ func (adminController *AdminController) HandleCreateAccount(c echo.Context) erro
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.SUPERADMIN.String()) {
+	if !(claims.Role == model.SUPERADMIN.String() || claims.Role == model.ADMIN.String()) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	//validate existed email
