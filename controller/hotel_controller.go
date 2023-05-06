@@ -66,7 +66,7 @@ func (hotelReceiver *HotelController) HandleCreateHotel(c echo.Context) error {
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN)) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
@@ -95,7 +95,7 @@ func (hotelReceiver *HotelController) HandleCreateHotel(c echo.Context) error {
 func (hotelReceiver *HotelController) HandleUpdateHotelPhoto(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN)) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
@@ -129,7 +129,7 @@ func (hotelReceiver *HotelController) HandleUpdateHotelPhoto(c echo.Context) err
 func (hotelReceiver *HotelController) HandleUpdateHotelBusinessLicense(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN)) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
@@ -163,7 +163,7 @@ func (hotelReceiver *HotelController) HandleUpdateHotelBusinessLicense(c echo.Co
 func (hotelReceiver *HotelController) HandleDeleteHotelBusinessLicense(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN)) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
@@ -203,7 +203,7 @@ func (hotelReceiver *HotelController) HandleSendRequestPaymentHotel(c echo.Conte
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN)) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}

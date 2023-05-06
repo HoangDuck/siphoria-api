@@ -371,7 +371,7 @@ func (authReceiver *AuthController) HandleChangePassword(c echo.Context) error {
 		return response.BadRequest(c, err.Error(), nil)
 	}
 	claims := security.GetClaimsJWT(c)
-	if !security.CheckRole(claims, model.CUSTOMER) {
+	if !security.CheckRole(claims, model.CUSTOMER, false) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	account, err := authReceiver.AccountRepo.GetAccountById(claims.UserId)

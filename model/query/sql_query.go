@@ -5,7 +5,7 @@ import "time"
 type DataQueryModel struct {
 	Limit         int
 	Page          int
-	Filter        map[string]string
+	Filter        map[string]interface{}
 	Search        string
 	Sort          string
 	Order         string

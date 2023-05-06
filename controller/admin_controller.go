@@ -11,6 +11,7 @@ import (
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
+	"hotel-booking-api/utils"
 	"time"
 )
 
@@ -122,15 +123,19 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 // @Produce  json
 // @Success 200 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /admin/accounts?s= [get]
+// @Router /admin/accounts [get]
 func (adminController *AdminController) HandleGetAccountByAdmin(c echo.Context) error {
 	var listUser []model.User
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String() || claims.Role == model.SUPERADMIN.String()) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	listUser, err := adminController.AdminRepo.GetAccountFilter()
+	userFilter := utils.GetFilterQueryDataModel(c, &model.User{}, []string{
+		"token", "created_at", "updated_at", "",
+	})
+	dataQueryModel := utils.GetQueryDataModel(c, userFilter)
+	listUser, err := adminController.AdminRepo.GetAccountFilter(dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listUser)
 	}

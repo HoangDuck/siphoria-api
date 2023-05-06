@@ -78,6 +78,12 @@ func GetClaimsJWT(c echo.Context) *model.JwtCustomClaims {
 	return token.Claims.(*model.JwtCustomClaims)
 }
 
-func CheckRole(claim *model.JwtCustomClaims, RoleCheck model.Role) bool {
+func CheckRole(claim *model.JwtCustomClaims, RoleCheck model.Role, IsPreventAdmin bool) bool {
+	if claim.Role == model.ADMIN.String() && !IsPreventAdmin {
+		return true
+	}
+	if claim.Role == model.SUPERADMIN.String() {
+		return true
+	}
 	return claim.Role == RoleCheck.String()
 }

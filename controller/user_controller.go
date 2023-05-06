@@ -31,7 +31,7 @@ type UserController struct {
 func (userReceiver *UserController) HandleUpdateAvatar(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.CUSTOMER)) {
+	if !(security.CheckRole(claims, model.CUSTOMER, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
@@ -66,7 +66,7 @@ func (userReceiver *UserController) HandleUpdateAvatar(c echo.Context) error {
 func (userReceiver *UserController) HandleGetUserRank(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.CUSTOMER)) {
+	if !(security.CheckRole(claims, model.CUSTOMER, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}

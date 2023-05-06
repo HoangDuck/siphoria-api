@@ -1,10 +1,13 @@
 package repo_impl
 
 import (
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
 	"hotel-booking-api/db"
+	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
+	"hotel-booking-api/model/query"
 	"hotel-booking-api/repository"
 )
 
@@ -20,13 +23,6 @@ func (u *AdminRepoImpl) ApprovePayoutRequestHotel(hotelPayoutRequest model.Payou
 func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
 	//TODO implement me
 	panic("implement me")
-	//err := u.sql.Db.Where("role = ?", "admin")
-	//err = err.Or("role = ?", "super_admin")
-	//err = err.Find(&users)
-	//if err != nil {
-	//	return hotel, err.Error
-	//}
-	//return hotel, err.Error
 }
 
 func (u *AdminRepoImpl) GetHotelFilter() ([]model.Hotel, error) {
@@ -38,10 +34,14 @@ func (u *AdminRepoImpl) GetHotelFilter() ([]model.Hotel, error) {
 	return listHotel, err.Error
 }
 
-func (u *AdminRepoImpl) GetAccountFilter() ([]model.User, error) {
+func (u *AdminRepoImpl) GetAccountFilter(queryModel query.DataQueryModel) ([]model.User, error) {
 	var listUser []model.User
-	err := u.sql.Db.Find(&listUser)
-	if err != nil {
+	err := GenerateQueryGetData(u.sql, queryModel, &model.User{}, []string{
+		"token", "created_at", "updated_at", "",
+	})
+	err = err.Find(&listUser)
+	if err.Error != nil {
+		logger.Error("Error get list user url ", zap.Error(err.Error))
 		return listUser, err.Error
 	}
 	return listUser, err.Error
