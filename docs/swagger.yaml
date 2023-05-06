@@ -478,7 +478,7 @@ paths:
       summary: Accept
       tags:
       - admin-service
-  /admin/account-statuses:
+  /admin/accounts:
     get:
       consumes:
       - application/json
@@ -493,7 +493,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.Response'
-      summary: Get all account status list
+      summary: 'Get account admin (Sort: pass sort=field&order=desc, Filter: field_you_want_to_pass=value,
+        Paging: page=0&offset=3, Search: search=hoanghuu)'
       tags:
       - admin-service
   /admin/create-account:

@@ -59,7 +59,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/account-statuses": {
+        "/admin/accounts": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -70,7 +70,7 @@ const docTemplate = `{
                 "tags": [
                     "admin-service"
                 ],
-                "summary": "Get all account status list",
+                "summary": "Get account admin (Sort: pass sort=field\u0026order=desc, Filter: field_you_want_to_pass=value, Paging: page=0\u0026offset=3, Search: search=hoanghuu)",
                 "responses": {
                     "200": {
                         "description": "OK",

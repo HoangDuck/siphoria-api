@@ -117,7 +117,7 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 }
 
 // HandleGetAccountByAdmin godoc
-// @Summary Get all account status list
+// @Summary Get account admin (Sort: pass sort=field&order=desc, Filter: field_you_want_to_pass=value, Paging: page=0&offset=3, Search: search=hoanghuu)
 // @Tags admin-service
 // @Accept  json
 // @Produce  json
