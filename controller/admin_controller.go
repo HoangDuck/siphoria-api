@@ -66,6 +66,9 @@ func (adminController *AdminController) HandleCreateAccount(c echo.Context) erro
 		Password:  hash,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
+		FirstName: reqRegister.FirstName,
+		LastName:  reqRegister.LastName,
+		FullName:  reqRegister.FirstName + " " + reqRegister.LastName,
 		Role:      reqRegister.Role,
 		Status:    1,
 	}
@@ -99,7 +102,7 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String() || claims.Role == model.HOTELIER.String() || claims.Role == model.SUPERADMIN.String()) {
+	if !(security.CheckRole(claims, model.HOTELIER, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	account := model.User{
@@ -111,13 +114,13 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 	}
 	account, err = adminController.AdminRepo.UpdateAccount(account)
 	if err != nil {
-		return response.UnprocessableEntity(c, err.Error(), nil)
+		return response.InternalServerError(c, err.Error(), nil)
 	}
 	return response.Ok(c, "Cập nhật cài đặt thành công", account)
 }
 
 // HandleGetAccountByAdmin godoc
-// @Summary Get account admin (Sort: pass sort=field&order=desc, Filter: field_you_want_to_pass=value, Paging: page=0&offset=3, Search: search=hoanghuu)
+// @Summary Get account admin (Sort: pass sort=field&order=desc, Filter: field_you_want_to_pass=value, Paging: page=0&offset=3, Search: search=8)
 // @Tags admin-service
 // @Accept  json
 // @Produce  json
