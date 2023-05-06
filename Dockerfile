@@ -13,7 +13,7 @@ WORKDIR $GOPATH/src/hotel-booking-api
 COPY . .
 
 RUN go mod init hotel-booking-api
-RUN go mod tidy -go=1.16 && go mod tidy -go=1.17
+RUN go mod tidy -go=1.16 && go mod tidy -go=1.17 && go mod tidy -go=1.18
 
 WORKDIR cmd
 RUN GOOS=linux go build -o app
