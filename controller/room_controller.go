@@ -161,7 +161,11 @@ func (roomReceiver *RoomController) HandleUpdateRoomPhotos(c echo.Context) error
 	form, err := c.MultipartForm()
 	if err != nil {
 	}
-	oldUrls := utils.DecodeJSONArray(form.Value["text"][0])
+	var oldUrls []string
+	if form.Value["text"] != nil {
+		logger.Error(form.Value["text"][0])
+		oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
+	}
 	urls := services.UploadMultipleFiles(c)
 	if len(urls) == 0 {
 		logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
