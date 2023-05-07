@@ -25,26 +25,26 @@ func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
 	panic("implement me")
 }
 
-func (u *AdminRepoImpl) GetHotelFilter() ([]model.Hotel, error) {
+func (u *AdminRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error) {
 	var listHotel []model.Hotel
-	err := u.sql.Db.Find(&listHotel)
-	if err != nil {
+	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
+	err = err.Find(&listHotel)
+	if err.Error != nil {
+		logger.Error("Error get list hotel url ", zap.Error(err.Error))
 		return listHotel, err.Error
 	}
-	return listHotel, err.Error
+	return listHotel, nil
 }
 
 func (u *AdminRepoImpl) GetAccountFilter(queryModel query.DataQueryModel) ([]model.User, error) {
 	var listUser []model.User
-	err := GenerateQueryGetData(u.sql, queryModel, &model.User{}, []string{
-		"token", "created_at", "updated_at", "",
-	})
+	err := GenerateQueryGetData(u.sql, queryModel, &model.User{}, queryModel.ListIgnoreColumns)
 	err = err.Find(&listUser)
 	if err.Error != nil {
 		logger.Error("Error get list user url ", zap.Error(err.Error))
 		return listUser, err.Error
 	}
-	return listUser, err.Error
+	return listUser, nil
 }
 
 func (u *AdminRepoImpl) CheckEmail(email string) (model.User, error) {

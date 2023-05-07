@@ -134,10 +134,9 @@ func (adminController *AdminController) HandleGetAccountByAdmin(c echo.Context) 
 	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	userFilter := utils.GetFilterQueryDataModel(c, &model.User{}, []string{
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"token", "created_at", "updated_at", "",
-	})
-	dataQueryModel := utils.GetQueryDataModel(c, userFilter)
+	}, &model.User{})
 	listUser, err := adminController.AdminRepo.GetAccountFilter(dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listUser)
@@ -146,26 +145,29 @@ func (adminController *AdminController) HandleGetAccountByAdmin(c echo.Context) 
 }
 
 // HandleGetHotelByAdmin godoc
-// @Summary Get all hotel list
+// @Summary Get hotel list
 // @Tags admin-service
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /admin/hotels [post]
+// @Router /admin/hotels [get]
 func (adminController *AdminController) HandleGetHotelByAdmin(c echo.Context) error {
 	var listHotel []model.Hotel
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	listHotel, err := adminController.AdminRepo.GetHotelFilter()
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"hotelier", "created_at", "updated_at", "",
+	}, &model.Hotel{})
+	listHotel, err := adminController.AdminRepo.GetHotelFilter(dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listHotel)
 	}
-	return response.Ok(c, "Lấy danh sách tài khoản thành công", listHotel)
+	return response.Ok(c, "Lấy danh sách khách sạn thành công", listHotel)
 }
 
 // HandleAcceptHotel godoc

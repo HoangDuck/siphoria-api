@@ -15,8 +15,9 @@ import (
 	"strings"
 )
 
-func GetQueryDataModel(c echo.Context, modelFilter map[string]interface{}) query.DataQueryModel {
+func GetQueryDataModel(c echo.Context, listIgnoreColumns []string, modelStruct any) query.DataQueryModel {
 	var model query.DataQueryModel
+	modelFilter := GetFilterQueryDataModel(c, modelStruct, listIgnoreColumns)
 	//page index
 	tempValuePage := c.QueryParam("page")
 	page, err := strconv.ParseInt(tempValuePage, 10, 32)
@@ -51,6 +52,7 @@ func GetQueryDataModel(c echo.Context, modelFilter map[string]interface{}) query
 	end := c.QueryParam("end")
 	model.Start = start
 	model.End = end
+	model.ListIgnoreColumns = listIgnoreColumns
 	return model
 }
 

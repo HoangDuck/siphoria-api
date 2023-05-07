@@ -70,7 +70,7 @@ const docTemplate = `{
                 "tags": [
                     "admin-service"
                 ],
-                "summary": "Get account admin (Sort: pass sort=field\u0026order=desc, Filter: field_you_want_to_pass=value, Paging: page=0\u0026offset=3, Search: search=hoanghuu)",
+                "summary": "Get account admin (Sort: pass sort=field\u0026order=desc, Filter: field_you_want_to_pass=value, Paging: page=0\u0026offset=3, Search: search=8)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -133,7 +133,7 @@ const docTemplate = `{
             }
         },
         "/admin/hotels": {
-            "post": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],
@@ -143,7 +143,7 @@ const docTemplate = `{
                 "tags": [
                     "admin-service"
                 ],
-                "summary": "Get all hotel list",
+                "summary": "Get hotel list",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -698,6 +698,38 @@ const docTemplate = `{
             }
         },
         "/hotels": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "Get hotel Controller",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"

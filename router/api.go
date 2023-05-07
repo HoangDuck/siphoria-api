@@ -63,6 +63,7 @@ func (api *API) SetupRouter() {
 	user.GET("/notifications", api.UserController.HandleGetUserNotifications, middleware.JWTMiddleWare())
 
 	hotel := request.Group("/hotels")
+	hotel.GET("/", api.HotelController.HandleGetHotelPartner, middleware.JWTMiddleWare())
 	hotel.POST("/", api.HotelController.HandleCreateHotel, middleware.JWTMiddleWare())
 	hotel.POST("/search", api.HotelController.HandleSearchHotel)
 	hotel.GET("/:id", api.HotelController.HandleGetHotelById)
@@ -99,7 +100,7 @@ func (api *API) SetupRouter() {
 	admin.POST("/create-account", api.AdminController.HandleCreateAccount, middleware.JWTMiddleWare())
 	admin.PATCH("/update-account", api.AdminController.HandleUpdateAccount, middleware.JWTMiddleWare())
 	admin.GET("/accounts", api.AdminController.HandleGetAccountByAdmin, middleware.JWTMiddleWare())
-	admin.POST("/hotels", api.AdminController.HandleGetHotelByAdmin, middleware.JWTMiddleWare())
+	admin.GET("/hotels", api.AdminController.HandleGetHotelByAdmin, middleware.JWTMiddleWare())
 	admin.PATCH("/accept/:hotel-id", api.AdminController.HandleAcceptHotel, middleware.JWTMiddleWare())
 	admin.PATCH("/update-rating/:hotel-id", api.AdminController.HandleUpdateRatingHotel, middleware.JWTMiddleWare())
 	admin.PATCH("/update-cmsrate/:hotel-id", api.AdminController.HandleUpdateCommissionRateHotel, middleware.JWTMiddleWare())

@@ -1,16 +1,31 @@
 package repo_impl
 
 import (
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
 	"hotel-booking-api/db"
+	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
+	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 )
 
 type HotelRepoImpl struct {
 	sql *db.Sql
+}
+
+func (hotelReceiver *HotelRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error) {
+	var listHotel []model.Hotel
+	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
+	err = err.Where("id in (Select hotel_id from hotel_works where user_id = ?)", queryModel.UserId)
+	err = err.Find(&listHotel)
+	if err.Error != nil {
+		logger.Error("Error get list hotel url ", zap.Error(err.Error))
+		return listHotel, err.Error
+	}
+	return listHotel, nil
 }
 
 func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUpdateHotel, idHotel string) (model.Hotel, error) {

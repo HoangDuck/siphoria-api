@@ -10,7 +10,7 @@ type AdminRepo interface {
 	SaveAccount(account model.User) (model.User, error)
 	UpdateAccount(accountStaff model.User) (model.User, error)
 	GetAccountFilter(queryModel query.DataQueryModel) ([]model.User, error)
-	GetHotelFilter() ([]model.Hotel, error)
+	GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error)
 	AcceptHotel(hotel model.Hotel) (model.Hotel, error)
 	ApprovePayoutRequestHotel(hotelPayoutRequest model.PayoutRequest) (model.PayoutRequest, error)
 }

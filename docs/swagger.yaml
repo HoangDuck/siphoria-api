@@ -494,7 +494,7 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: 'Get account admin (Sort: pass sort=field&order=desc, Filter: field_you_want_to_pass=value,
-        Paging: page=0&offset=3, Search: search=hoanghuu)'
+        Paging: page=0&offset=3, Search: search=8)'
       tags:
       - admin-service
   /admin/create-account:
@@ -527,7 +527,7 @@ paths:
       tags:
       - admin-service
   /admin/hotels:
-    post:
+    get:
       consumes:
       - application/json
       produces:
@@ -545,7 +545,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.Response'
-      summary: Get all hotel list
+      summary: Get hotel list
       tags:
       - admin-service
   /admin/payouts/:payout-request-id:
@@ -892,6 +892,27 @@ paths:
       tags:
       - hotel-service
   /hotels:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get hotel Controller
+      tags:
+      - hotel-service
     post:
       consumes:
       - application/json

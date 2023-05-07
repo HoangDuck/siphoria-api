@@ -3,16 +3,18 @@ package query
 import "time"
 
 type DataQueryModel struct {
-	Limit         int
-	Page          int
-	Filter        map[string]interface{}
-	Search        string
-	Sort          string
-	Order         string
-	Start         string
-	End           string
-	IsShowDeleted bool
-	Role          string
+	Limit             int
+	Page              int
+	Filter            map[string]interface{}
+	Search            string
+	Sort              string
+	Order             string
+	Start             string
+	End               string
+	IsShowDeleted     bool
+	Role              string
+	UserId            string
+	ListIgnoreColumns []string
 }
 
 type GroupNumberRoomByRoomType struct {
