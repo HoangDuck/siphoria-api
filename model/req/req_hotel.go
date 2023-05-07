@@ -2,7 +2,7 @@ package req
 
 type RequestCreateHotel struct {
 	ID              string
-	HotelierID      string
+	HotelierID      string `json:"hotelier_id"`
 	Name            string `json:"name"`
 	Overview        string `json:"overview"`
 	Activate        bool   `json:"activate"`

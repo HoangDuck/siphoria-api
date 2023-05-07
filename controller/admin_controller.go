@@ -110,6 +110,7 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 		ID:        reqChangeAccount.ID,
 		FirstName: reqChangeAccount.FirstName,
 		LastName:  reqChangeAccount.LastName,
+		FullName:  reqChangeAccount.FirstName + " " + reqChangeAccount.LastName,
 		Password:  hash,
 		Status:    reqChangeAccount.Status,
 	}

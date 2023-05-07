@@ -23,6 +23,7 @@ type Hotel struct {
 	BusinessLicence string    `json:"business_licence" gorm:"business_licence"`
 	HotelierId      string    `json:"hotelier_id,omitempty"`
 	Hotelier        *User     `json:"hotelier,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	IsDeleted       bool      `json:"-" gorm:"is_deleted"`
 }
 
 type HotelWork struct {
@@ -43,6 +44,7 @@ type HotelType struct {
 	HomeStay  bool      `json:"home_stay" gorm:"home_stay"`
 	CreatedAt time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"updated_at"`
+	IsDeleted bool      `json:"-" gorm:"is_deleted"`
 }
 
 type HotelFacility struct {
@@ -60,4 +62,5 @@ type HotelFacility struct {
 	Parking       bool      `json:"parking" gorm:"parking"`
 	CreatedAt     time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at" gorm:"updated_at"`
+	IsDeleted     bool      `json:"-" gorm:"is_deleted"`
 }
