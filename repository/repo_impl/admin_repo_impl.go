@@ -60,16 +60,15 @@ func (u *AdminRepoImpl) CheckEmail(email string) (model.User, error) {
 }
 
 func (u *AdminRepoImpl) UpdateAccount(staffAccount model.User) (model.User, error) {
-	var staffAccountResult = model.User{}
-	err := u.sql.Db.Model(&staffAccountResult).Updates(staffAccount)
+	err := u.sql.Db.Model(&staffAccount).Updates(staffAccount)
 	if err.Error != nil {
+		logger.Error("Error update user failed ", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
-			return staffAccountResult, err.Error
+			return staffAccount, err.Error
 		}
-
-		return staffAccountResult, custom_error.UserNotUpdated
+		return staffAccount, custom_error.UserNotUpdated
 	}
-	return staffAccountResult, nil
+	return staffAccount, nil
 }
 
 func (u *AdminRepoImpl) SaveAccount(account model.User) (model.User, error) {

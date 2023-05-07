@@ -105,18 +105,19 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 	if !(security.CheckRole(claims, model.HOTELIER, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
+	hash := security.HashAndSalt([]byte(reqChangeAccount.Password))
 	account := model.User{
 		ID:        reqChangeAccount.ID,
 		FirstName: reqChangeAccount.FirstName,
 		LastName:  reqChangeAccount.LastName,
-		Password:  reqChangeAccount.Password,
+		Password:  hash,
 		Status:    reqChangeAccount.Status,
 	}
 	account, err = adminController.AdminRepo.UpdateAccount(account)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
-	return response.Ok(c, "Cập nhật cài đặt thành công", account)
+	return response.Ok(c, "Cập nhật tài khoản người dùng thành công", account)
 }
 
 // HandleGetAccountByAdmin godoc
