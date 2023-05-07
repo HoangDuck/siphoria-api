@@ -9,9 +9,12 @@ import (
 	response "hotel-booking-api/model/model_func"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
+	"hotel-booking-api/security"
+	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
 	"io"
 	_ "math/rand"
+	"strings"
 )
 
 type RoomController struct {
@@ -128,7 +131,7 @@ func (roomReceiver *RoomController) HandleUpdateRoomType(c echo.Context) error {
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String() || claims.Role == model.HOTELIER.String() || claims.Role == model.SUPERADMIN.String() || claims.Role == model.MANAGER.String()) {
+	if !(security.CheckRole(claims, model.HOTELIER, false) || security.CheckRole(claims, model.MANAGER, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 
@@ -137,4 +140,43 @@ func (roomReceiver *RoomController) HandleUpdateRoomType(c echo.Context) error {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
 	return response.Ok(c, "Cập nhật thông tin room type thành công", roomType)
+}
+
+// HandleUpdateRoomPhotos godoc
+// @Summary Update room photos
+// @Tags room-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /rooms/:id/photos [patch]
+func (roomReceiver *RoomController) HandleUpdateRoomPhotos(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) || security.CheckRole(claims, model.MANAGER, false)) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	form, err := c.MultipartForm()
+	if err != nil {
+	}
+	oldUrls := utils.DecodeJSONArray(form.Value["text"][0])
+	urls := services.UploadMultipleFiles(c)
+	if len(urls) == 0 {
+		logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
+		return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
+	}
+	urls = append(urls, oldUrls...)
+	//find customer id by userid(account id)
+	room := model.RoomType{
+		ID:     c.Param("id"),
+		Photos: strings.Join(urls, ";"),
+	}
+	room, err = roomReceiver.RoomRepo.UpdateRoomPhotos(room)
+	if err != nil {
+		logger.Error("Error save database", zap.Error(err))
+		return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
+	}
+	return response.Ok(c, "Cập nhật hình ảnh thành công", room)
 }

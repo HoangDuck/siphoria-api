@@ -1252,6 +1252,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/rooms/:id/photos": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "room-service"
+                ],
+                "summary": "Update room photos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms/ratepackages": {
             "post": {
                 "consumes": [
@@ -1773,7 +1807,7 @@ const docTemplate = `{
                 "hotel": {
                     "type": "boolean"
                 },
-                "hotelierID": {
+                "hotelier_id": {
                     "type": "string"
                 },
                 "id": {

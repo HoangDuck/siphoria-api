@@ -1,10 +1,12 @@
 package repo_impl
 
 import (
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"hotel-booking-api/custom_error"
 	"hotel-booking-api/db"
+	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
@@ -14,6 +16,21 @@ import (
 
 type RoomRepoImpl struct {
 	sql *db.Sql
+}
+
+func (roomReceiver *RoomRepoImpl) UpdateRoomPhotos(room model.RoomType) (model.RoomType, error) {
+	err := roomReceiver.sql.Db.Model(&room).Updates(room)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return room, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return room, err.Error
+		}
+		return room, err.Error
+	}
+	return room, nil
 }
 
 func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.RequestUpdateRoomType, idRoomType string) (model.RoomType, error) {

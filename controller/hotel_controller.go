@@ -130,7 +130,11 @@ func (hotelController *HotelController) HandleUpdateHotelPhoto(c echo.Context) e
 	form, err := c.MultipartForm()
 	if err != nil {
 	}
-	oldUrls := utils.DecodeJSONArray(form.Value["text"][0])
+	var oldUrls []string
+	if form.Value["text"] != nil {
+		logger.Error(form.Value["text"][0])
+		oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
+	}
 	urls := services.UploadMultipleFiles(c)
 	if len(urls) == 0 {
 		logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
@@ -162,7 +166,7 @@ func (hotelController *HotelController) HandleUpdateHotelPhoto(c echo.Context) e
 func (hotelController *HotelController) HandleUpdateHotelBusinessLicense(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN, false)) {
+	if !(security.CheckRole(claims, model.HOTELIER, false)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}

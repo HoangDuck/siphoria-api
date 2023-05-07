@@ -75,7 +75,7 @@ definitions:
         type: boolean
       hotel:
         type: boolean
-      hotelierID:
+      hotelier_id:
         type: string
       id:
         type: string
@@ -1248,6 +1248,28 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: update room type
+      tags:
+      - room-service
+  /rooms/:id/photos:
+    patch:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update room photos
       tags:
       - room-service
   /rooms/ratepackages:

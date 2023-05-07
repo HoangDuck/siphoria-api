@@ -83,6 +83,7 @@ func DecodeJSONArray(value string) []string {
 	logger.Info(value)
 	value = strings.Replace(value, "\"", "`", -1)
 	value = strings.Replace(value, "'", "\"", -1)
+	logger.Info(value)
 	err := json.Unmarshal([]byte(value), &listStringDecode)
 	if err != nil {
 		logger.Error("Error decode json array data", zap.Error(err))

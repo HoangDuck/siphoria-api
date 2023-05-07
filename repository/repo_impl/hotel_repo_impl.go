@@ -157,13 +157,33 @@ func (hotelReceiver *HotelRepoImpl) CreateRequestPayout(payoutRequest model.Payo
 }
 
 func (hotelReceiver *HotelRepoImpl) UpdateHotelBusinessLicensePhotos(hotel model.Hotel) (model.Hotel, error) {
-	//TODO implement me
-	panic("implement me")
+	err := hotelReceiver.sql.Db.Model(&hotel).Updates(hotel)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return hotel, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return hotel, err.Error
+		}
+		return hotel, err.Error
+	}
+	return hotel, nil
 }
 
 func (hotelReceiver *HotelRepoImpl) UpdateHotelPhotos(hotel model.Hotel) (model.Hotel, error) {
-	//TODO implement me
-	panic("implement me")
+	err := hotelReceiver.sql.Db.Model(&hotel).Updates(hotel)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return hotel, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return hotel, err.Error
+		}
+		return hotel, err.Error
+	}
+	return hotel, nil
 }
 
 func NewHotelRepo(sql *db.Sql) repository.HotelRepo {
