@@ -18,7 +18,7 @@
     "host": "https://siphoria-api-production.up.railway.app",
     "basePath": "/api",
     "paths": {
-        "/admin/accept/:hotel-id": {
+        "/admin/accept/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -159,7 +159,7 @@
                 }
             }
         },
-        "/admin/payouts/:payout-request-id": {
+        "/admin/payouts/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -272,7 +272,7 @@
                 }
             }
         },
-        "/admin/update-cmsrate/:hotel-id": {
+        "/admin/update-cmsrate/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -306,7 +306,7 @@
                 }
             }
         },
-        "/admin/update-rating/:hotel-id": {
+        "/admin/update-rating/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -773,40 +773,6 @@
                 }
             }
         },
-        "/hotels/:hotel_id/payout": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "hotel-service"
-                ],
-                "summary": "Send request payment hotel",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/hotels/:id": {
             "get": {
                 "consumes": [
@@ -875,6 +841,40 @@
                 }
             }
         },
+        "/hotels/:id/payout": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "Send request payment hotel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/hotels/:id/photos": {
             "post": {
                 "consumes": [
@@ -919,6 +919,40 @@
                     "hotel-service"
                 ],
                 "summary": "Delete hotel photos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels/:id/rooms": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "Get room type by hotel",
                 "responses": {
                     "200": {
                         "description": "OK",

@@ -19,6 +19,7 @@ type API struct {
 	NotificationService    services.NotificationService
 	NotificationController controller.NotificationController
 	RoomController         controller.RoomController
+	VoucherController      controller.VoucherController
 }
 
 func (api *API) SetupRouter() {
@@ -28,7 +29,7 @@ func (api *API) SetupRouter() {
 
 	request := api.Echo.Group("/api")
 
-	request.Group("/map").GET("/test/:id", controller.GetEmbeddedMap)
+	request.Group("/map").GET("/test/:id", controller.GmaetEmbeddedMap)
 
 	auth := request.Group("/auth")
 	authLogin := auth.Group("/login")
@@ -71,7 +72,8 @@ func (api *API) SetupRouter() {
 	hotel.POST("/:id/photos", api.HotelController.HandleUpdateHotelPhoto, middleware.JWTMiddleWare())
 	hotel.PATCH("/:id/business-license", api.HotelController.HandleUpdateHotelBusinessLicense, middleware.JWTMiddleWare())
 	hotel.DELETE("/:id/photos", api.HotelController.HandleDeleteHotelBusinessLicense, middleware.JWTMiddleWare())
-	hotel.POST("/:hotel_id/payout", api.HotelController.HandleSendRequestPaymentHotel, middleware.JWTMiddleWare())
+	hotel.POST("/:id/payout", api.HotelController.HandleSendRequestPaymentHotel, middleware.JWTMiddleWare())
+	hotel.GET("/:id/rooms", api.HotelController.HandleGetRoomTypeByHotel, middleware.JWTMiddleWare())
 
 	room := request.Group("/rooms")
 	room.GET("/welcome-room", func(context echo.Context) error {
@@ -81,7 +83,8 @@ func (api *API) SetupRouter() {
 	room.POST("/roomnights", api.RoomController.HandleUpdateRoomNight, middleware.JWTMiddleWare())
 	room.POST("/ratepackages", api.RoomController.HandleUpdateRatePackages, middleware.JWTMiddleWare())
 	room.PATCH("/:id", api.RoomController.HandleUpdateRoomType, middleware.JWTMiddleWare())
-	hotel.PATCH("/:id/photos", api.RoomController.HandleUpdateRoomType, middleware.JWTMiddleWare())
+	room.PATCH("/:id/photos", api.RoomController.HandleUpdateRoomPhotos, middleware.JWTMiddleWare())
+	room.GET("/:id", api.RoomController.HandleGetRoomTypeDetail, middleware.JWTMiddleWare())
 
 	ratePlan := request.Group("/rateplans")
 	ratePlan.POST("/", api.RatePlanController.HandleSaveRatePlan, middleware.JWTMiddleWare())
@@ -102,11 +105,13 @@ func (api *API) SetupRouter() {
 	admin.PATCH("/update-account", api.AdminController.HandleUpdateAccount, middleware.JWTMiddleWare())
 	admin.GET("/accounts", api.AdminController.HandleGetAccountByAdmin, middleware.JWTMiddleWare())
 	admin.GET("/hotels", api.AdminController.HandleGetHotelByAdmin, middleware.JWTMiddleWare())
-	admin.PATCH("/accept/:hotel-id", api.AdminController.HandleAcceptHotel, middleware.JWTMiddleWare())
-	admin.PATCH("/update-rating/:hotel-id", api.AdminController.HandleUpdateRatingHotel, middleware.JWTMiddleWare())
-	admin.PATCH("/update-cmsrate/:hotel-id", api.AdminController.HandleUpdateCommissionRateHotel, middleware.JWTMiddleWare())
-	admin.PATCH("/payouts/:payout-request-id", api.AdminController.HandleApprovePayoutHotel, middleware.JWTMiddleWare())
-
+	admin.PATCH("/accept/:id", api.AdminController.HandleAcceptHotel, middleware.JWTMiddleWare())
+	admin.PATCH("/update-rating/:id", api.AdminController.HandleUpdateRatingHotel, middleware.JWTMiddleWare())
+	admin.PATCH("/update-cmsrate/:id", api.AdminController.HandleUpdateCommissionRateHotel, middleware.JWTMiddleWare())
+	admin.PATCH("/payouts/:id", api.AdminController.HandleApprovePayoutHotel, middleware.JWTMiddleWare())
+	admin.GET("/works/:id", api.AdminController.HandleGetAccountByAdmin, middleware.JWTMiddleWare())
+	admin.DELETE("/works", api.AdminController.HandleDeleteHotelWorkByEmployee, middleware.JWTMiddleWare())
+	admin.POST("/works", api.AdminController.HandleSaveHotelWorkByEmployee, middleware.JWTMiddleWare())
 	log := api.Echo.Group("/manager/log")
 	log.GET("/checkViewLogs", api.LogsHandler.CheckLogs)
 	log.GET("/checkViewLogsSystem", api.LogsHandler.CheckLogsSystem)
@@ -117,4 +122,8 @@ func (api *API) SetupRouter() {
 	notification := api.Echo.Group("/notification")
 	notification.POST("/push-test", api.NotificationService.PushNotificationMessageAPITest)
 	admin.POST("/push-notification", api.NotificationController.PushNotificationMessageAPIAdmin, middleware.JWTMiddleWare())
+
+	voucher := request.Group("/vouchers")
+	voucher.POST("/", api.VoucherController.HandleSaveVoucher, middleware.JWTMiddleWare())
+	voucher.PATCH("/:id", api.VoucherController.HandleUpdateVoucher, middleware.JWTMiddleWare())
 }

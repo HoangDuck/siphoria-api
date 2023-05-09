@@ -11,10 +11,35 @@ import (
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
+	"hotel-booking-api/utils"
 )
 
 type UserController struct {
 	UserRepo repository.UserRepo
+}
+
+// HandleGetNotifications godoc
+// @Summary Get notification
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/notifications [get]
+func (userReceiver *UserController) HandleGetNotifications(c echo.Context) error {
+	var listNotifications []model.Notification
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"user", "created_at", "updated_at", "",
+	}, &model.Notification{})
+	dataQueryModel.Role = claims.Role
+	listNotifications, err := userReceiver.UserRepo.GetUserNotifications(dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listNotifications)
+	}
+	return response.Ok(c, "Lấy danh sách thông báo thành công", listNotifications)
 }
 
 // HandleUpdateAvatar godoc
@@ -109,15 +134,6 @@ func (userReceiver *UserController) HandleGetCart(c echo.Context) error {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	//find customer id by userid(account id)
-	//customer := model.User{
-	//	ID: claims.UserId,
-	//}
-	//cartData, err := userReceiver.UserRepo.GetUserCart(customer)
-	//if err != nil {
-	//	logger.Error("Error query data", zap.Error(err))
-	//	return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
-	//}
 	return response.Ok(c, "Danh sách giỏ hàng", nil /*cartData*/)
 }
 

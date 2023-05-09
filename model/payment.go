@@ -69,4 +69,5 @@ type PayoutRequest struct {
 	Pettioner    User      `json:"pettioner" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PayerId      string    `json:"payer_id"`
 	Payer        User      `json:"payer" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PaymentList  string    `json:"-" gorm:"payment_list"`
 }

@@ -121,6 +121,38 @@ func (adminController *AdminController) HandleUpdateAccount(c echo.Context) erro
 	return response.Ok(c, "Cập nhật tài khoản người dùng thành công", account)
 }
 
+// HandleGetHotelWorkByEmployee godoc
+// @Summary Get list hotel employee works
+// @Tags admin-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /admin/works/:id [get]
+func (adminController *AdminController) HandleGetHotelWorkByEmployee(c echo.Context) error {
+	var listHotel []model.Hotel
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"hotelier", "created_at", "updated_at", "",
+	}, &model.Hotel{})
+	dataQueryModel.UserId = claims.UserId
+	listHotel, err := adminController.AdminRepo.GetHotelWorkByEmployee(dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Lấy danh sách khách sạn nhân viên làm việc thành công", struct {
+		UserId  string        `json:"user_id"`
+		HotelId []model.Hotel `json:"hotel_id"`
+	}{
+		UserId:  dataQueryModel.UserId,
+		HotelId: listHotel,
+	})
+}
+
 // HandleGetAccountByAdmin godoc
 // @Summary Get account admin (Sort: pass sort=field&order=desc, Filter: field_you_want_to_pass=value, Paging: page=0&offset=3, Search: search=8)
 // @Tags admin-service
@@ -180,7 +212,7 @@ func (adminController *AdminController) HandleGetHotelByAdmin(c echo.Context) er
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /admin/accept/:hotel-id [patch]
+// @Router /admin/accept/:id [patch]
 func (adminController *AdminController) HandleAcceptHotel(c echo.Context) error {
 	var hotel model.Hotel
 	token := c.Get("user").(*jwt.Token)
@@ -190,7 +222,7 @@ func (adminController *AdminController) HandleAcceptHotel(c echo.Context) error 
 	}
 
 	hotel = model.Hotel{
-		ID:     c.Param("hotel-id"),
+		ID:     c.Param("id"),
 		Status: 1,
 	}
 
@@ -209,7 +241,7 @@ func (adminController *AdminController) HandleAcceptHotel(c echo.Context) error 
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /admin/update-rating/:hotel-id [patch]
+// @Router /admin/update-rating/:id [patch]
 func (adminController *AdminController) HandleUpdateRatingHotel(c echo.Context) error {
 	reqUpdateRating := req.RequestUpdateRating{}
 	//binding
@@ -225,20 +257,20 @@ func (adminController *AdminController) HandleUpdateRatingHotel(c echo.Context) 
 	var hotel model.Hotel
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 
 	hotel = model.Hotel{
-		ID:     c.Param("hotel-id"),
+		ID:     c.Param("id"),
 		Rating: reqUpdateRating.Rating,
 	}
 
-	hotel, err := adminController.AdminRepo.AcceptHotel(hotel)
+	hotel, err := adminController.AdminRepo.UpdateRatingHotel(hotel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), hotel)
 	}
-	return response.Ok(c, "Cập nhật khách sạn thành công", hotel)
+	return response.Ok(c, "Cập nhật số sao thành công", hotel)
 }
 
 // HandleUpdateCommissionRateHotel godoc
@@ -249,7 +281,7 @@ func (adminController *AdminController) HandleUpdateRatingHotel(c echo.Context) 
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /admin/update-cmsrate/:hotel-id [patch]
+// @Router /admin/update-cmsrate/:id [patch]
 func (adminController *AdminController) HandleUpdateCommissionRateHotel(c echo.Context) error {
 	reqUpdateCommissionRating := req.RequestUpdateCommissionRating{}
 	//binding
@@ -265,20 +297,20 @@ func (adminController *AdminController) HandleUpdateCommissionRateHotel(c echo.C
 	var hotel model.Hotel
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 
 	hotel = model.Hotel{
-		ID:             c.Param("hotel-id"),
+		ID:             c.Param("id"),
 		CommissionRate: reqUpdateCommissionRating.CommissionRate,
 	}
 
-	hotel, err := adminController.AdminRepo.AcceptHotel(hotel)
+	hotel, err := adminController.AdminRepo.UpdateCommissionRatingHotel(hotel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), hotel)
 	}
-	return response.Ok(c, "Cập nhật khách sạn thành công", hotel)
+	return response.Ok(c, "Cập nhật tỷ lệ hoa hồng thành công", hotel)
 }
 
 // HandleApprovePayoutHotel godoc
@@ -289,7 +321,7 @@ func (adminController *AdminController) HandleUpdateCommissionRateHotel(c echo.C
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /admin/payouts/:payout-request-id [patch]
+// @Router /admin/payouts/:id [patch]
 func (adminController *AdminController) HandleApprovePayoutHotel(c echo.Context) error {
 	reqApprovePayout := req.RequestApprovePayout{}
 	//binding
@@ -300,7 +332,7 @@ func (adminController *AdminController) HandleApprovePayoutHotel(c echo.Context)
 	var hotelPayoutRequest model.PayoutRequest
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
+	if !(security.CheckRole(claims, model.ACCOUNTANT, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 
@@ -314,4 +346,72 @@ func (adminController *AdminController) HandleApprovePayoutHotel(c echo.Context)
 		return response.InternalServerError(c, err.Error(), hotelPayoutRequest)
 	}
 	return response.Ok(c, "Duyệt yêu cầu thanh toán thành công", hotelPayoutRequest)
+}
+
+// HandleDeleteHotelWorkByEmployee godoc
+// @Summary Delete HotelWork By Employee
+// @Tags admin-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestDeleteHotelWorkByEmployee true "staff"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /admin/works [delete]
+func (adminController *AdminController) HandleDeleteHotelWorkByEmployee(c echo.Context) error {
+	reqDeleteHotelWorkByEmployee := req.RequestDeleteHotelWorkByEmployee{}
+	//binding
+	if err := c.Bind(&reqDeleteHotelWorkByEmployee); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+
+	result, err := adminController.AdminRepo.DeleteHotelWorkByEmployee(reqDeleteHotelWorkByEmployee)
+	if !result {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Xoá nhân viên thành công", nil)
+}
+
+// HandleSaveHotelWorkByEmployee godoc
+// @Summary  HotelWork By Employee
+// @Tags admin-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestDeleteHotelWorkByEmployee true "staff"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /admin/works [post]
+func (adminController *AdminController) HandleSaveHotelWorkByEmployee(c echo.Context) error {
+	reqSaveHotelWorkByEmployee := req.RequestSaveHotelWorkByEmployee{}
+	//binding
+	if err := c.Bind(&reqSaveHotelWorkByEmployee); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+
+	hotelWork := model.HotelWork{
+		HotelId:   reqSaveHotelWorkByEmployee.HotelId,
+		UserId:    reqSaveHotelWorkByEmployee.UserId,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		IsDeleted: false,
+	}
+
+	result, err := adminController.AdminRepo.SaveHotelWorkByEmployee(hotelWork)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Xoá nhân viên thành công", result)
 }

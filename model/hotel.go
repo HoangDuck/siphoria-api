@@ -28,9 +28,11 @@ type Hotel struct {
 
 type HotelWork struct {
 	HotelId   string    `json:"hotel_id" gorm:"primary_key"`
+	Hotel     Hotel     `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserId    string    `json:"user_id" gorm:"primary_key"`
 	CreatedAt time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"updated_at"`
+	IsDeleted bool      `json:"-" gorm:"is_deleted"`
 }
 
 type HotelType struct {

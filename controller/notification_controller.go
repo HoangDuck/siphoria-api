@@ -9,6 +9,7 @@ import (
 	response "hotel-booking-api/model/model_func"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
+	"hotel-booking-api/security"
 	"hotel-booking-api/services"
 )
 
@@ -40,7 +41,7 @@ func (notificationReceiver *NotificationController) PushNotificationMessageAPIAd
 	registrationToken := reqMessageNotification.FCMKey
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String()) {
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 

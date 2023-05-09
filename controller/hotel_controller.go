@@ -13,10 +13,41 @@ import (
 	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
 	"strings"
+	"time"
 )
 
 type HotelController struct {
 	HotelRepo repository.HotelRepo
+}
+
+// HandleGetRoomTypeByHotel godoc
+// @Summary Get room type by hotel
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /hotels/:id/rooms [get]
+func (hotelController *HotelController) HandleGetRoomTypeByHotel(c echo.Context) error {
+	var listRoomType []model.RoomType
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) ||
+		security.CheckRole(claims, model.STAFF, false) ||
+		security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"hotel", "created_at", "updated_at", "",
+	}, &model.RoomType{})
+	dataQueryModel.UserId = claims.UserId
+	dataQueryModel.DataId = c.QueryParam(":id")
+	listRoomType, err := hotelController.HotelRepo.GetRoomTypeFilter(dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listRoomType)
+	}
+	return response.Ok(c, "Lấy danh sách phòng thành công", listRoomType)
 }
 
 // HandleSearchHotel godoc
@@ -239,7 +270,7 @@ func (hotelController *HotelController) HandleDeleteHotelBusinessLicense(c echo.
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
-// @Router /hotels/:hotel_id/payout [post]
+// @Router /hotels/:id/payout [post]
 func (hotelController *HotelController) HandleSendRequestPaymentHotel(c echo.Context) error {
 	reqCreatePayout := req.RequestCreatePayout{}
 	//binding
@@ -249,7 +280,7 @@ func (hotelController *HotelController) HandleSendRequestPaymentHotel(c echo.Con
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN, false)) {
+	if !(security.CheckRole(claims, model.HOTELIER, true) || security.CheckRole(claims, model.MANAGER, true)) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
@@ -257,12 +288,19 @@ func (hotelController *HotelController) HandleSendRequestPaymentHotel(c echo.Con
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
+	listPaymentId := utils.DecodeJSONArray(reqCreatePayout.Payments)
+
 	payoutRequest := model.PayoutRequest{
-		ID:          payoutRequestId,
-		HotelId:     c.Param("hotel_id"),
-		PettionerId: claims.UserId,
+		ID:           payoutRequestId,
+		HotelId:      c.Param("id"),
+		PettionerId:  claims.UserId,
+		TotalRequest: len(listPaymentId),
+		OpenAt:       time.Now(),
+		Resolve:      false,
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
 	}
-	payoutRequestResult, err := hotelController.HotelRepo.CreateRequestPayout(payoutRequest, reqCreatePayout.Payments)
+	payoutRequestResult, err := hotelController.HotelRepo.CreateRequestPayout(payoutRequest, listPaymentId)
 
 	if err != nil {
 		logger.Error("Error uuid data", zap.Error(err))
@@ -288,13 +326,12 @@ func (hotelController *HotelController) HandleUpdateHotel(c echo.Context) error 
 	}
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.ADMIN.String() || claims.Role == model.HOTELIER.String() || claims.Role == model.SUPERADMIN.String()) {
+	if !(security.CheckRole(claims, model.HOTELIER, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-
 	hotel, err := hotelController.HotelRepo.UpdateHotel(reqUpdateHotel, c.Param("id"))
 	if err != nil {
-		return response.UnprocessableEntity(c, err.Error(), nil)
+		return response.InternalServerError(c, err.Error(), nil)
 	}
 	return response.Ok(c, "Cập nhật thông tin khách sạn thành công", hotel)
 }

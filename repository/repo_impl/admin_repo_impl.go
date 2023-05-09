@@ -8,6 +8,7 @@ import (
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
+	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 )
 
@@ -15,14 +16,89 @@ type AdminRepoImpl struct {
 	sql *db.Sql
 }
 
+func (u *AdminRepoImpl) SaveHotelWorkByEmployee(hotelWork model.HotelWork) (model.HotelWork, error) {
+	result := u.sql.Db.Create(&hotelWork)
+	if result.Error != nil {
+		return hotelWork, result.Error
+	}
+	return hotelWork, nil
+}
+
+func (u *AdminRepoImpl) DeleteHotelWorkByEmployee(requestDeleteHotelWorkByEmployee req.RequestDeleteHotelWorkByEmployee) (bool, error) {
+	hotelWork := model.HotelWork{
+		IsDeleted: true,
+	}
+	err := u.sql.Db.Model(&hotelWork).
+		Where("hotel_id = ? AND user_id = ?", requestDeleteHotelWorkByEmployee.HotelId,
+			requestDeleteHotelWorkByEmployee.UserId).Updates(hotelWork)
+	if err.Error != nil {
+		logger.Error("Error update hotel failed ", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, err.Error
+		}
+		return false, custom_error.UserNotUpdated
+	}
+	return true, nil
+}
+
+func (u *AdminRepoImpl) GetHotelWorkByEmployee(queryModel query.DataQueryModel) ([]model.Hotel, error) {
+	var listHotelWork []model.Hotel
+	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
+	err = err.Where("id in (select hotel_id from hotel_works where user_id = ?)", queryModel.UserId)
+	err = err.Find(&listHotelWork)
+	if err.Error != nil {
+		logger.Error("Error get list hotel work url ", zap.Error(err.Error))
+		return listHotelWork, err.Error
+	}
+	return listHotelWork, nil
+}
+
+func (u *AdminRepoImpl) UpdateRatingHotel(hotel model.Hotel) (model.Hotel, error) {
+	err := u.sql.Db.Model(&hotel).Updates(hotel)
+	if err.Error != nil {
+		logger.Error("Error update hotel failed ", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return hotel, err.Error
+		}
+		return hotel, custom_error.HotelNotUpdated
+	}
+	return hotel, nil
+}
+
+func (u *AdminRepoImpl) UpdateCommissionRatingHotel(hotel model.Hotel) (model.Hotel, error) {
+	err := u.sql.Db.Model(&hotel).Updates(hotel)
+	if err.Error != nil {
+		logger.Error("Error update hotel failed ", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return hotel, err.Error
+		}
+		return hotel, custom_error.HotelNotUpdated
+	}
+	return hotel, nil
+}
+
 func (u *AdminRepoImpl) ApprovePayoutRequestHotel(hotelPayoutRequest model.PayoutRequest) (model.PayoutRequest, error) {
-	//TODO implement me
-	panic("implement me")
+	err := u.sql.Db.Model(&hotelPayoutRequest).Updates(hotelPayoutRequest)
+	if err.Error != nil {
+		logger.Error("Error update payment failed ", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return hotelPayoutRequest, err.Error
+		}
+		return hotelPayoutRequest, custom_error.PaymentNotUpdated
+	}
+	return hotelPayoutRequest, nil
 }
 
 func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
-	//TODO implement me
-	panic("implement me")
+	err := u.sql.Db.Model(&hotel).Updates(hotel)
+	if err.Error != nil {
+		logger.Error("Error update user failed ", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return hotel, err.Error
+		}
+		return hotel, custom_error.HotelNotUpdated
+	}
+	return hotel, nil
 }
 
 func (u *AdminRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error) {

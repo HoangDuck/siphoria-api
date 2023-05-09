@@ -456,7 +456,7 @@ info:
   title: HOTEL BOOKING API
   version: "1.0"
 paths:
-  /admin/accept/:hotel-id:
+  /admin/accept/:id:
     patch:
       consumes:
       - application/json
@@ -548,7 +548,7 @@ paths:
       summary: Get hotel list
       tags:
       - admin-service
-  /admin/payouts/:payout-request-id:
+  /admin/payouts/:id:
     patch:
       consumes:
       - application/json
@@ -621,7 +621,7 @@ paths:
       summary: update account
       tags:
       - admin-service
-  /admin/update-cmsrate/:hotel-id:
+  /admin/update-cmsrate/:id:
     patch:
       consumes:
       - application/json
@@ -643,7 +643,7 @@ paths:
       summary: Update commission rate hotel
       tags:
       - admin-service
-  /admin/update-rating/:hotel-id:
+  /admin/update-rating/:id:
     patch:
       consumes:
       - application/json
@@ -945,28 +945,6 @@ paths:
       summary: Create hotel
       tags:
       - hotel-service
-  /hotels/:hotel_id/payout:
-    post:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.Response'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/res.Response'
-      summary: Send request payment hotel
-      tags:
-      - hotel-service
   /hotels/:id:
     get:
       consumes:
@@ -1011,6 +989,28 @@ paths:
       summary: Update hotel business license photos
       tags:
       - hotel-service
+  /hotels/:id/payout:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Send request payment hotel
+      tags:
+      - hotel-service
   /hotels/:id/photos:
     delete:
       consumes:
@@ -1052,6 +1052,28 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Update hotel photos
+      tags:
+      - hotel-service
+  /hotels/:id/rooms:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get room type by hotel
       tags:
       - hotel-service
   /hotels/search:

@@ -18,6 +18,14 @@ type RoomRepoImpl struct {
 	sql *db.Sql
 }
 
+func (roomReceiver *RoomRepoImpl) GetRoomTypeDetail(room model.RoomType) (model.RoomType, error) {
+	err := roomReceiver.sql.Db.Where("id = ?", room.ID).Find(&room)
+	if err.RowsAffected == 0 {
+		return room, err.Error
+	}
+	return room, nil
+}
+
 func (roomReceiver *RoomRepoImpl) UpdateRoomPhotos(room model.RoomType) (model.RoomType, error) {
 	err := roomReceiver.sql.Db.Model(&room).Updates(room)
 	if err.Error != nil {

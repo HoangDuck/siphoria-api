@@ -25,7 +25,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/accept/:hotel-id": {
+        "/admin/accept/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -166,7 +166,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/payouts/:payout-request-id": {
+        "/admin/payouts/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -279,7 +279,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/update-cmsrate/:hotel-id": {
+        "/admin/update-cmsrate/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -313,7 +313,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/update-rating/:hotel-id": {
+        "/admin/update-rating/:id": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -780,40 +780,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/hotels/:hotel_id/payout": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "hotel-service"
-                ],
-                "summary": "Send request payment hotel",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/res.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/hotels/:id": {
             "get": {
                 "consumes": [
@@ -882,6 +848,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/hotels/:id/payout": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "Send request payment hotel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/hotels/:id/photos": {
             "post": {
                 "consumes": [
@@ -926,6 +926,40 @@ const docTemplate = `{
                     "hotel-service"
                 ],
                 "summary": "Delete hotel photos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels/:id/rooms": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "Get room type by hotel",
                 "responses": {
                     "200": {
                         "description": "OK",

@@ -10,10 +10,23 @@ import (
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
+	"strings"
 )
 
 type HotelRepoImpl struct {
 	sql *db.Sql
+}
+
+func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel query.DataQueryModel) ([]model.RoomType, error) {
+	var listRoomType []model.RoomType
+	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.RoomType{}, queryModel.ListIgnoreColumns)
+	err = err.Where("hotel_id = ?", queryModel.DataId)
+	err = err.Find(&listRoomType)
+	if err.Error != nil {
+		logger.Error("Error get list room type url ", zap.Error(err.Error))
+		return listRoomType, err.Error
+	}
+	return listRoomType, nil
 }
 
 func (hotelReceiver *HotelRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error) {
@@ -151,9 +164,33 @@ func (hotelReceiver *HotelRepoImpl) SaveHotel(requestAddHotel req.RequestCreateH
 	return hotel, nil
 }
 
-func (hotelReceiver *HotelRepoImpl) CreateRequestPayout(payoutRequest model.PayoutRequest, paymentIds string) (model.PayoutRequest, error) {
-	//TODO implement me
-	panic("implement me")
+func (hotelReceiver *HotelRepoImpl) CreateRequestPayout(payoutRequest model.PayoutRequest, paymentIds []string) (model.PayoutRequest, error) {
+	var result query.ResultTotalPrice
+	err := hotelReceiver.sql.Db.Raw("fn_calculateTotalPricePayment(?,?) as total_price", payoutRequest.HotelId, strings.Join(paymentIds, ",")).Scan(&result)
+	payoutRequest.TotalPrice = result.Sum
+	payoutRequest.PaymentList = strings.Join(paymentIds, ",")
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return payoutRequest, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return payoutRequest, err.Error
+		}
+		return payoutRequest, err.Error
+	}
+	err = hotelReceiver.sql.Db.Create(payoutRequest)
+	if err.Error != nil {
+		logger.Error("Error save data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return payoutRequest, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return payoutRequest, err.Error
+		}
+		return payoutRequest, err.Error
+	}
+	return payoutRequest, nil
 }
 
 func (hotelReceiver *HotelRepoImpl) UpdateHotelBusinessLicensePhotos(hotel model.Hotel) (model.Hotel, error) {

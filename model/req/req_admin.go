@@ -132,3 +132,13 @@ type RequestPushNotificationAdmin struct {
 type RequestApprovePayout struct {
 	Resolve bool `json:"resolve,omitempty"`
 }
+
+type RequestSaveHotelWorkByEmployee struct {
+	UserId  string `json:"user_id" validate:"required"`
+	HotelId string `json:"hotel_id" validate:"required"`
+}
+
+type RequestDeleteHotelWorkByEmployee struct {
+	UserId  string `json:"user_id" validate:"required"`
+	HotelId string `json:"hotel_id" validate:"required"`
+}

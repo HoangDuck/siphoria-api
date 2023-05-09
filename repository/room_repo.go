@@ -11,4 +11,5 @@ type RoomRepo interface {
 	UpdateRatePackages(requestAddRatePackages req.RequestUpdateRatePackage) ([]model.RatePackage, error)
 	UpdateRoomType(requestUpdateRoomType req.RequestUpdateRoomType, idRoomType string) (model.RoomType, error)
 	UpdateRoomPhotos(room model.RoomType) (model.RoomType, error)
+	GetRoomTypeDetail(room model.RoomType) (model.RoomType, error)
 }

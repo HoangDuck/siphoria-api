@@ -7,6 +7,7 @@ import (
 	"hotel-booking-api/db"
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
+	"hotel-booking-api/model/query"
 	"hotel-booking-api/repository"
 )
 
@@ -14,9 +15,15 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
-func (u *UserRepoImpl) GetUserNotifications() (model.Notification, error) {
-	//TODO implement me
-	panic("implement me")
+func (u *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]model.Notification, error) {
+	var listNotifications []model.Notification
+	err := GenerateQueryGetData(u.sql, queryModel, &model.Notification{}, queryModel.ListIgnoreColumns)
+	err = err.Find(&listNotifications)
+	if err.Error != nil {
+		logger.Error("Error get list notifications url ", zap.Error(err.Error))
+		return listNotifications, err.Error
+	}
+	return listNotifications, nil
 }
 
 //func (u *UserRepoImpl) CheckProfileCustomerExistByIdentify(user model.Customer) (model.Customer, error) {

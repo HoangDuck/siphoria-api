@@ -14,7 +14,12 @@ type DataQueryModel struct {
 	IsShowDeleted     bool
 	Role              string
 	UserId            string
+	DataId            string
 	ListIgnoreColumns []string
+}
+
+type ResultTotalPrice struct {
+	Sum float32 `gorm:"total_price"`
 }
 
 type GroupNumberRoomByRoomType struct {

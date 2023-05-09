@@ -21,6 +21,31 @@ type RoomController struct {
 	RoomRepo repository.RoomRepo
 }
 
+// HandleGetRoomTypeDetail godoc
+// @Summary Get room type detail
+// @Tags room-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /rooms/:id [get]
+func (roomReceiver *RoomController) HandleGetRoomTypeDetail(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) || security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	roomType := model.RoomType{
+		ID: c.QueryParam("id"),
+	}
+	roomType, err := roomReceiver.RoomRepo.GetRoomTypeDetail(roomType)
+	if err != nil {
+		return response.InternalServerError(c, "Lấy room type thất bại", nil)
+	}
+	return response.Ok(c, "Lấy room type thành công", roomType)
+}
+
 // HandleSaveRoomType godoc
 // @Summary Save room type
 // @Tags room-service
