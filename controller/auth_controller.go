@@ -112,14 +112,15 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 
 	//Init account
 	account := model.User{
-		ID:        accountId.String(),
-		Email:     reqRegister.Email,
-		Password:  hash,
-		FirstName: reqRegister.FirstName,
-		LastName:  reqRegister.LastName,
-		FullName:  reqRegister.FirstName + " " + reqRegister.LastName,
-		Role:      model.CUSTOMER.String(),
-		Status:    1,
+		ID:              accountId.String(),
+		Email:           reqRegister.Email,
+		Password:        hash,
+		FirstName:       reqRegister.FirstName,
+		LastName:        reqRegister.LastName,
+		FullName:        reqRegister.FirstName + " " + reqRegister.LastName,
+		Role:            model.CUSTOMER.String(),
+		Status:          1,
+		UserKeyFirebase: reqRegister.FcmKey,
 	}
 	//Save account
 	accountResult, err := authReceiver.AccountRepo.SaveAccount(account)

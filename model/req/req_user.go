@@ -5,6 +5,7 @@ type RequestSignUp struct {
 	FirstName string `json:"first_name,omitempty" validate:"required"`
 	LastName  string `json:"last_name,omitempty" validate:"required"`
 	Password  string `json:"password,omitempty" validate:"required"`
+	FcmKey    string `json:"fcm_key,omitempty"`
 }
 
 type RequestSignIn struct {

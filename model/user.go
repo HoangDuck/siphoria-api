@@ -22,6 +22,7 @@ type User struct {
 	UpdatedAt       time.Time `json:"updated_at" gorm:"updated_at"`
 	DeletedAt       time.Time `json:"-" gorm:"deleted_at"`
 	IsDeleted       bool      `json:"-" gorm:"is_deleted"`
+	UserRank        *UserRank `json:"user_rank"`
 }
 
 type StatusUser struct {

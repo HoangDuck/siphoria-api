@@ -63,7 +63,10 @@ func (u *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]
 
 func (u *UserRepoImpl) GetProfileCustomer(customer model.User) (model.User, error) {
 	var user = model.User{}
+	var userRank = model.UserRank{}
 	err := u.sql.Db.Where("id=?", customer.ID).Find(&user)
+	err = u.sql.Db.Where("user_id=?", customer.ID).Find(&userRank)
+	user.UserRank = &userRank
 	if err != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
