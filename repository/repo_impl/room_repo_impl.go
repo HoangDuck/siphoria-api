@@ -18,6 +18,60 @@ type RoomRepoImpl struct {
 	sql *db.Sql
 }
 
+func (roomReceiver *RoomRepoImpl) GetRoomTypeFacility(roomTypeId string) (model.RoomTypeFacility, error) {
+	var roomTypeFacility model.RoomTypeFacility
+	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId).Find(&roomTypeFacility)
+	if err.RowsAffected == 0 {
+		return roomTypeFacility, err.Error
+	}
+	return roomTypeFacility, nil
+}
+
+func (roomReceiver *RoomRepoImpl) GetRoomTypeViews(roomTypeId string) (model.RoomTypeViews, error) {
+	var roomTypeViews model.RoomTypeViews
+	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId).Find(&roomTypeViews)
+	if err.RowsAffected == 0 {
+		return roomTypeViews, err.Error
+	}
+	return roomTypeViews, nil
+}
+
+func (roomReceiver *RoomRepoImpl) GetRoomNightsByRoomType(roomTypeId string) ([]model.RoomNights, error) {
+	var roomNightList []model.RoomNights
+	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId).Find(&roomNightList)
+	if err.RowsAffected == 0 {
+		return roomNightList, err.Error
+	}
+	return roomNightList, nil
+}
+
+func (roomReceiver *RoomRepoImpl) GetListRatePlans(roomTypeId string) ([]model.RatePlan, error) {
+	var ratePlanList []model.RatePlan
+	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId).Find(&ratePlanList)
+	if err.RowsAffected == 0 {
+		return ratePlanList, err.Error
+	}
+	return ratePlanList, nil
+}
+
+func (roomReceiver *RoomRepoImpl) GetListRatePackages(ratePlanId string) ([]model.RatePackage, error) {
+	var ratePackageList []model.RatePackage
+	err := roomReceiver.sql.Db.Where("rate_plan_id = ?", ratePlanId).Find(&ratePackageList)
+	if err.RowsAffected == 0 {
+		return ratePackageList, err.Error
+	}
+	return ratePackageList, nil
+}
+
+func (roomReceiver *RoomRepoImpl) GetListRoomTypeDetail(room model.RoomType) ([]model.RoomType, error) {
+	var roomTypeList []model.RoomType
+	err := roomReceiver.sql.Db.Where("hotel_id = ?", room.HotelId).Find(&roomTypeList)
+	if err.RowsAffected == 0 {
+		return roomTypeList, err.Error
+	}
+	return roomTypeList, nil
+}
+
 func (roomReceiver *RoomRepoImpl) GetRoomTypeDetail(room model.RoomType) (model.RoomType, error) {
 	err := roomReceiver.sql.Db.Where("id = ?", room.ID).Find(&room)
 	if err.RowsAffected == 0 {

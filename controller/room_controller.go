@@ -21,6 +21,40 @@ type RoomController struct {
 	RoomRepo repository.RoomRepo
 }
 
+// HandleGetHotelSearchById godoc
+// @Summary Get search hotel by Id
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /rooms/search/:id [get]
+func (roomReceiver *RoomController) HandleGetHotelSearchById(c echo.Context) error {
+	roomType := model.RoomType{
+		HotelId: c.Param("id"),
+	}
+	roomTypeList, err := roomReceiver.RoomRepo.GetListRoomTypeDetail(roomType)
+	for i := 0; i < len(roomTypeList); i++ {
+		roomTypeItemFacility, _ := roomReceiver.RoomRepo.GetRoomTypeFacility(roomTypeList[i].ID)
+		roomTypeList[i].RoomTypeFacility = roomTypeItemFacility
+		roomTypeItemViews, _ := roomReceiver.RoomRepo.GetRoomTypeViews(roomTypeList[i].ID)
+		roomTypeList[i].RoomTypeViews = roomTypeItemViews
+		roomNights, _ := roomReceiver.RoomRepo.GetRoomNightsByRoomType(roomTypeList[i].ID)
+		roomTypeList[i].RoomNights = roomNights
+		ratePlans, _ := roomReceiver.RoomRepo.GetListRatePlans(roomTypeList[i].ID)
+		roomTypeList[i].RatePlans = ratePlans
+		for j := 0; j < len(roomTypeList[i].RatePlans); j++ {
+			ratePackages, _ := roomReceiver.RoomRepo.GetListRatePackages(roomTypeList[i].RatePlans[j].ID)
+			roomTypeList[i].RatePlans[j].RatePackages = ratePackages
+		}
+	}
+	if err != nil {
+		return response.InternalServerError(c, "Lấy room type thất bại", nil)
+	}
+	return response.Ok(c, "Cập nhật thành công", roomTypeList)
+}
+
 // HandleGetRoomTypeDetail godoc
 // @Summary Get room type detail
 // @Tags room-service

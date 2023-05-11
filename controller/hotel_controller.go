@@ -75,6 +75,7 @@ func (hotelController *HotelController) HandleSearchHotel(c echo.Context) error 
 // @Failure 422 {object} res.Response
 // @Router /hotels/:id [get]
 func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error {
+
 	return response.Ok(c, "Cập nhật thành công", nil)
 }
 

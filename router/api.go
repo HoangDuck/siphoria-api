@@ -81,6 +81,7 @@ func (api *API) SetupRouter() {
 		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
 	})
 	room.POST("/", api.RoomController.HandleSaveRoomType, middleware.JWTMiddleWare())
+	room.GET("/search/:id", api.RoomController.HandleGetHotelSearchById)
 	room.POST("/roomnights", api.RoomController.HandleUpdateRoomNight, middleware.JWTMiddleWare())
 	room.POST("/ratepackages", api.RoomController.HandleUpdateRatePackages, middleware.JWTMiddleWare())
 	room.PATCH("/:id", api.RoomController.HandleUpdateRoomType, middleware.JWTMiddleWare())
