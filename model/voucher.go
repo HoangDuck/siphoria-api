@@ -17,7 +17,7 @@ type Voucher struct {
 	HotelId   string     `json:"hotel_id"`
 	Hotel     Hotel      `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	IsDeleted bool       `json:"-" gorm:"is_deleted"`
-	Excepts   []RoomType `json:"excepts"`
+	Excepts   []RoomType `json:"excepts" gorm:"-"`
 }
 
 type VoucherExcept struct {

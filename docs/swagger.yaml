@@ -41,6 +41,23 @@ definitions:
     - status_code
     - status_name
     type: object
+  req.RequestAddVoucher:
+    properties:
+      activated:
+        type: boolean
+      begin_at:
+        type: string
+      code:
+        type: string
+      discount:
+        type: number
+      end_at:
+        type: string
+      hotel_id:
+        type: string
+      name:
+        type: string
+    type: object
   req.RequestCreateHotel:
     properties:
       activate:
@@ -185,6 +202,16 @@ definitions:
       wine:
         type: boolean
     type: object
+  req.RequestDeleteHotelWorkByEmployee:
+    properties:
+      hotel_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - hotel_id
+    - user_id
+    type: object
   req.RequestGetRatePlan:
     properties:
       rate_plan_id:
@@ -220,6 +247,8 @@ definitions:
   req.RequestSignUp:
     properties:
       email:
+        type: string
+      fcm_key:
         type: string
       first_name:
         type: string
@@ -433,6 +462,21 @@ definitions:
         type: boolean
       wine:
         type: boolean
+    type: object
+  req.RequestUpdateVoucher:
+    properties:
+      activated:
+        type: boolean
+      begin_at:
+        type: string
+      code:
+        type: string
+      discount:
+        type: number
+      end_at:
+        type: string
+      name:
+        type: string
     type: object
   res.Response:
     properties:
@@ -663,6 +707,81 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Update rating hotel
+      tags:
+      - admin-service
+  /admin/works:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: staff
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestDeleteHotelWorkByEmployee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Delete HotelWork By Employee
+      tags:
+      - admin-service
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: staff
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestDeleteHotelWorkByEmployee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: HotelWork By Employee
+      tags:
+      - admin-service
+  /admin/works/:id:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get list hotel employee works
       tags:
       - admin-service
   /auth/change-pwd:
@@ -1244,6 +1363,27 @@ paths:
       tags:
       - room-service
   /rooms/:id:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get room type detail
+      tags:
+      - room-service
     patch:
       consumes:
       - application/json
@@ -1556,4 +1696,33 @@ paths:
       summary: Update user's rank
       tags:
       - user-service
+  /vouchers:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: rateplan
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateVoucher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update voucher
+      tags:
+      - vocuher-service
 swagger: "2.0"

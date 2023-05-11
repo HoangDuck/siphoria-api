@@ -24,6 +24,9 @@ type Hotel struct {
 	HotelierId      string    `json:"hotelier_id,omitempty"`
 	Hotelier        *User     `json:"hotelier,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	IsDeleted       bool      `json:"-" gorm:"is_deleted"`
+	PriceHotel      float32   `json:"price_hotel" gorm:"price_hotel"`
+	DiscountPrice   float32   `json:"discount_price" gorm:"discount_price"`
+	DiscountHotel   float32   `json:"discount_hotel" gorm:"discount_hotel"`
 }
 
 type HotelWork struct {

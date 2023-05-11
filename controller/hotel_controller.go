@@ -106,6 +106,24 @@ func (hotelController *HotelController) HandleGetHotelPartner(c echo.Context) er
 	return response.Ok(c, "Lấy danh sách khách sạn thành công", listHotel)
 }
 
+// HandleGetHotelSearchMobile godoc
+// @Summary Get hotel mobile
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /hotels/search [get]
+func (hotelController *HotelController) HandleGetHotelSearchMobile(c echo.Context) error {
+	var listHotel []model.Hotel
+	listHotel, err := hotelController.HotelRepo.GetHotelMobile()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listHotel)
+	}
+	return response.Ok(c, "Lấy danh sách khách sạn thành công", listHotel)
+}
+
 // HandleCreateHotel godoc
 // @Summary Create hotel
 // @Tags hotel-service

@@ -14,4 +14,5 @@ type HotelRepo interface {
 	SaveHotel(requestAddHotel req.RequestCreateHotel) (model.Hotel, error)
 	GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error)
 	GetRoomTypeFilter(queryModel query.DataQueryModel) ([]model.RoomType, error)
+	GetHotelMobile() ([]model.Hotel, error)
 }

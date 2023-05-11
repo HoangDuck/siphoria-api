@@ -347,6 +347,122 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/works": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-service"
+                ],
+                "summary": "HotelWork By Employee",
+                "parameters": [
+                    {
+                        "description": "staff",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestDeleteHotelWorkByEmployee"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-service"
+                ],
+                "summary": "Delete HotelWork By Employee",
+                "parameters": [
+                    {
+                        "description": "staff",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestDeleteHotelWorkByEmployee"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/works/:id": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-service"
+                ],
+                "summary": "Get list hotel employee works",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/change-pwd": {
             "post": {
                 "consumes": [
@@ -1242,6 +1358,38 @@ const docTemplate = `{
             }
         },
         "/rooms/:id": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "room-service"
+                ],
+                "summary": "Get room type detail",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "consumes": [
                     "application/json"
@@ -1725,6 +1873,51 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/vouchers": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vocuher-service"
+                ],
+                "summary": "Update voucher",
+                "parameters": [
+                    {
+                        "description": "rateplan",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestUpdateVoucher"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1786,6 +1979,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestAddVoucher": {
+            "type": "object",
+            "properties": {
+                "activated": {
+                    "type": "boolean"
+                },
+                "begin_at": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "number"
+                },
+                "end_at": {
+                    "type": "string"
+                },
+                "hotel_id": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -2007,6 +2226,21 @@ const docTemplate = `{
                 }
             }
         },
+        "req.RequestDeleteHotelWorkByEmployee": {
+            "type": "object",
+            "required": [
+                "hotel_id",
+                "user_id"
+            ],
+            "properties": {
+                "hotel_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "req.RequestGetRatePlan": {
             "type": "object",
             "properties": {
@@ -2066,6 +2300,9 @@ const docTemplate = `{
             ],
             "properties": {
                 "email": {
+                    "type": "string"
+                },
+                "fcm_key": {
                     "type": "string"
                 },
                 "first_name": {
@@ -2381,6 +2618,29 @@ const docTemplate = `{
                 },
                 "wine": {
                     "type": "boolean"
+                }
+            }
+        },
+        "req.RequestUpdateVoucher": {
+            "type": "object",
+            "properties": {
+                "activated": {
+                    "type": "boolean"
+                },
+                "begin_at": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "number"
+                },
+                "end_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

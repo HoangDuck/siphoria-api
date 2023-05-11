@@ -17,6 +17,17 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
+func (hotelReceiver *HotelRepoImpl) GetHotelMobile() ([]model.Hotel, error) {
+	var listHotel []model.Hotel
+	err := hotelReceiver.sql.Db
+	err = err.Find(&listHotel)
+	if err.Error != nil {
+		logger.Error("Error get list hotel url ", zap.Error(err.Error))
+		return listHotel, err.Error
+	}
+	return listHotel, nil
+}
+
 func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel query.DataQueryModel) ([]model.RoomType, error) {
 	var listRoomType []model.RoomType
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.RoomType{}, queryModel.ListIgnoreColumns)

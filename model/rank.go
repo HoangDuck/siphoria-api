@@ -14,7 +14,7 @@ type Rank struct {
 type UserRank struct {
 	ID        string    `json:"id" gorm:"primary_key"`
 	UserId    string    `json:"user_id"`
-	User      User      `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	User      *User     `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RankId    string    `json:"rank_id"`
 	Rank      Rank      `json:"rank" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	BeginAt   time.Time `json:"begin_at" gorm:"begin_at"`
