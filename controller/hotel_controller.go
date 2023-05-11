@@ -12,6 +12,7 @@ import (
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -121,7 +122,7 @@ func (hotelController *HotelController) HandleGetHotelSearchMobile(c echo.Contex
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listHotel)
 	}
-	return response.Ok(c, "Lấy danh sách khách sạn thành công", listHotel)
+	return c.JSON(http.StatusOK, listHotel)
 }
 
 // HandleCreateHotel godoc
