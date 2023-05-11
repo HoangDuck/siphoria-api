@@ -14,6 +14,7 @@ import (
 	"hotel-booking-api/utils"
 	"io"
 	_ "math/rand"
+	"net/http"
 	"strings"
 )
 
@@ -52,7 +53,7 @@ func (roomReceiver *RoomController) HandleGetHotelSearchById(c echo.Context) err
 	if err != nil {
 		return response.InternalServerError(c, "Lấy room type thất bại", nil)
 	}
-	return response.Ok(c, "Cập nhật thành công", roomTypeList)
+	return c.JSON(http.StatusOK, roomTypeList) //response.Ok(c, "Cập nhật thành công", roomTypeList)
 }
 
 // HandleGetRoomTypeDetail godoc
