@@ -39,6 +39,8 @@ type Payment struct {
 	Voucher         Voucher       `json:"voucher" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PayoutRequestId string        `json:"payout_request_id"`
 	PayoutRequest   PayoutRequest `json:"payout_request" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	HotelId         string        `json:"hotel_id"`
+	Hotel           *Hotel        `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	CreatedAt       time.Time     `json:"created_at" gorm:"created_at"`
 	UpdatedAt       time.Time     `json:"updated_at" gorm:"updated_at"`
 }

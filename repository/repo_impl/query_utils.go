@@ -11,8 +11,8 @@ import (
 func GenerateQueryGetData(sql *db.Sql, queryModel query.DataQueryModel, modelStruct any, listIgnoreKey []string) *gorm.DB {
 	result := sql.Db
 	if queryModel.Search != "" {
-		result = result.Where("(fn_convertCoDauToKhongDau(email) LIKE ('%' || fn_convertCoDauToKhongDau(?) || '%')",
-			queryModel.Search)
+		//result = result.Where("(fn_convertCoDauToKhongDau(email) LIKE ('%' || fn_convertCoDauToKhongDau(?) || '%')",
+		//	queryModel.Search)
 		val := reflect.ValueOf(modelStruct).Elem()
 		numberField := val.NumField()
 		for i := 0; i < val.NumField(); i++ {

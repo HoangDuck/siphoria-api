@@ -115,7 +115,20 @@ func (userReceiver *UserController) HandleGetUserRank(c echo.Context) error {
 // @Failure 422 {object} res.Response
 // @Router /users/add-to-cart [post]
 func (userReceiver *UserController) HandleAddToCart(c echo.Context) error {
-	return response.Ok(c, "Cập nhật thành công", nil)
+	reqAddToCart := req.RequestAddToCart{}
+	//binding
+	if err := c.Bind(&reqAddToCart); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+
+	return response.Ok(c, "Thêm giỏ hàng thành công", nil)
 }
 
 // HandleGetCart godoc

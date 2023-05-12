@@ -18,17 +18,20 @@ import (
 func GetQueryDataModel(c echo.Context, listIgnoreColumns []string, modelStruct any) query.DataQueryModel {
 	var model query.DataQueryModel
 	modelFilter := GetFilterQueryDataModel(c, modelStruct, listIgnoreColumns)
-	//page index
-	tempValuePage := c.QueryParam("page")
-	page, err := strconv.ParseInt(tempValuePage, 10, 32)
-	if err != nil {
-		model.Page = 0
-	}
 	//limit item can get
 	tempValueLimit := c.QueryParam("offset")
 	limit, err := strconv.ParseInt(tempValueLimit, 10, 32)
 	if err != nil {
-		model.Limit = math.MinInt64
+		model.Limit = math.MaxInt32
+	}
+	//page index
+	tempValuePage := c.QueryParam("page")
+	page, err := strconv.ParseInt(tempValuePage, 10, 32)
+	if page > 0 {
+		page = limit*page - limit
+	}
+	if err != nil {
+		page = 0
 	}
 	model.Limit = int(limit)
 	model.Filter = modelFilter

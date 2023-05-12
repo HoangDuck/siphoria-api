@@ -1196,6 +1196,27 @@ paths:
       tags:
       - hotel-service
   /hotels/search:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get hotel mobile
+      tags:
+      - hotel-service
     post:
       consumes:
       - application/json
@@ -1492,6 +1513,28 @@ paths:
       summary: Update room nights
       tags:
       - room-service
+  /rooms/search/:id:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get search hotel by Id
+      tags:
+      - hotel-service
   /users/add-to-cart:
     post:
       consumes:

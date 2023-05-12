@@ -11,10 +11,14 @@ type Cart struct {
 	StartAt        time.Time `json:"start_at" gorm:"start_at"`
 	EndAt          time.Time `json:"end_at" gorm:"end_at"`
 	TotalDay       int       `json:"total_day" gorm:"total_day"`
+	RatePlanId     string    `json:"rate_plan_id"`
+	RatePlan       *RatePlan `json:"rate_plans" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserId         string    `json:"user_id"`
-	User           User      `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	User           *User     `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomTypeId     string    `json:"room_type_id"`
-	RoomType       RoomType  `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomType       *RoomType `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	HotelId        string    `json:"hotel_id"`
+	Hotel          *Hotel    `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	CreatedAt      time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at" gorm:"updated_at"`
 }
