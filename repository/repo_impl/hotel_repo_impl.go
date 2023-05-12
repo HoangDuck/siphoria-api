@@ -20,6 +20,7 @@ type HotelRepoImpl struct {
 func (hotelReceiver *HotelRepoImpl) GetHotelMobile() ([]model.Hotel, error) {
 	var listHotel []model.Hotel
 	err := hotelReceiver.sql.Db
+	err = err.Order("id desc")
 	err = err.Find(&listHotel)
 	if err.Error != nil {
 		logger.Error("Error get list hotel url ", zap.Error(err.Error))
