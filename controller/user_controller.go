@@ -127,7 +127,11 @@ func (userReceiver *UserController) HandleAddToCart(c echo.Context) error {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-
+	reqAddToCart.UserId = claims.UserId
+	result, err := userReceiver.UserRepo.AddToCart(reqAddToCart)
+	if err != nil || !result {
+		return response.InternalServerError(c, "Thêm giỏ hàng thất bại", nil)
+	}
 	return response.Ok(c, "Thêm giỏ hàng thành công", nil)
 }
 

@@ -2,6 +2,18 @@ package model
 
 import "time"
 
+type AddCart struct {
+	ID          string    `json:"id" gorm:"primary_key"`
+	StartAt     time.Time `json:"start_at" gorm:"start_at"`
+	EndAt       time.Time `json:"end_at" gorm:"end_at"`
+	AdultNum    int       `json:"adult_num" gorm:"adult_num"`
+	ChildrenNum int       `json:"children_num" gorm:"children_num"`
+	RatePlanId  string    `json:"rate_plan_id"`
+	UserId      string    `json:"user_id"`
+	RoomTypeId  string    `json:"room_type_id"`
+	HotelId     string    `json:"hotel_id"`
+}
+
 type Cart struct {
 	ID             string    `json:"id" gorm:"primary_key"`
 	IsSoldOut      bool      `json:"is_sold_out" gorm:"is_sold_out"`

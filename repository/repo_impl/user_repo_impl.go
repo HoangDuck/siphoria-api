@@ -8,16 +8,53 @@ import (
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
+	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
+	"hotel-booking-api/utils"
+	"time"
 )
 
 type UserRepoImpl struct {
 	sql *db.Sql
 }
 
-func (u *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]model.Notification, error) {
+func (userReceiver *UserRepoImpl) AddToCart(requestAddCart req.RequestAddToCart) (bool, error) {
+	for i := 0; i < requestAddCart.NumberOfRooms; i++ {
+		cartId, _ := utils.GetNewId()
+		dateBeginAt, _ := time.Parse("2006-01-02", requestAddCart.FromDate)
+		dateEndAt, _ := time.Parse("2006-01-02", requestAddCart.ToDate)
+
+		cart := model.AddCart{
+			ID:          cartId,
+			StartAt:     dateBeginAt,
+			EndAt:       dateEndAt,
+			AdultNum:    requestAddCart.NumberOfAdults,
+			ChildrenNum: requestAddCart.NumberOfChildren,
+			RoomTypeId:  requestAddCart.RoomTypeID,
+			RatePlanId:  requestAddCart.RatePlanID,
+			HotelId:     requestAddCart.HotelID,
+		}
+		err := userReceiver.sql.Db.Exec("call sp_addtocart(?,?,?,?,?,?,?,?,?);",
+			cart.ID,
+			cart.StartAt,
+			cart.EndAt,
+			cart.AdultNum,
+			cart.ChildrenNum,
+			cart.RatePlanId,
+			cart.RoomTypeId,
+			cart.HotelId,
+			cart.UserId)
+		if err.Error != nil {
+			return false, err.Error
+		}
+	}
+
+	return true, nil
+}
+
+func (userReceiver *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]model.Notification, error) {
 	var listNotifications []model.Notification
-	err := GenerateQueryGetData(u.sql, queryModel, &model.Notification{}, queryModel.ListIgnoreColumns)
+	err := GenerateQueryGetData(userReceiver.sql, queryModel, &model.Notification{}, queryModel.ListIgnoreColumns)
 	err = err.Find(&listNotifications)
 	if err.Error != nil {
 		logger.Error("Error get list notifications url ", zap.Error(err.Error))
@@ -26,8 +63,8 @@ func (u *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]
 	return listNotifications, nil
 }
 
-//func (u *UserRepoImpl) CheckProfileCustomerExistByIdentify(user model.Customer) (model.Customer, error) {
-//	err := u.sql.Db.Where("identifier_number=?", user.IdentifierNumber).Find(&user)
+//func (userReceiver *UserRepoImpl) CheckProfileCustomerExistByIdentify(user model.Customer) (model.Customer, error) {
+//	err := userReceiver.sql.Db.Where("identifier_number=?", user.IdentifierNumber).Find(&user)
 //	if err != nil {
 //		if err.Error == gorm.ErrRecordNotFound {
 //			return user, custom_error.UserNotFound
@@ -37,17 +74,17 @@ func (u *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]
 //	return user, nil
 //}
 
-//func (u *UserRepoImpl) SaveCustomerProfile(user model.Customer) (model.Customer, error) {
-//	result := u.sql.Db.Create(&user)
+//func (userReceiver *UserRepoImpl) SaveCustomerProfile(user model.Customer) (model.Customer, error) {
+//	result := userReceiver.sql.Db.Create(&user)
 //	if result.Error != nil {
 //		return user, result.Error
 //	}
 //	return user, nil
 //}
 
-//func (u *UserRepoImpl) GetUserCart(customer model.User) (query.RoomAvailableQuery, error) {
+//func (userReceiver *UserRepoImpl) GetUserCart(customer model.User) (query.RoomAvailableQuery, error) {
 //	var cartData = model.User{}
-//	err := u.sql.Db.Where("id=?", customer.ID).Find(&cartData)
+//	err := userReceiver.sql.Db.Where("id=?", customer.ID).Find(&cartData)
 //	if err != nil {
 //		logger.Error("Error query data", zap.Error(err.Error))
 //		if err.Error == gorm.ErrRecordNotFound {
@@ -61,11 +98,11 @@ func (u *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]
 //	return cartData, nil
 //}
 
-func (u *UserRepoImpl) GetProfileCustomer(customer model.User) (model.User, error) {
+func (userReceiver *UserRepoImpl) GetProfileCustomer(customer model.User) (model.User, error) {
 	var user = model.User{}
 	var userRank = model.UserRank{}
-	err := u.sql.Db.Where("id=?", customer.ID).Find(&user)
-	err = u.sql.Db.Where("user_id=?", customer.ID).Find(&userRank)
+	err := userReceiver.sql.Db.Where("id=?", customer.ID).Find(&user)
+	err = userReceiver.sql.Db.Where("user_id=?", customer.ID).Find(&userRank)
 	user.UserRank = &userRank
 	if err != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
@@ -80,8 +117,8 @@ func (u *UserRepoImpl) GetProfileCustomer(customer model.User) (model.User, erro
 	return user, nil
 }
 
-func (u *UserRepoImpl) UpdateRankCustomer(userRank model.UserRank) (model.UserRank, error) {
-	err := u.sql.Db.Model(&userRank).Where("user_id=?", userRank.UserId).Updates(userRank)
+func (userReceiver *UserRepoImpl) UpdateRankCustomer(userRank model.UserRank) (model.UserRank, error) {
+	err := userReceiver.sql.Db.Model(&userRank).Where("user_id=?", userRank.UserId).Updates(userRank)
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
@@ -95,8 +132,8 @@ func (u *UserRepoImpl) UpdateRankCustomer(userRank model.UserRank) (model.UserRa
 	return userRank, nil
 }
 
-func (u *UserRepoImpl) UpdateProfileCustomer(user model.User) (model.User, error) {
-	err := u.sql.Db.Model(&user).Updates(user)
+func (userReceiver *UserRepoImpl) UpdateProfileCustomer(user model.User) (model.User, error) {
+	err := userReceiver.sql.Db.Model(&user).Updates(user)
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
@@ -110,9 +147,9 @@ func (u *UserRepoImpl) UpdateProfileCustomer(user model.User) (model.User, error
 	return user, nil
 }
 
-func (u *UserRepoImpl) GetUserRank(customer model.User) (model.UserRank, error) {
+func (userReceiver *UserRepoImpl) GetUserRank(customer model.User) (model.UserRank, error) {
 	var userRank = model.UserRank{}
-	err := u.sql.Db.Where("id=?", customer.ID).Find(&userRank)
+	err := userReceiver.sql.Db.Where("id=?", customer.ID).Find(&userRank)
 	if err != nil {
 		logger.Error("Error query database", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {

@@ -88,5 +88,7 @@ type RequestAddToCart struct {
 	NumberOfRooms    int    `json:"number_of_rooms"`
 	RatePlanID       string `json:"rate_plan_id"`
 	RoomTypeID       string `json:"room_type_id"`
+	HotelID          string `json:"hotel_id"`
 	ToDate           string `json:"to_date"`
+	UserId           string
 }
