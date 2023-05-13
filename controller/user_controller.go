@@ -276,3 +276,26 @@ func (userReceiver *UserController) HandleGetUserNotifications(c echo.Context) e
 	}
 	return response.Ok(c, "Lấy thông tin thành công", customerResult)
 }
+
+// HandleDeleteCart godoc
+// @Summary Delete user cart
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/carts/:id [delete]
+func (userReceiver *UserController) HandleDeleteCart(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	result, err := userReceiver.UserRepo.DeleteCart(c.Param("id"))
+	if err != nil || !result {
+		return response.InternalServerError(c, "Xoá giỏ hàng thất bại", nil)
+	}
+	return response.Ok(c, "Xoá giỏ hàng thành công", result)
+}

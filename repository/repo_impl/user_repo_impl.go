@@ -18,15 +18,27 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) DeleteCart(cartId string) (bool, error) {
+	var cartDelete model.Cart
+	err := userReceiver.sql.Db.Where("id=?", cartId).Delete(cartDelete)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return false, err.Error
+		}
+		return false, err.Error
+	}
+	return true, nil
+}
+
 func (userReceiver *UserRepoImpl) AddToCart(requestAddCart req.RequestAddToCart) (bool, error) {
 	for i := 0; i < requestAddCart.NumberOfRooms; i++ {
 		cartId, _ := utils.GetNewId()
 		dateBeginAt, _ := time.Parse("2006-01-02 15:04:05", requestAddCart.FromDate)
 		dateEndAt, _ := time.Parse("2006-01-02 15:04:05", requestAddCart.ToDate)
-		logger.Error(dateBeginAt.String())
-		logger.Error(dateEndAt.String())
-		logger.Info(requestAddCart.FromDate)
-		logger.Info(requestAddCart.ToDate)
 
 		cart := model.AddCart{
 			ID:          cartId,

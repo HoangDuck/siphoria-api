@@ -13,6 +13,7 @@ type UserRepo interface {
 	GetUserRank(user model.User) (model.UserRank, error)
 	GetUserNotifications(queryModel query.DataQueryModel) ([]model.Notification, error)
 	AddToCart(requestAddCart req.RequestAddToCart) (bool, error)
+	DeleteCart(cartId string) (bool, error)
 	//GetUserCart(user model.User) (query.RoomAvailableQuery, error)
 	//CheckProfileCustomerExistByIdentify(user model.User) (model.User, error)
 }
