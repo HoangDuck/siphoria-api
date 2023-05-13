@@ -21,8 +21,8 @@ type UserRepoImpl struct {
 func (userReceiver *UserRepoImpl) AddToCart(requestAddCart req.RequestAddToCart) (bool, error) {
 	for i := 0; i < requestAddCart.NumberOfRooms; i++ {
 		cartId, _ := utils.GetNewId()
-		dateBeginAt, _ := time.Parse("2006-01-02", requestAddCart.FromDate)
-		dateEndAt, _ := time.Parse("2006-01-02", requestAddCart.ToDate)
+		dateBeginAt, _ := time.Parse("2006-01-02 12:30:10.000", requestAddCart.FromDate)
+		dateEndAt, _ := time.Parse("2006-01-02 12:30:10.000", requestAddCart.ToDate)
 
 		cart := model.AddCart{
 			ID:          cartId,
@@ -33,6 +33,7 @@ func (userReceiver *UserRepoImpl) AddToCart(requestAddCart req.RequestAddToCart)
 			RoomTypeId:  requestAddCart.RoomTypeID,
 			RatePlanId:  requestAddCart.RatePlanID,
 			HotelId:     requestAddCart.HotelID,
+			UserId:      requestAddCart.UserId,
 		}
 		err := userReceiver.sql.Db.Exec("call sp_addtocart(?,?,?,?,?,?,?,?,?);",
 			cart.ID,

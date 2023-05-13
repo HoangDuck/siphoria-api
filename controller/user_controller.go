@@ -132,7 +132,7 @@ func (userReceiver *UserController) HandleAddToCart(c echo.Context) error {
 	if err != nil || !result {
 		return response.InternalServerError(c, "Thêm giỏ hàng thất bại", nil)
 	}
-	return response.Ok(c, "Thêm giỏ hàng thành công", nil)
+	return response.Ok(c, "Thêm giỏ hàng thành công", result)
 }
 
 // HandleGetCart godoc
