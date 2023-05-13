@@ -151,7 +151,15 @@ func (userReceiver *UserController) HandleGetCart(c echo.Context) error {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	return response.Ok(c, "Danh sách giỏ hàng", nil /*cartData*/)
+	user := model.User{
+		ID: claims.UserId,
+	}
+	listCartUser, err := userReceiver.UserRepo.GetUserCart(user)
+	if err != nil {
+		logger.Error("Error query data", zap.Error(err))
+		return response.InternalServerError(c, "Lấy danh sách giỏ hàng thành công", nil)
+	}
+	return response.Ok(c, "Lấy danh sách giỏ hàng thành công", listCartUser)
 }
 
 // HandleUpdateRank godoc

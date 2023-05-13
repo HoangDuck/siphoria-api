@@ -18,6 +18,16 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) GetUserCart(user model.User) ([]model.Cart, error) {
+	var listCartUser []model.Cart
+	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Find(&listCartUser)
+	if err.Error != nil {
+		logger.Error("Error get list cart url ", zap.Error(err.Error))
+		return listCartUser, err.Error
+	}
+	return listCartUser, nil
+}
+
 func (userReceiver *UserRepoImpl) DeleteCart(cartId string) (bool, error) {
 	var cartDelete model.Cart
 	err := userReceiver.sql.Db.Where("id=?", cartId).Delete(cartDelete)

@@ -14,6 +14,6 @@ type UserRepo interface {
 	GetUserNotifications(queryModel query.DataQueryModel) ([]model.Notification, error)
 	AddToCart(requestAddCart req.RequestAddToCart) (bool, error)
 	DeleteCart(cartId string) (bool, error)
-	//GetUserCart(user model.User) (query.RoomAvailableQuery, error)
+	GetUserCart(user model.User) ([]model.Cart, error)
 	//CheckProfileCustomerExistByIdentify(user model.User) (model.User, error)
 }
