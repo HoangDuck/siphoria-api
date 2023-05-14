@@ -24,7 +24,7 @@ func (userReceiver *UserRepoImpl) GetUserCart(user model.User) ([]model.Cart, er
 	if err.Error != nil {
 		return listCartUser, err.Error
 	}
-	err = userReceiver.sql.Db.Where("user_id = ?", user.ID).Find(&listCartUser)
+	err = userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("RoomType").Preload("Hotel").Find(&listCartUser)
 	if err.Error != nil {
 		logger.Error("Error get list cart url ", zap.Error(err.Error))
 		return listCartUser, err.Error
