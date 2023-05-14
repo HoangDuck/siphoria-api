@@ -20,8 +20,7 @@ type UserRepoImpl struct {
 
 func (userReceiver *UserRepoImpl) GetUserCart(user model.User) ([]model.Cart, error) {
 	var listCartUser []model.Cart
-	err := userReceiver.sql.Db.Exec("call sp_clearcart(?);",
-		user.ID)
+	err := userReceiver.sql.Db.Exec("call sp_clearcart(?);", user.ID)
 	if err.Error != nil {
 		return listCartUser, err.Error
 	}
