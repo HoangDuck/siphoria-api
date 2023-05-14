@@ -29,6 +29,15 @@ func (userReceiver *UserRepoImpl) GetUserCart(user model.User) ([]model.Cart, er
 		logger.Error("Error get list cart url ", zap.Error(err.Error))
 		return listCartUser, err.Error
 	}
+	for index := 0; index < len(listCartUser); index++ {
+		var listCartItemDetail []model.CartDetail
+		err = userReceiver.sql.Db.Where("cart_id = ?", listCartUser[index].ID).Find(&listCartItemDetail)
+		if err.Error != nil {
+			logger.Error("Error get list cart url ", zap.Error(err.Error))
+			continue
+		}
+		listCartUser[index].Details = listCartItemDetail
+	}
 	return listCartUser, nil
 }
 

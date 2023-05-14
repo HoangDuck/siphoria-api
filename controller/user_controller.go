@@ -12,6 +12,7 @@ import (
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
+	"net/http"
 )
 
 type UserController struct {
@@ -159,7 +160,7 @@ func (userReceiver *UserController) HandleGetCart(c echo.Context) error {
 		logger.Error("Error query data", zap.Error(err))
 		return response.InternalServerError(c, "Lấy danh sách giỏ hàng thành công", nil)
 	}
-	return response.Ok(c, "Lấy danh sách giỏ hàng thành công", listCartUser)
+	return c.JSON(http.StatusOK, listCartUser)
 }
 
 // HandleUpdateRank godoc
