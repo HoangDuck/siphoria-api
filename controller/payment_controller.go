@@ -1,111 +1,84 @@
 package controller
 
-//
-//import (
-//	"encoding/json"
-//	"fmt"
-//	"github.com/golang-jwt/jwt"
-//	"github.com/google/uuid"
-//	"github.com/labstack/echo/v4"
-//	"go.uber.org/zap"
-//	"hotel-booking-api/logger"
-//	"hotel-booking-api/model"
-//	"hotel-booking-api/model/model_func"
-//	"hotel-booking-api/model/req"
-//	"hotel-booking-api/model/res"
-//	"hotel-booking-api/repository"
-//	"hotel-booking-api/services"
-//	"net/http"
-//	"strings"
-//	"time"
-//)
-//
-//type PaymentController struct {
-//	PaymentRepo repository.PaymentRepo
-//}
-//
-//// CreatePaymentWithMomo godoc
-//// @Summary Create payment momo
-//// @Tags payment-service
-//// @Accept  json
-//// @Produce  json
-//// @Param data body req.RequestCreatePayment true "payment"
-//// @Success 200 {object} res.Response
-//// @Failure 400 {object} res.Response
-//// @Failure 500 {object} res.Response
-//// @Router /payment/create-payment-momo [post]
-//func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) error {
-//	momoService := services.GetMomoServiceInstance()
-//
-//	reqCreatePayment := req.RequestCreatePayment{}
-//	//binding
-//	if err := c.Bind(&reqCreatePayment); err != nil {
-//		logger.Error("Error binding data", zap.Error(err))
-//		return response.BadRequest(c, err.Error(), nil)
-//	}
-//	token := c.Get("user").(*jwt.Token)
-//	claims := token.Claims.(*model.JwtCustomClaims)
-//	if !(claims.Role == model.CUSTOMER.String()) {
-//		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-//	}
-//
-//	momoUrl, err := paymentReceiver.PaymentRepo.GetMomoHostingUrl()
-//	if err != nil {
-//		return response.InternalServerError(c, err.Error(), nil)
-//	}
-//	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectMomoUrl()
-//	if err != nil {
-//		return response.InternalServerError(c, err.Error(), nil)
-//	}
-//	paymentId, err := uuid.NewUUID()
-//	condition := map[string]interface{}{
-//		"booking-info":        reqCreatePayment.BookingID,
-//		"amount":              reqCreatePayment.Amount,
-//		"booking-description": reqCreatePayment.Amount,
-//		"ipn-url":             momoUrl,
-//		"redirect-url":        redirectMomoUrl,
-//		"payment_id":          paymentId.String(),
-//	}
-//	dataResponse := momoService.PaymentService(condition)
-//	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
-//	if tempResultCode == "0" {
-//		payment := model.Payment{
-//			ID:                paymentId.String(),
-//			BookingID:         reqCreatePayment.BookingID,
-//			CustomerID:        reqCreatePayment.CustomerID,
-//			Amount:            reqCreatePayment.Amount,
-//			Description:       reqCreatePayment.Description,
-//			PaymentMethodID:   "2d81bba8-64e0-11ed-934f-089798c34e0e",
-//			StatusPaymentCode: "1",
-//		}
-//		payment, err = paymentReceiver.PaymentRepo.SavePayment(payment)
-//		if err != nil {
-//			return response.InternalServerError(c, err.Error(), nil)
-//		}
-//	} else if tempResultCode == "41" {
-//		logger.Error("Error update momo payment " + tempResultCode)
-//		return c.JSON(http.StatusInternalServerError, res.Response{
-//			StatusCode: http.StatusInternalServerError,
-//			Message:    "Tạo thanh toán thất bại",
-//			Data:       dataResponse,
-//		})
-//	} else {
-//		logger.Error("Error update momo payment " + tempResultCode)
-//		return c.JSON(http.StatusInternalServerError, res.Response{
-//			StatusCode: http.StatusInternalServerError,
-//			Message:    "Tạo thanh toán thất bại",
-//			Data:       dataResponse,
-//		})
-//	}
-//	if err != nil {
-//		return response.BadRequest(c, err.Error(), nil)
-//	}
-//	return c.JSON(http.StatusOK, res.Response{
-//		StatusCode: http.StatusOK,
-//		Message:    "Tạo thanh toán thành công",
-//		Data:       dataResponse,
-//	})
-//}
+import (
+	"fmt"
+	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
+	"hotel-booking-api/logger"
+	response "hotel-booking-api/model/model_func"
+	"hotel-booking-api/model/res"
+	"hotel-booking-api/services"
+	"net/http"
+)
+
+type PaymentController struct {
+	//PaymentRepo repository.PaymentRepo
+}
+
+// CreatePaymentWithMomo godoc
+// @Summary Create payment momo
+// @Tags payment-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCreatePayment true "payment"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /payment/create-payment-momo [get]
+func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) error {
+	momoService := services.GetMomoServiceInstance()
+	momoUrl := "https://momo.vn"
+	redirectMomoUrl := "https://momo.vn"
+	paymentId, err := uuid.NewUUID()
+	condition := map[string]interface{}{
+		"booking-info":        "MOMO",
+		"amount":              50000,
+		"booking-description": "asdasfsdgfsdgsd",
+		"ipn-url":             momoUrl,
+		"redirect-url":        redirectMomoUrl,
+		"payment_id":          paymentId.String(),
+	}
+	dataResponse := momoService.PaymentService(condition)
+	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
+	if tempResultCode == "0" {
+		//payment := model.Payment{
+		//	ID:                paymentId.String(),
+		//	BookingID:         reqCreatePayment.BookingID,
+		//	CustomerID:        reqCreatePayment.CustomerID,
+		//	Amount:            reqCreatePayment.Amount,
+		//	Description:       reqCreatePayment.Description,
+		//	PaymentMethodID:   "2d81bba8-64e0-11ed-934f-089798c34e0e",
+		//	StatusPaymentCode: "1",
+		//}
+		//payment, err = paymentReceiver.PaymentRepo.SavePayment(payment)
+		//if err != nil {
+		//	return response.InternalServerError(c, err.Error(), nil)
+		//}
+	} else if tempResultCode == "41" {
+		logger.Error("Error update momo payment " + tempResultCode)
+		return c.JSON(http.StatusInternalServerError, res.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Tạo thanh toán thất bại",
+			Data:       dataResponse,
+		})
+	} else {
+		logger.Error("Error update momo payment " + tempResultCode)
+		return c.JSON(http.StatusInternalServerError, res.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Tạo thanh toán thất bại",
+			Data:       dataResponse,
+		})
+	}
+	if err != nil {
+		return response.BadRequest(c, "nil", nil)
+	}
+	return c.JSON(http.StatusOK, res.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Tạo thanh toán thành công",
+		Data:       dataResponse,
+	})
+}
+
 //
 //func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
 //	jsonRequestMomo := make(map[string]interface{})

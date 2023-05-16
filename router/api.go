@@ -20,6 +20,7 @@ type API struct {
 	NotificationController controller.NotificationController
 	RoomController         controller.RoomController
 	VoucherController      controller.VoucherController
+	PaymentController      controller.PaymentController
 }
 
 func (api *API) SetupRouter() {
@@ -102,6 +103,9 @@ func (api *API) SetupRouter() {
 	booking.GET("/welcome-payment", func(context echo.Context) error {
 		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
 	})
+
+	payment := request.Group("/payments")
+	payment.GET("/test/momo", api.PaymentController.CreatePaymentWithMomo)
 
 	admin := request.Group("/admin")
 	admin.POST("/create-account", api.AdminController.HandleCreateAccount, middleware.JWTMiddleWare())

@@ -115,8 +115,8 @@ func (service MomoService) PaymentService(condition map[string]interface{}) map[
 	signature := hex.EncodeToString(hmacSignature.Sum(nil))
 
 	var payload = Payload{
-		PartnerCode:  partnerCode,
-		AccessKey:    accessKey,
+		PartnerCode: partnerCode,
+		//AccessKey:    accessKey,
 		RequestID:    requestId,
 		Amount:       amount,
 		RequestType:  requestType,
@@ -139,6 +139,7 @@ func (service MomoService) PaymentService(condition map[string]interface{}) map[
 	if err != nil {
 		log.Println(err)
 	}
+	fmt.Println("Request to Momo: ", payload)
 
 	///send HTTP to momo endpoint
 	resp, err := http.Post(endpoint, "application/json", bytes.NewBuffer(jsonPayload))
