@@ -125,6 +125,18 @@ definitions:
       wifi:
         type: boolean
     type: object
+  req.RequestCreatePayment:
+    properties:
+      amount:
+        type: integer
+      booking_id:
+        type: string
+      customer_id:
+        type: string
+      description:
+        description: PaymentMethod string  `json:"payment_method"`
+        type: string
+    type: object
   req.RequestCreateRoomType:
     properties:
       activated:
@@ -1245,6 +1257,35 @@ paths:
       summary: Search Hotel
       tags:
       - hotel-service
+  /payment/create-payment-momo:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: payment
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestCreatePayment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Create payment momo
+      tags:
+      - payment-service
   /ratePlan/rateplan-info:
     post:
       consumes:
@@ -1586,6 +1627,28 @@ paths:
       summary: Get cart by user
       tags:
       - user-service
+  /users/carts/:id:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Delete user cart
+      tags:
+      - user-service
   /users/details:
     get:
       consumes:
@@ -1639,6 +1702,49 @@ paths:
       - user-service
   /users/notifications:
     get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get User Notifications
+      tags:
+      - user-service
+  /users/payments:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get payment by user
+      tags:
+      - user-service
+    post:
       consumes:
       - application/json
       produces:

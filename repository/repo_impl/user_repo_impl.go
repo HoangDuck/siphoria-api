@@ -18,6 +18,34 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) GetUserPayment(user model.User) ([]model.Payment, error) {
+	var listPaymentUser []model.Payment
+	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("RatePlan").Preload("RoomType").Preload("Hotel").Find(&listPaymentUser)
+	if err.Error != nil {
+		logger.Error("Error get list cart url ", zap.Error(err.Error))
+		return listPaymentUser, err.Error
+	}
+	for index := 0; index < len(listPaymentUser); index++ {
+		var listPaymentDetail []model.PaymentDetail
+		err = userReceiver.sql.Db.Where("payment_id = ?", listPaymentUser[index].ID).Find(&listPaymentDetail)
+		if err.Error != nil {
+			logger.Error("Error get list payment url ", zap.Error(err.Error))
+			continue
+		}
+		listPaymentUser[index].PaymentDetail = listPaymentDetail
+	}
+	return listPaymentUser, nil
+}
+
+func (userReceiver *UserRepoImpl) CreatePaymentFromCart(user model.User) (bool, error) {
+	err := userReceiver.sql.Db.Exec("call sp_addpayment(?);",
+		user.ID)
+	if err.Error != nil {
+		return false, err.Error
+	}
+	return true, nil
+}
+
 func (userReceiver *UserRepoImpl) GetUserCart(user model.User) ([]model.Cart, error) {
 	var listCartUser []model.Cart
 	err := userReceiver.sql.Db.Exec("call sp_clearcart(?);", user.ID)

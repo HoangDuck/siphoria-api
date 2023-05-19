@@ -308,3 +308,53 @@ func (userReceiver *UserController) HandleDeleteCart(c echo.Context) error {
 	}
 	return response.Ok(c, "Xoá giỏ hàng thành công", result)
 }
+
+// HandleCreatePaymentFromCart godoc
+// @Summary Get User Notifications
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/payments [post]
+func (userReceiver *UserController) HandleCreatePaymentFromCart(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	customer := model.User{
+		ID: claims.UserId,
+	}
+	customerResult, err := userReceiver.UserRepo.CreatePaymentFromCart(customer)
+	if err != nil {
+		logger.Error("Error get profile data", zap.Error(err))
+		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
+	}
+	return response.Ok(c, "Tạo thanh thành công", customerResult)
+}
+
+// HandleGetPayments godoc
+// @Summary Get payment by user
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/payments [get]
+func (userReceiver *UserController) HandleGetPayments(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	user := model.User{
+		ID: claims.UserId,
+	}
+	listPaymentUser, err := userReceiver.UserRepo.GetUserPayment(user)
+	if err != nil {
+		logger.Error("Error query data", zap.Error(err))
+		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
+	}
+	return c.JSON(http.StatusOK, listPaymentUser)
+}

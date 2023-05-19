@@ -59,11 +59,12 @@ func (api *API) SetupRouter() {
 	user.PATCH("/update-profile", api.UserController.HandleUpdateProfile, middleware.JWTMiddleWare())
 	user.POST("/add-to-cart", api.UserController.HandleAddToCart, middleware.JWTMiddleWare())
 	user.GET("/carts", api.UserController.HandleGetCart, middleware.JWTMiddleWare())
-	user.GET("/notifications", api.UserController.HandleGetCart, middleware.JWTMiddleWare())
+	user.GET("/payments", api.UserController.HandleGetPayments, middleware.JWTMiddleWare())
 	user.DELETE("/carts/:id", api.UserController.HandleDeleteCart, middleware.JWTMiddleWare())
 	//user.PATCH("/cancel-payment", api.PaymentController.HandleCancelPayment, middleware.JWTMiddleWare())
 	//user.POST("/create-payment-session", api.PaymentController.HandleCreatePayment, middleware.JWTMiddleWare())
 	user.GET("/notifications", api.UserController.HandleGetUserNotifications, middleware.JWTMiddleWare())
+	user.POST("/payments", api.UserController.HandleCreatePaymentFromCart, middleware.JWTMiddleWare())
 
 	hotel := request.Group("/hotels")
 	hotel.GET("/", api.HotelController.HandleGetHotelPartner, middleware.JWTMiddleWare())
