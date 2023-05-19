@@ -34,16 +34,16 @@ type Payment struct {
 	UserId          string          `json:"user_id"`
 	User            User            `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomTypeId      string          `json:"room_type_id"`
-	RoomType        RoomType        `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomType        *RoomType       `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	VoucherId       string          `json:"voucher_id"`
-	Voucher         Voucher         `json:"voucher" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Voucher         *Voucher        `json:"voucher,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PayoutRequestId string          `json:"payout_request_id"`
-	PayoutRequest   PayoutRequest   `json:"payout_request" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PayoutRequest   *PayoutRequest  `json:"payout_request,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	HotelId         string          `json:"hotel_id"`
 	Hotel           *Hotel          `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	SessionId       string          `json:"session_id" gorm:"session_id"`
 	RatePlanId      string          `json:"rate_plan_id"`
-	RatePlan        RatePlan        `json:"rate_plan" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RatePlan        *RatePlan       `json:"rate_plan" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	CreatedAt       time.Time       `json:"created_at" gorm:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at" gorm:"updated_at"`
 	CartId          string          `json:"cart_id" gorm:"cart_id"`
@@ -57,11 +57,11 @@ type PaymentDetail struct {
 	ChildrenNum   int          `json:"children_num" gorm:"children_num"`
 	DayOff        time.Time    `json:"day_off" gorm:"day_off"`
 	PaymentId     string       `json:"payment_id"`
-	Payment       Payment      `json:"payment" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Payment       *Payment     `json:"payment,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RatePlanId    string       `json:"rate_plan_id"`
-	RatePlan      RatePlan     `json:"rate_plan" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RatePlan      *RatePlan    `json:"rate_plan,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserId        string       `json:"user_id"`
-	User          User         `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	User          *User        `json:"user,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RatePackageId string       `json:"rate_package_id" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RatePackage   *RatePackage `json:"rate_package,omitempty"`
 }

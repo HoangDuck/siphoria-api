@@ -20,7 +20,8 @@ type UserRepoImpl struct {
 
 func (userReceiver *UserRepoImpl) GetUserPayment(user model.User) ([]model.Payment, error) {
 	var listPaymentUser []model.Payment
-	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("RatePlan").Preload("RoomType").Preload("Hotel").Find(&listPaymentUser)
+	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("User").
+		Preload("RatePlan").Preload("RoomType").Preload("Hotel").Find(&listPaymentUser)
 	if err.Error != nil {
 		logger.Error("Error get list cart url ", zap.Error(err.Error))
 		return listPaymentUser, err.Error

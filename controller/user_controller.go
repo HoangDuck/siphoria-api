@@ -329,7 +329,7 @@ func (userReceiver *UserController) HandleCreatePaymentFromCart(c echo.Context) 
 		logger.Error("Error get profile data", zap.Error(err))
 		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
 	}
-	return response.Ok(c, "Tạo thanh thành công", customerResult)
+	return response.Ok(c, "Tạo thanh toán thành công", customerResult)
 }
 
 // HandleGetPayments godoc
