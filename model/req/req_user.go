@@ -92,3 +92,7 @@ type RequestAddToCart struct {
 	ToDate           string `json:"to_date"`
 	UserId           string
 }
+
+type RequestUpdatePaymentStatus struct {
+	SessionId string `json:"session_id"`
+}

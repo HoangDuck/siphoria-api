@@ -17,5 +17,6 @@ type UserRepo interface {
 	GetUserCart(user model.User) ([]model.Cart, error)
 	GetUserPayment(user model.User) ([]model.Payment, error)
 	CreatePaymentFromCart(user model.User) (bool, error)
+	UpdatePaymentStatus(payment model.Payment) (bool, error)
 	//CheckProfileCustomerExistByIdentify(user model.User) (model.User, error)
 }

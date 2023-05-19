@@ -18,6 +18,21 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) UpdatePaymentStatus(payment model.Payment) (bool, error) {
+	err := userReceiver.sql.Db.Model(&payment).Where("session_id=?", payment.SessionId).Updates(payment)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return false, err.Error
+		}
+		return false, err.Error
+	}
+	return true, nil
+}
+
 func (userReceiver *UserRepoImpl) GetUserPayment(user model.User) ([]model.Payment, error) {
 	var listPaymentUser []model.Payment
 	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("User").

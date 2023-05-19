@@ -329,7 +329,7 @@ func (userReceiver *UserController) HandleCreatePaymentFromCart(c echo.Context) 
 		logger.Error("Error get profile data", zap.Error(err))
 		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
 	}
-	return response.Ok(c, "Tạo thanh toán thành công", customerResult)
+	return response.Ok(c, "Tạo thanh  thành công", customerResult)
 }
 
 // HandleGetPayments godoc
@@ -357,4 +357,39 @@ func (userReceiver *UserController) HandleGetPayments(c echo.Context) error {
 		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
 	}
 	return c.JSON(http.StatusOK, listPaymentUser)
+}
+
+// HandleUpdateStatusPayment godoc
+// @Summary Update status payment
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/payments [put]
+func (userReceiver *UserController) HandleUpdateStatusPayment(c echo.Context) error {
+	reqUpdatePaymentStatus := req.RequestUpdatePaymentStatus{}
+	if err := c.Bind(&reqUpdatePaymentStatus); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return err
+	}
+	err := c.Validate(reqUpdatePaymentStatus)
+	if err != nil {
+		logger.Error("Error validate data", zap.Error(err))
+		return response.BadRequest(c, "Thông tin không hợp lệ", nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	payment := model.Payment{
+		UserId:    claims.UserId,
+		SessionId: reqUpdatePaymentStatus.SessionId,
+		Status:    "paid",
+	}
+	customerResult, err := userReceiver.UserRepo.UpdatePaymentStatus(payment)
+	if err != nil {
+		logger.Error("Error get profile data", zap.Error(err))
+		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
+	}
+	return response.Ok(c, "Cập nhật trạng thái thanh toán thành công", customerResult)
 }
