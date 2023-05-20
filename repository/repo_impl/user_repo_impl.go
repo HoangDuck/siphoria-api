@@ -18,6 +18,26 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) GetUserPaymentHistory(user model.User) ([]model.Payment, error) {
+	var listPaymentUser []model.Payment
+	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("User").
+		Preload("RatePlan").Preload("RoomType").Preload("Hotel").Find(&listPaymentUser)
+	if err.Error != nil {
+		logger.Error("Error get list cart url ", zap.Error(err.Error))
+		return listPaymentUser, err.Error
+	}
+	for index := 0; index < len(listPaymentUser); index++ {
+		var listPaymentDetail []model.PaymentDetail
+		err = userReceiver.sql.Db.Where("payment_id = ?", listPaymentUser[index].ID).Find(&listPaymentDetail)
+		if err.Error != nil {
+			logger.Error("Error get list payment url ", zap.Error(err.Error))
+			continue
+		}
+		listPaymentUser[index].PaymentDetail = listPaymentDetail
+	}
+	return listPaymentUser, nil
+}
+
 func (userReceiver *UserRepoImpl) UpdatePaymentStatus(payment model.Payment) (bool, error) {
 	err := userReceiver.sql.Db.Model(&payment).Where("session_id=?", payment.SessionId).Updates(payment)
 	if err.Error != nil {
@@ -35,7 +55,7 @@ func (userReceiver *UserRepoImpl) UpdatePaymentStatus(payment model.Payment) (bo
 
 func (userReceiver *UserRepoImpl) GetUserPayment(user model.User) ([]model.Payment, error) {
 	var listPaymentUser []model.Payment
-	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("User").
+	err := userReceiver.sql.Db.Where("user_id = ? AND status = ?", user.ID, "pending").Preload("User").
 		Preload("RatePlan").Preload("RoomType").Preload("Hotel").Find(&listPaymentUser)
 	if err.Error != nil {
 		logger.Error("Error get list cart url ", zap.Error(err.Error))

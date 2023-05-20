@@ -393,3 +393,30 @@ func (userReceiver *UserController) HandleUpdateStatusPayment(c echo.Context) er
 	}
 	return response.Ok(c, "Cập nhật trạng thái thanh toán thành công", customerResult)
 }
+
+// HandleGetPaymentsHistory godoc
+// @Summary Get payment by user
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/payments/history [get]
+func (userReceiver *UserController) HandleGetPaymentsHistory(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	user := model.User{
+		ID: claims.UserId,
+	}
+	listPaymentUser, err := userReceiver.UserRepo.GetUserPaymentHistory(user)
+	if err != nil {
+		logger.Error("Error query data", zap.Error(err))
+		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
+	}
+	return c.JSON(http.StatusOK, listPaymentUser)
+}
