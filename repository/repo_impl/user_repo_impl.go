@@ -60,6 +60,7 @@ func (userReceiver *UserRepoImpl) GetUserPaymentHistory(user model.User) ([]mode
 
 func (userReceiver *UserRepoImpl) UpdatePaymentStatus(payment model.Payment) (bool, error) {
 	err := userReceiver.sql.Db.Model(&payment).Where("session_id=?", payment.SessionId).Updates(payment)
+	err = userReceiver.sql.Db.Where("user_id=?", payment.UserId).Delete(model.Cart{})
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
