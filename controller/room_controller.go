@@ -72,7 +72,7 @@ func (roomReceiver *RoomController) HandleGetRoomTypeDetail(c echo.Context) erro
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	roomType := model.RoomType{
-		ID: c.QueryParam("id"),
+		ID: c.Param("id"),
 	}
 	roomType, err := roomReceiver.RoomRepo.GetRoomTypeDetail(roomType)
 	if err != nil {
