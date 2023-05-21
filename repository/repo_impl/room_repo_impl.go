@@ -73,8 +73,12 @@ func (roomReceiver *RoomRepoImpl) GetListRoomTypeDetail(room model.RoomType) ([]
 }
 
 func (roomReceiver *RoomRepoImpl) GetRoomTypeDetail(room model.RoomType) (model.RoomType, error) {
-	err := roomReceiver.sql.Db.Where("id = ?", room.ID).Find(&room)
+	err := roomReceiver.sql.Db.Preload("RoomTypeFacility").Preload("RoomTypeViews").
+		Where("id = ?", room.ID).Find(&room)
 	if err.RowsAffected == 0 {
+		return room, custom_error.RoomNotFound
+	}
+	if err.Error != nil {
 		return room, err.Error
 	}
 	return room, nil

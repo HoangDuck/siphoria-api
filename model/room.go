@@ -19,10 +19,10 @@ type RoomType struct {
 	HotelId          string           `json:"hotel_id"`
 	Hotel            *Hotel           `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	IsDeleted        bool             `json:"-" gorm:"is_deleted"`
-	RoomTypeFacility RoomTypeFacility `json:"room_type_facility" gorm:"-"`
+	RoomTypeFacility RoomTypeFacility `json:"room_type_facility" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomNights       []RoomNights     `json:"room_nights" gorm:"-"`
 	RatePlans        []RatePlan       `json:"rate_plans" gorm:"-"`
-	RoomTypeViews    RoomTypeViews    `json:"room_type_views" gorm:"-"`
+	RoomTypeViews    RoomTypeViews    `json:"room_type_views" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type RoomTypeViews struct {

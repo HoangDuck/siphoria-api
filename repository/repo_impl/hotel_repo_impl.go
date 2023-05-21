@@ -32,7 +32,7 @@ func (hotelReceiver *HotelRepoImpl) GetHotelMobile() ([]model.Hotel, error) {
 func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel query.DataQueryModel) ([]model.RoomType, error) {
 	var listRoomType []model.RoomType
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.RoomType{}, queryModel.ListIgnoreColumns)
-	err = err.Where("hotel_id = ?", queryModel.DataId)
+	err = err.Preload("RoomTypeFacility").Preload("RoomTypeViews").Where("hotel_id = ?", queryModel.DataId).Preload("RoomTypeFacility").Preload("RoomTypeViews")
 	err = err.Find(&listRoomType)
 	if err.Error != nil {
 		logger.Error("Error get list room type url ", zap.Error(err.Error))

@@ -43,7 +43,7 @@ func (hotelController *HotelController) HandleGetRoomTypeByHotel(c echo.Context)
 		"hotel", "created_at", "updated_at", "",
 	}, &model.RoomType{})
 	dataQueryModel.UserId = claims.UserId
-	dataQueryModel.DataId = c.Param(":id")
+	dataQueryModel.DataId = c.Param("id")
 	listRoomType, err := hotelController.HotelRepo.GetRoomTypeFilter(dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listRoomType)
