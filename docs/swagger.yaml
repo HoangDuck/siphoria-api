@@ -1765,6 +1765,71 @@ paths:
       summary: Get User Notifications
       tags:
       - user-service
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update status payment
+      tags:
+      - user-service
+  /users/payments/history:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get payment by user
+      tags:
+      - user-service
+  /users/payments/pending-checkin:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get payment by user
+      tags:
+      - user-service
   /users/update-avatar:
     post:
       consumes:
@@ -1846,7 +1911,7 @@ paths:
       tags:
       - user-service
   /vouchers:
-    post:
+    patch:
       consumes:
       - application/json
       parameters:
@@ -1874,4 +1939,32 @@ paths:
       summary: Update voucher
       tags:
       - vocuher-service
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: voucher
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestAddVoucher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Save voucher
+      tags:
+      - voucher-service
 swagger: "2.0"

@@ -77,7 +77,7 @@ func (voucherController *VoucherController) HandleSaveVoucher(c echo.Context) er
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /vouchers [post]
+// @Router /vouchers [patch]
 func (voucherController *VoucherController) HandleUpdateVoucher(c echo.Context) error {
 	reqUpdateVoucher := req.RequestUpdateVoucher{}
 	//binding
@@ -102,7 +102,7 @@ func (voucherController *VoucherController) HandleUpdateVoucher(c echo.Context) 
 		ID:        voucherId,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		HotelId:   c.QueryParam("id"),
+		HotelId:   c.Param("id"),
 		Name:      reqUpdateVoucher.Name,
 		Discount:  reqUpdateVoucher.Discount,
 		Activated: reqUpdateVoucher.Activated,
