@@ -111,6 +111,8 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	voucherController := controller.VoucherController{
 		VoucherRepo: repo_impl.NewVoucherRepo(sql),
 	}
+
+	paymentController := controller.PaymentController{}
 	//init routers
 	api = &router.API{
 		Echo:                   echoInstance,
@@ -125,6 +127,7 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		RoomController:         roomController,
 		RatePlanController:     ratePlanController,
 		VoucherController:      voucherController,
+		PaymentController:      paymentController,
 	}
 	api.SetupRouter()
 }
