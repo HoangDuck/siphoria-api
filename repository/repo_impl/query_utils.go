@@ -12,14 +12,22 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 	result := sql.Db
 	//query row by conditions
 	if queryModel.Search != "" {
-		//result = result.Where("(fn_convertCoDauToKhongDau(email) LIKE ('%' || fn_convertCoDauToKhongDau(?) || '%')",
-		//	queryModel.Search)
+		result = result.Where("(fn_convertCoDauToKhongDau(id) LIKE ('%' || fn_convertCoDauToKhongDau(?) || '%')",
+			queryModel.Search)
 		val := reflect.ValueOf(modelStruct).Elem()
-		numberField := val.NumField()
+		numberRemainFieldCheck := val.NumField()
+		numberIgnoreField := 0
 		for i := 0; i < val.NumField(); i++ {
 			tempElementJson := utils.GetColumnFieldName(val.Type().Field(i))
+			if utils.Contains(listIgnoreKey, tempElementJson) {
+				numberIgnoreField++
+			}
+		}
+		for i := 0; i < val.NumField(); i++ {
+			tempElementJson := utils.GetColumnFieldName(val.Type().Field(i))
+			numberRemainFieldCheck--
 			if !utils.Contains(listIgnoreKey, tempElementJson) {
-				if i == numberField-1-(val.NumField()-numberField) {
+				if numberRemainFieldCheck == numberIgnoreField {
 					result = result.Or("fn_convertCoDauToKhongDau("+
 						tempElementJson+"::text) LIKE ('%' || fn_convertCoDauToKhongDau(?::text) || '%'))",
 						queryModel.Search)
@@ -29,7 +37,7 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 						queryModel.Search)
 				}
 			} else {
-				numberField--
+				numberIgnoreField--
 			}
 		}
 
