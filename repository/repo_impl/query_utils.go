@@ -43,11 +43,10 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 	var countTotalRows int64
 	result.Model(modelStruct).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
-	countTotalPages := 0
+	countTotalPages := 1
 	if queryModel.TotalRows%queryModel.Limit > 0 {
-		countTotalPages = 1
+		countTotalPages += queryModel.TotalRows / queryModel.Limit
 	}
-	countTotalPages += queryModel.TotalRows / queryModel.Limit
 	queryModel.TotalPages = countTotalPages
 	queryModel.PageViewIndex = queryModel.Page + 1
 	//order by
