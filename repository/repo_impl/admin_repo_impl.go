@@ -104,7 +104,7 @@ func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
 func (u *AdminRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error) {
 	var listHotel []model.Hotel
 	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
-	err = err.Find(&listHotel)
+	err = err.Preload("HotelType").Preload("HotelFacility").Find(&listHotel)
 	if err.Error != nil {
 		logger.Error("Error get list hotel url ", zap.Error(err.Error))
 		return listHotel, err.Error

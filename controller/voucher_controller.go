@@ -70,10 +70,10 @@ func (voucherController *VoucherController) HandleSaveVoucher(c echo.Context) er
 
 // HandleUpdateVoucher godoc
 // @Summary Update voucher
-// @Tags vocuher-service
+// @Tags voucher-service
 // @Accept  json
 // @Produce  json
-// @Param data body req.RequestUpdateVoucher true "rateplan"
+// @Param data body req.RequestUpdateVoucher true "voucher"
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response

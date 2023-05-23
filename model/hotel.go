@@ -3,30 +3,32 @@ package model
 import "time"
 
 type Hotel struct {
-	ID              string    `json:"id" gorm:"primary_key"`
-	Name            string    `json:"name" gorm:"name"`
-	Overview        string    `json:"overview" gorm:"overview"`
-	Rating          float32   `json:"rating" gorm:"rating"`
-	CommissionRate  float32   `json:"commission_rate" gorm:"commission_rate"`
-	CreatedAt       time.Time `json:"created_at" gorm:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at" gorm:"updated_at"`
-	Status          int       `json:"status" gorm:"status"`
-	Activate        bool      `json:"activate" gorm:"activate"`
-	ProvinceCode    int       `json:"province_code" gorm:"province_code"`
-	DistrictCode    int       `json:"district_code" gorm:"district_code"`
-	WardCode        int       `json:"ward_code" gorm:"ward_code"`
-	RawAddress      string    `json:"raw_address" gorm:"raw_address"`
-	HotelPhotos     string    `json:"hotel_photos" gorm:"hotel_photos"`
-	BankAccount     string    `json:"bank_account" gorm:"bank_account"`
-	BankBeneficiary string    `json:"bank_beneficiary" gorm:"bank_beneficiary"`
-	BankName        string    `json:"bank_name" gorm:"bank_name"`
-	BusinessLicence string    `json:"business_licence" gorm:"business_licence"`
-	HotelierId      string    `json:"hotelier_id,omitempty"`
-	Hotelier        *User     `json:"hotelier,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	IsDeleted       bool      `json:"-" gorm:"is_deleted"`
-	PriceHotel      float32   `json:"price_hotel" gorm:"price_hotel"`
-	DiscountPrice   float32   `json:"discount_price" gorm:"discount_price"`
-	DiscountHotel   float32   `json:"discount_hotel" gorm:"discount_hotel"`
+	ID              string        `json:"id" gorm:"primary_key"`
+	Name            string        `json:"name" gorm:"name"`
+	Overview        string        `json:"overview" gorm:"overview"`
+	Rating          float32       `json:"rating" gorm:"rating"`
+	CommissionRate  float32       `json:"commission_rate" gorm:"commission_rate"`
+	CreatedAt       time.Time     `json:"created_at" gorm:"created_at"`
+	UpdatedAt       time.Time     `json:"updated_at" gorm:"updated_at"`
+	Status          int           `json:"status" gorm:"status"`
+	Activate        bool          `json:"activate" gorm:"activate"`
+	ProvinceCode    int           `json:"province_code" gorm:"province_code"`
+	DistrictCode    int           `json:"district_code" gorm:"district_code"`
+	WardCode        int           `json:"ward_code" gorm:"ward_code"`
+	RawAddress      string        `json:"raw_address" gorm:"raw_address"`
+	HotelPhotos     string        `json:"hotel_photos" gorm:"hotel_photos"`
+	BankAccount     string        `json:"bank_account" gorm:"bank_account"`
+	BankBeneficiary string        `json:"bank_beneficiary" gorm:"bank_beneficiary"`
+	BankName        string        `json:"bank_name" gorm:"bank_name"`
+	BusinessLicence string        `json:"business_licence" gorm:"business_licence"`
+	HotelierId      string        `json:"hotelier_id,omitempty"`
+	Hotelier        *User         `json:"hotelier,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	IsDeleted       bool          `json:"-" gorm:"is_deleted"`
+	PriceHotel      float32       `json:"price_hotel" gorm:"price_hotel"`
+	DiscountPrice   float32       `json:"discount_price" gorm:"discount_price"`
+	DiscountHotel   float32       `json:"discount_hotel" gorm:"discount_hotel"`
+	HotelType       HotelType     `json:"hotel_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	HotelFacility   HotelFacility `json:"hotel_facility" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type HotelWork struct {
