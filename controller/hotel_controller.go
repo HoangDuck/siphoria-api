@@ -57,7 +57,7 @@ func (hotelController *HotelController) HandleGetRoomTypeByHotel(c echo.Context)
 		Paging: res.PagingModel{
 			TotalItems: dataQueryModel.TotalRows,
 			TotalPages: dataQueryModel.TotalPages,
-			Page:       dataQueryModel.Page,
+			Page:       dataQueryModel.PageViewIndex,
 			Offset:     dataQueryModel.Limit,
 		},
 	})
@@ -125,7 +125,7 @@ func (hotelController *HotelController) HandleGetHotelPartner(c echo.Context) er
 		Paging: res.PagingModel{
 			TotalItems: dataQueryModel.TotalRows,
 			TotalPages: dataQueryModel.TotalPages,
-			Page:       dataQueryModel.Page,
+			Page:       dataQueryModel.PageViewIndex,
 			Offset:     dataQueryModel.Limit,
 		},
 	})

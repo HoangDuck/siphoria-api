@@ -18,6 +18,7 @@ type DataQueryModel struct {
 	ListIgnoreColumns []string
 	TotalRows         int
 	TotalPages        int
+	PageViewIndex     int
 }
 
 type ResultTotalPrice struct {

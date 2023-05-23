@@ -184,7 +184,7 @@ func (adminController *AdminController) HandleGetAccountByAdmin(c echo.Context) 
 		Paging: res.PagingModel{
 			TotalItems: dataQueryModel.TotalRows,
 			TotalPages: dataQueryModel.TotalPages,
-			Page:       dataQueryModel.Page,
+			Page:       dataQueryModel.PageViewIndex,
 			Offset:     dataQueryModel.Limit,
 		},
 	})
@@ -222,7 +222,7 @@ func (adminController *AdminController) HandleGetHotelByAdmin(c echo.Context) er
 		Paging: res.PagingModel{
 			TotalItems: dataQueryModel.TotalRows,
 			TotalPages: dataQueryModel.TotalPages,
-			Page:       dataQueryModel.Page,
+			Page:       dataQueryModel.PageViewIndex,
 			Offset:     dataQueryModel.Limit,
 		},
 	})

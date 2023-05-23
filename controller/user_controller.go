@@ -49,7 +49,7 @@ func (userReceiver *UserController) HandleGetNotifications(c echo.Context) error
 		Paging: res.PagingModel{
 			TotalItems: dataQueryModel.TotalRows,
 			TotalPages: dataQueryModel.TotalPages,
-			Page:       dataQueryModel.Page,
+			Page:       dataQueryModel.PageViewIndex,
 			Offset:     dataQueryModel.Limit,
 		},
 	})
