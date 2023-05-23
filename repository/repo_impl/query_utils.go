@@ -61,7 +61,6 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 		countTotalPages = 1
 	}
 	queryModel.TotalPages = countTotalPages
-	queryModel.PageViewIndex = queryModel.Page + 1
 	//order by
 	if queryModel.Sort != "" {
 		result = result.Order(queryModel.Sort + " " + queryModel.Order)

@@ -27,7 +27,9 @@ func GetQueryDataModel(c echo.Context, listIgnoreColumns []string, modelStruct a
 	//page index
 	tempValuePage := c.QueryParam("page")
 	page, err := strconv.ParseInt(tempValuePage, 10, 32)
+
 	if page > 0 {
+		model.PageViewIndex = int(page)
 		page = limit*page - limit
 	}
 	if err != nil {

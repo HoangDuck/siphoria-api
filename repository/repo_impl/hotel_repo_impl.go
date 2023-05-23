@@ -33,6 +33,9 @@ func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel *query.DataQuer
 	var listRoomType []model.RoomType
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.RoomType{}, queryModel.ListIgnoreColumns)
 	err = err.Preload("RoomTypeFacility").Preload("RoomTypeViews").Where("hotel_id = ?", queryModel.DataId).Preload("RoomTypeFacility").Preload("RoomTypeViews")
+	var countTotalRows int64
+	err.Model(model.Hotel{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
 	err = err.Find(&listRoomType)
 	if err.Error != nil {
 		logger.Error("Error get list room type url ", zap.Error(err.Error))
@@ -43,8 +46,12 @@ func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel *query.DataQuer
 
 func (hotelReceiver *HotelRepoImpl) GetHotelFilter(queryModel *query.DataQueryModel) ([]model.Hotel, error) {
 	var listHotel []model.Hotel
+	//err :=
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
 	err = err.Where("id in (Select hotel_id from hotel_works where user_id = ?)", queryModel.UserId)
+	var countTotalRows int64
+	err.Model(model.Hotel{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
 	err = err.Find(&listHotel)
 	if err.Error != nil {
 		logger.Error("Error get list hotel url ", zap.Error(err.Error))
