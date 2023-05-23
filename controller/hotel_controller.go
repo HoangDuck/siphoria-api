@@ -8,6 +8,7 @@ import (
 	"hotel-booking-api/model"
 	response "hotel-booking-api/model/model_func"
 	"hotel-booking-api/model/req"
+	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
@@ -44,11 +45,22 @@ func (hotelController *HotelController) HandleGetRoomTypeByHotel(c echo.Context)
 	}, &model.RoomType{})
 	dataQueryModel.UserId = claims.UserId
 	dataQueryModel.DataId = c.Param("id")
-	listRoomType, err := hotelController.HotelRepo.GetRoomTypeFilter(dataQueryModel)
+	listRoomType, err := hotelController.HotelRepo.GetRoomTypeFilter(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listRoomType)
 	}
-	return response.Ok(c, "Lấy danh sách phòng thành công", listRoomType)
+	return response.Ok(c, "Lấy danh sách phòng thành công", struct {
+		Data   []model.RoomType `json:"data"`
+		Paging res.PagingModel  `json:"paging"`
+	}{
+		Data: listRoomType,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.Page,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }
 
 // HandleSearchHotel godoc
@@ -101,11 +113,22 @@ func (hotelController *HotelController) HandleGetHotelPartner(c echo.Context) er
 		"hotelier", "created_at", "updated_at", "",
 	}, &model.Hotel{})
 	dataQueryModel.UserId = claims.UserId
-	listHotel, err := hotelController.HotelRepo.GetHotelFilter(dataQueryModel)
+	listHotel, err := hotelController.HotelRepo.GetHotelFilter(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listHotel)
 	}
-	return response.Ok(c, "Lấy danh sách khách sạn thành công", listHotel)
+	return response.Ok(c, "Lấy danh sách khách sạn thành công", struct {
+		Data   []model.Hotel   `json:"data"`
+		Paging res.PagingModel `json:"paging"`
+	}{
+		Data: listHotel,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.Page,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }
 
 // HandleGetHotelSearchMobile godoc

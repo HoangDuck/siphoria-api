@@ -20,3 +20,10 @@ type ResponseListRoomRatePlanByRoomTypeCode struct {
 	ListRoom     []ListRoomByFloorItem `json:"list_room"`
 	ListRatePlan []model.RatePlan      `json:"list_rate_plan"`
 }
+
+type PagingModel struct {
+	TotalItems int `json:"total_items"`
+	TotalPages int `json:"total_pages"`
+	Page       int `json:"page"`
+	Offset     int `json:"offset"`
+}

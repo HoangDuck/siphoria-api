@@ -177,7 +177,7 @@ func (userReceiver *UserRepoImpl) AddToCart(requestAddCart req.RequestAddToCart)
 	return true, nil
 }
 
-func (userReceiver *UserRepoImpl) GetUserNotifications(queryModel query.DataQueryModel) ([]model.Notification, error) {
+func (userReceiver *UserRepoImpl) GetUserNotifications(queryModel *query.DataQueryModel) ([]model.Notification, error) {
 	var listNotifications []model.Notification
 	err := GenerateQueryGetData(userReceiver.sql, queryModel, &model.Notification{}, queryModel.ListIgnoreColumns)
 	err = err.Find(&listNotifications)

@@ -9,6 +9,7 @@ import (
 	"hotel-booking-api/model"
 	response "hotel-booking-api/model/model_func"
 	"hotel-booking-api/model/req"
+	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/utils"
@@ -140,7 +141,7 @@ func (adminController *AdminController) HandleGetHotelWorkByEmployee(c echo.Cont
 		"hotelier", "created_at", "updated_at", "",
 	}, &model.Hotel{})
 	dataQueryModel.UserId = claims.UserId
-	listHotel, err := adminController.AdminRepo.GetHotelWorkByEmployee(dataQueryModel)
+	listHotel, err := adminController.AdminRepo.GetHotelWorkByEmployee(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -171,11 +172,22 @@ func (adminController *AdminController) HandleGetAccountByAdmin(c echo.Context) 
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"token", "created_at", "updated_at", "",
 	}, &model.User{})
-	listUser, err := adminController.AdminRepo.GetAccountFilter(dataQueryModel)
+	listUser, err := adminController.AdminRepo.GetAccountFilter(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listUser)
 	}
-	return response.Ok(c, "Lấy danh sách tài khoản thành công", listUser)
+	return response.Ok(c, "Lấy danh sách tài khoản thành công", struct {
+		Data   []model.User    `json:"data"`
+		Paging res.PagingModel `json:"paging"`
+	}{
+		Data: listUser,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.Page,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }
 
 // HandleGetHotelByAdmin godoc
@@ -197,11 +209,23 @@ func (adminController *AdminController) HandleGetHotelByAdmin(c echo.Context) er
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"hotelier", "created_at", "updated_at", "",
 	}, &model.Hotel{})
-	listHotel, err := adminController.AdminRepo.GetHotelFilter(dataQueryModel)
+	listHotel, err := adminController.AdminRepo.GetHotelFilter(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listHotel)
 	}
-	return response.Ok(c, "Lấy danh sách khách sạn thành công", listHotel)
+
+	return response.Ok(c, "Lấy danh sách khách sạn thành công", struct {
+		Data   []model.Hotel   `json:"data"`
+		Paging res.PagingModel `json:"paging"`
+	}{
+		Data: listHotel,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.Page,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }
 
 // HandleAcceptHotel godoc

@@ -29,7 +29,7 @@ func (hotelReceiver *HotelRepoImpl) GetHotelMobile() ([]model.Hotel, error) {
 	return listHotel, nil
 }
 
-func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel query.DataQueryModel) ([]model.RoomType, error) {
+func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RoomType, error) {
 	var listRoomType []model.RoomType
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.RoomType{}, queryModel.ListIgnoreColumns)
 	err = err.Preload("RoomTypeFacility").Preload("RoomTypeViews").Where("hotel_id = ?", queryModel.DataId).Preload("RoomTypeFacility").Preload("RoomTypeViews")
@@ -41,7 +41,7 @@ func (hotelReceiver *HotelRepoImpl) GetRoomTypeFilter(queryModel query.DataQuery
 	return listRoomType, nil
 }
 
-func (hotelReceiver *HotelRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error) {
+func (hotelReceiver *HotelRepoImpl) GetHotelFilter(queryModel *query.DataQueryModel) ([]model.Hotel, error) {
 	var listHotel []model.Hotel
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
 	err = err.Where("id in (Select hotel_id from hotel_works where user_id = ?)", queryModel.UserId)

@@ -12,7 +12,7 @@ type HotelRepo interface {
 	UpdateHotelBusinessLicensePhotos(hotel model.Hotel) (model.Hotel, error)
 	CreateRequestPayout(payoutRequest model.PayoutRequest, paymentIds []string) (model.PayoutRequest, error)
 	SaveHotel(requestAddHotel req.RequestCreateHotel) (model.Hotel, error)
-	GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error)
-	GetRoomTypeFilter(queryModel query.DataQueryModel) ([]model.RoomType, error)
+	GetHotelFilter(queryModel *query.DataQueryModel) ([]model.Hotel, error)
+	GetRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RoomType, error)
 	GetHotelMobile() ([]model.Hotel, error)
 }

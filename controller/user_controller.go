@@ -8,6 +8,7 @@ import (
 	"hotel-booking-api/model"
 	response "hotel-booking-api/model/model_func"
 	"hotel-booking-api/model/req"
+	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
@@ -36,11 +37,22 @@ func (userReceiver *UserController) HandleGetNotifications(c echo.Context) error
 		"user", "created_at", "updated_at", "",
 	}, &model.Notification{})
 	dataQueryModel.Role = claims.Role
-	listNotifications, err := userReceiver.UserRepo.GetUserNotifications(dataQueryModel)
+	listNotifications, err := userReceiver.UserRepo.GetUserNotifications(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listNotifications)
 	}
-	return response.Ok(c, "Lấy danh sách thông báo thành công", listNotifications)
+	return response.Ok(c, "Lấy danh sách thông báo thành công", struct {
+		Data   []model.Notification `json:"data"`
+		Paging res.PagingModel      `json:"paging"`
+	}{
+		Data: listNotifications,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.Page,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }
 
 // HandleUpdateAvatar godoc

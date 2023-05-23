@@ -8,8 +8,9 @@ import (
 	"reflect"
 )
 
-func GenerateQueryGetData(sql *db.Sql, queryModel query.DataQueryModel, modelStruct any, listIgnoreKey []string) *gorm.DB {
+func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelStruct any, listIgnoreKey []string) *gorm.DB {
 	result := sql.Db
+	//query row by conditions
 	if queryModel.Search != "" {
 		//result = result.Where("(fn_convertCoDauToKhongDau(email) LIKE ('%' || fn_convertCoDauToKhongDau(?) || '%')",
 		//	queryModel.Search)
@@ -37,6 +38,18 @@ func GenerateQueryGetData(sql *db.Sql, queryModel query.DataQueryModel, modelStr
 		result = result.Where(queryModel.Filter)
 	}
 	result = result.Where("is_deleted = ?", queryModel.IsShowDeleted)
+
+	//statistic total row, total pages
+	var countTotalRows int64
+	result.Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	countTotalPages := 0
+	if queryModel.TotalRows%queryModel.Limit > 0 {
+		countTotalPages = 1
+	}
+	countTotalPages += queryModel.TotalRows / queryModel.Limit
+	queryModel.TotalPages = countTotalPages
+	//order by
 	if queryModel.Sort != "" {
 		result = result.Order(queryModel.Sort + " " + queryModel.Order)
 	} else {

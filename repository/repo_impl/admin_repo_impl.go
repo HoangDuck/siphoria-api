@@ -41,7 +41,7 @@ func (u *AdminRepoImpl) DeleteHotelWorkByEmployee(requestDeleteHotelWorkByEmploy
 	return true, nil
 }
 
-func (u *AdminRepoImpl) GetHotelWorkByEmployee(queryModel query.DataQueryModel) ([]model.Hotel, error) {
+func (u *AdminRepoImpl) GetHotelWorkByEmployee(queryModel *query.DataQueryModel) ([]model.Hotel, error) {
 	var listHotelWork []model.Hotel
 	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
 	err = err.Where("id in (select hotel_id from hotel_works where user_id = ?)", queryModel.UserId)
@@ -101,7 +101,7 @@ func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
 	return hotel, nil
 }
 
-func (u *AdminRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model.Hotel, error) {
+func (u *AdminRepoImpl) GetHotelFilter(queryModel *query.DataQueryModel) ([]model.Hotel, error) {
 	var listHotel []model.Hotel
 	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
 	err = err.Preload("HotelType").Preload("HotelFacility").Find(&listHotel)
@@ -112,7 +112,7 @@ func (u *AdminRepoImpl) GetHotelFilter(queryModel query.DataQueryModel) ([]model
 	return listHotel, nil
 }
 
-func (u *AdminRepoImpl) GetAccountFilter(queryModel query.DataQueryModel) ([]model.User, error) {
+func (u *AdminRepoImpl) GetAccountFilter(queryModel *query.DataQueryModel) ([]model.User, error) {
 	var listUser []model.User
 	err := GenerateQueryGetData(u.sql, queryModel, &model.User{}, queryModel.ListIgnoreColumns)
 	err = err.Find(&listUser)
