@@ -207,7 +207,7 @@ func (adminController *AdminController) HandleGetHotelByAdmin(c echo.Context) er
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"hotelier", "created_at", "updated_at", "",
+		"hotelier", "created_at", "updated_at", "", "hotel_type", "hotel_facility",
 	}, &model.Hotel{})
 	listHotel, err := adminController.AdminRepo.GetHotelFilter(&dataQueryModel)
 	if err != nil {
