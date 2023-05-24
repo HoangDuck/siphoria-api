@@ -48,7 +48,7 @@ type HotelType struct {
 	Villa     bool      `json:"villa" gorm:"villa"`
 	Camping   bool      `json:"camping" gorm:"camping"`
 	Motel     bool      `json:"motel" gorm:"motel"`
-	HomeStay  bool      `json:"home_stay" gorm:"home_stay"`
+	HomeStay  bool      `json:"homestay" gorm:"home_stay"`
 	CreatedAt time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"updated_at"`
 	IsDeleted bool      `json:"-" gorm:"is_deleted"`
