@@ -98,7 +98,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 		Casino:        requestUpdateHotel.Casio,
 		Parking:       requestUpdateHotel.Parking,
 	}
-	err := hotelReceiver.sql.Db.Model(&hotel).Updates(hotel)
+	err := hotelReceiver.sql.Db.Model(&hotel).Where("id = ?", hotel.ID).Updates(hotel)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
@@ -106,7 +106,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 
 		return hotel, custom_error.HotelNotUpdated
 	}
-	err = hotelReceiver.sql.Db.Model(&hotelType).Updates(hotelType)
+	err = hotelReceiver.sql.Db.Model(&hotelType).Where("hotel_id = ?", hotelType.HotelId).Updates(hotelType)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
@@ -114,7 +114,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 
 		return hotel, custom_error.HotelNotUpdated
 	}
-	err = hotelReceiver.sql.Db.Model(&hotelFacility).Updates(hotelFacility)
+	err = hotelReceiver.sql.Db.Model(&hotelFacility).Where("hotel_id = ?", hotelFacility.HotelId).Updates(hotelFacility)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
