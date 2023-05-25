@@ -124,6 +124,22 @@ func Contains(array []string, valueCheck string) bool {
 	return false
 }
 
+func ConvertStructToMap(modelStruct any) map[string]interface{} {
+	modelStructJson, _ := json.Marshal(modelStruct)
+	var mapFromJson map[string]interface{}
+	_ = json.Unmarshal(modelStructJson, &mapFromJson)
+	delete(mapFromJson, "hotel_type")
+	delete(mapFromJson, "hotel_facility")
+	delete(mapFromJson, "hotel")
+	delete(mapFromJson, "room_type_facility")
+	delete(mapFromJson, "room_type_views")
+	delete(mapFromJson, "room_nights")
+	delete(mapFromJson, "rate_plans")
+	delete(mapFromJson, "kitchen_tool")
+	delete(mapFromJson, "-")
+	return mapFromJson
+}
+
 func GreaterThanEqual(value float32, column string, db *db.Sql) *gorm.DB {
 	return db.Db.Where(column+" >= ?", value)
 }

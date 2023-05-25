@@ -2237,12 +2237,12 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "vocuher-service"
+                    "voucher-service"
                 ],
                 "summary": "Update voucher",
                 "parameters": [
                     {
-                        "description": "rateplan",
+                        "description": "voucher",
                         "name": "data",
                         "in": "body",
                         "required": true,

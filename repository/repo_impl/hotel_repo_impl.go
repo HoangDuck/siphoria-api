@@ -1,6 +1,7 @@
 package repo_impl
 
 import (
+	"fmt"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
@@ -10,6 +11,7 @@ import (
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
+	"hotel-booking-api/utils"
 	"strings"
 )
 
@@ -98,7 +100,8 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 		Casino:        requestUpdateHotel.Casio,
 		Parking:       requestUpdateHotel.Parking,
 	}
-	err := hotelReceiver.sql.Db.Model(&hotel).Where("id = ?", hotel.ID).Updates(hotel)
+
+	err := hotelReceiver.sql.Db.Model(&hotel).Updates(utils.ConvertStructToMap(&hotel))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
@@ -106,7 +109,8 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 
 		return hotel, custom_error.HotelNotUpdated
 	}
-	err = hotelReceiver.sql.Db.Model(&hotelType).Where("hotel_id = ?", hotelType.HotelId).Updates(hotelType)
+	fmt.Println(hotelType)
+	err = hotelReceiver.sql.Db.Model(&hotelType).Updates(utils.ConvertStructToMap(&hotelType))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
@@ -114,7 +118,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 
 		return hotel, custom_error.HotelNotUpdated
 	}
-	err = hotelReceiver.sql.Db.Model(&hotelFacility).Where("hotel_id = ?", hotelFacility.HotelId).Updates(hotelFacility)
+	err = hotelReceiver.sql.Db.Model(&hotelFacility).Updates(utils.ConvertStructToMap(&hotelFacility))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error

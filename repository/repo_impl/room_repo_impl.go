@@ -146,7 +146,7 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 		KitchenTools:   requestUpdateRoomType.KitchenTool,
 		IsDeleted:      requestUpdateRoomType.IsDelete,
 	}
-	err := roomReceiver.sql.Db.Model(&roomType).Where("id = ?", roomType.ID).Updates(roomType)
+	err := roomReceiver.sql.Db.Model(&roomType).Updates(utils.ConvertStructToMap(&roomType))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return roomType, err.Error
@@ -154,7 +154,7 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 
 		return roomType, custom_error.RoomNotUpdated
 	}
-	err = roomReceiver.sql.Db.Model(&roomTypeViews).Where("room_type_id = ?", roomTypeViews.RoomTypeID).Updates(roomTypeViews)
+	err = roomReceiver.sql.Db.Model(&roomTypeViews).Updates(utils.ConvertStructToMap(&roomTypeViews))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return roomType, err.Error
@@ -162,7 +162,7 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 
 		return roomType, custom_error.RoomNotUpdated
 	}
-	err = roomReceiver.sql.Db.Model(&roomTypeFacility).Where("room_type_id = ?", roomTypeFacility.RoomTypeID).Updates(roomTypeFacility)
+	err = roomReceiver.sql.Db.Model(&roomTypeFacility).Updates(utils.ConvertStructToMap(&roomTypeFacility))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return roomType, err.Error
