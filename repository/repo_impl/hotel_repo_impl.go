@@ -1,7 +1,6 @@
 package repo_impl
 
 import (
-	"fmt"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
@@ -101,7 +100,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 		Parking:       requestUpdateHotel.Parking,
 	}
 
-	err := hotelReceiver.sql.Db.Model(&hotel).Updates(utils.ConvertStructToMap(&hotel))
+	err := hotelReceiver.sql.Db.Model(&hotel).Updates(hotel)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
@@ -109,7 +108,6 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 
 		return hotel, custom_error.HotelNotUpdated
 	}
-	fmt.Println(hotelType)
 	err = hotelReceiver.sql.Db.Model(&hotelType).Updates(utils.ConvertStructToMap(&hotelType))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {

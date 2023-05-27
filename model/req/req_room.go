@@ -77,7 +77,7 @@ type RequestUpdateRoomType struct {
 	Shower         bool   `json:"shower,omitempty"`
 	Slippers       bool   `json:"slippers,omitempty"`
 	Hairdry        bool   `json:"hairdry,omitempty"`
-	Fuirt          bool   `json:"fuirt,omitempty"`
+	Fuirt          bool   `json:"fruit,omitempty"`
 	Bbq            bool   `json:"bbq,omitempty"`
 	Wine           bool   `json:"wine,omitempty"`
 	Fryer          bool   `json:"fryer,omitempty"`

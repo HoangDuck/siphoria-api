@@ -40,9 +40,9 @@ type RequestUpdateHotel struct {
 	Overview        string `json:"overview,omitempty"`
 	Activate        bool   `json:"activate,omitempty"`
 	RawAddress      string `json:"raw_address,omitempty"`
-	BankAccount     string `json:"bankAccount,omitempty"`
-	BankName        string `json:"bankName,omitempty"`
-	BankBeneficiary string `json:"bankBeneficiary,omitempty"`
+	BankAccount     string `json:"bank_account,omitempty"`
+	BankName        string `json:"bank_name,omitempty"`
+	BankBeneficiary string `json:"bank_beneficiary,omitempty"`
 	Hotel           bool   `json:"hotel,omitempty"`
 	Apartment       bool   `json:"apartment,omitempty"`
 	Resort          bool   `json:"resort,omitempty"`

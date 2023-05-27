@@ -131,6 +131,7 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 		RoomTypeID:     idRoomType,
 		Bay:            requestUpdateRoomType.Bay,
 		Sea:            requestUpdateRoomType.Sea,
+		Ocean:          requestUpdateRoomType.Ocean,
 		City:           requestUpdateRoomType.City,
 		Garden:         requestUpdateRoomType.Garden,
 		Lake:           requestUpdateRoomType.Lake,
