@@ -2,6 +2,7 @@ package repository
 
 import (
 	"hotel-booking-api/model"
+	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
 )
 
@@ -18,4 +19,5 @@ type RoomRepo interface {
 	GetRoomNightsByRoomType(roomTypeId string) ([]model.RoomNights, error)
 	GetListRatePlans(roomTypeId string) ([]model.RatePlan, error)
 	GetListRatePackages(ratePlanId string) ([]model.RatePackage, error)
+	GetRatePlanByRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RatePlan, error)
 }

@@ -93,6 +93,7 @@ func (api *API) SetupRouter() {
 	room.PATCH("/:id", api.RoomController.HandleUpdateRoomType, middleware.JWTMiddleWare())
 	room.PATCH("/:id/photos", api.RoomController.HandleUpdateRoomPhotos, middleware.JWTMiddleWare())
 	room.GET("/:id", api.RoomController.HandleGetRoomTypeDetail, middleware.JWTMiddleWare())
+	room.GET("/:id/rateplans", api.RoomController.HandleGetRatePlanByRoomType, middleware.JWTMiddleWare())
 
 	ratePlan := request.Group("/rateplans")
 	ratePlan.POST("/", api.RatePlanController.HandleSaveRatePlan, middleware.JWTMiddleWare())

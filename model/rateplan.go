@@ -16,7 +16,7 @@ type RatePlan struct {
 	RoomTypeId    string        `json:"room_type_id"`
 	RoomType      *RoomType     `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	IsDeleted     bool          `json:"-" gorm:"is_deleted"`
-	RatePackages  []RatePackage `json:"rate_packages" gorm:"-"`
+	RatePackages  []RatePackage `json:"rate_packages,omitempty" gorm:"-"`
 }
 
 type RatePackage struct {

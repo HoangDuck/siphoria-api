@@ -8,6 +8,7 @@ import (
 	"hotel-booking-api/model"
 	response "hotel-booking-api/model/model_func"
 	"hotel-booking-api/model/req"
+	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
@@ -31,22 +32,22 @@ type RoomController struct {
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
 // @Router /rooms/search/:id [get]
-func (roomReceiver *RoomController) HandleGetHotelSearchById(c echo.Context) error {
+func (roomController *RoomController) HandleGetHotelSearchById(c echo.Context) error {
 	roomType := model.RoomType{
 		HotelId: c.Param("id"),
 	}
-	roomTypeList, err := roomReceiver.RoomRepo.GetListRoomTypeDetail(roomType)
+	roomTypeList, err := roomController.RoomRepo.GetListRoomTypeDetail(roomType)
 	for i := 0; i < len(roomTypeList); i++ {
-		roomTypeItemFacility, _ := roomReceiver.RoomRepo.GetRoomTypeFacility(roomTypeList[i].ID)
+		roomTypeItemFacility, _ := roomController.RoomRepo.GetRoomTypeFacility(roomTypeList[i].ID)
 		roomTypeList[i].RoomTypeFacility = roomTypeItemFacility
-		roomTypeItemViews, _ := roomReceiver.RoomRepo.GetRoomTypeViews(roomTypeList[i].ID)
+		roomTypeItemViews, _ := roomController.RoomRepo.GetRoomTypeViews(roomTypeList[i].ID)
 		roomTypeList[i].RoomTypeViews = roomTypeItemViews
-		roomNights, _ := roomReceiver.RoomRepo.GetRoomNightsByRoomType(roomTypeList[i].ID)
+		roomNights, _ := roomController.RoomRepo.GetRoomNightsByRoomType(roomTypeList[i].ID)
 		roomTypeList[i].RoomNights = roomNights
-		ratePlans, _ := roomReceiver.RoomRepo.GetListRatePlans(roomTypeList[i].ID)
+		ratePlans, _ := roomController.RoomRepo.GetListRatePlans(roomTypeList[i].ID)
 		roomTypeList[i].RatePlans = ratePlans
 		for j := 0; j < len(roomTypeList[i].RatePlans); j++ {
-			ratePackages, _ := roomReceiver.RoomRepo.GetListRatePackages(roomTypeList[i].RatePlans[j].ID)
+			ratePackages, _ := roomController.RoomRepo.GetListRatePackages(roomTypeList[i].RatePlans[j].ID)
 			roomTypeList[i].RatePlans[j].RatePackages = ratePackages
 		}
 	}
@@ -65,7 +66,7 @@ func (roomReceiver *RoomController) HandleGetHotelSearchById(c echo.Context) err
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
 // @Router /rooms/:id [get]
-func (roomReceiver *RoomController) HandleGetRoomTypeDetail(c echo.Context) error {
+func (roomController *RoomController) HandleGetRoomTypeDetail(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
 	if !(security.CheckRole(claims, model.HOTELIER, false) || security.CheckRole(claims, model.MANAGER, false)) {
@@ -74,7 +75,7 @@ func (roomReceiver *RoomController) HandleGetRoomTypeDetail(c echo.Context) erro
 	roomType := model.RoomType{
 		ID: c.Param("id"),
 	}
-	roomType, err := roomReceiver.RoomRepo.GetRoomTypeDetail(roomType)
+	roomType, err := roomController.RoomRepo.GetRoomTypeDetail(roomType)
 	if err != nil {
 		return response.InternalServerError(c, "Lấy room type thất bại", nil)
 	}
@@ -91,7 +92,7 @@ func (roomReceiver *RoomController) HandleGetRoomTypeDetail(c echo.Context) erro
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
 // @Router /rooms [post]
-func (roomReceiver *RoomController) HandleSaveRoomType(c echo.Context) error {
+func (roomController *RoomController) HandleSaveRoomType(c echo.Context) error {
 	reqAddRoomType := req.RequestCreateRoomType{}
 	//binding
 	if err := c.Bind(&reqAddRoomType); err != nil {
@@ -108,7 +109,7 @@ func (roomReceiver *RoomController) HandleSaveRoomType(c echo.Context) error {
 		return response.InternalServerError(c, "Đăng ký thất bại", nil)
 	}
 	reqAddRoomType.ID = roomTypeId
-	result, err := roomReceiver.RoomRepo.SaveRoomType(reqAddRoomType)
+	result, err := roomController.RoomRepo.SaveRoomType(reqAddRoomType)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -125,7 +126,7 @@ func (roomReceiver *RoomController) HandleSaveRoomType(c echo.Context) error {
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
 // @Router /rooms/roomnights [post]
-func (roomReceiver *RoomController) HandleUpdateRoomNight(c echo.Context) error {
+func (roomController *RoomController) HandleUpdateRoomNight(c echo.Context) error {
 	reqUpdateRoomNight := req.RequestUpdateRoomNight{}
 	//binding
 	if err := c.Bind(&reqUpdateRoomNight); err != nil {
@@ -137,7 +138,7 @@ func (roomReceiver *RoomController) HandleUpdateRoomNight(c echo.Context) error 
 	if !(claims.Role == model.ADMIN.String()) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	result, err := roomReceiver.RoomRepo.UpdateRoomNight(reqUpdateRoomNight)
+	result, err := roomController.RoomRepo.UpdateRoomNight(reqUpdateRoomNight)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -154,7 +155,7 @@ func (roomReceiver *RoomController) HandleUpdateRoomNight(c echo.Context) error 
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
 // @Router /rooms/ratepackages [post]
-func (roomReceiver *RoomController) HandleUpdateRatePackages(c echo.Context) error {
+func (roomController *RoomController) HandleUpdateRatePackages(c echo.Context) error {
 	reqUpdateRatePackages := req.RequestUpdateRatePackage{}
 	body, err := io.ReadAll(c.Request().Body)
 	if err != nil {
@@ -167,7 +168,7 @@ func (roomReceiver *RoomController) HandleUpdateRatePackages(c echo.Context) err
 	if !(claims.Role == model.ADMIN.String()) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	result, err := roomReceiver.RoomRepo.UpdateRatePackages(reqUpdateRatePackages)
+	result, err := roomController.RoomRepo.UpdateRatePackages(reqUpdateRatePackages)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -184,7 +185,7 @@ func (roomReceiver *RoomController) HandleUpdateRatePackages(c echo.Context) err
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
 // @Router /rooms/:id [patch]
-func (roomReceiver *RoomController) HandleUpdateRoomType(c echo.Context) error {
+func (roomController *RoomController) HandleUpdateRoomType(c echo.Context) error {
 	reqUpdateRoomType := req.RequestUpdateRoomType{}
 	if err := c.Bind(&reqUpdateRoomType); err != nil {
 		return response.BadRequest(c, "Yêu cầu không hợp lệ", nil)
@@ -195,7 +196,7 @@ func (roomReceiver *RoomController) HandleUpdateRoomType(c echo.Context) error {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 
-	roomType, err := roomReceiver.RoomRepo.UpdateRoomType(reqUpdateRoomType, c.Param("id"))
+	roomType, err := roomController.RoomRepo.UpdateRoomType(reqUpdateRoomType, c.Param("id"))
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -211,7 +212,7 @@ func (roomReceiver *RoomController) HandleUpdateRoomType(c echo.Context) error {
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
 // @Router /rooms/:id/photos [patch]
-func (roomReceiver *RoomController) HandleUpdateRoomPhotos(c echo.Context) error {
+func (roomController *RoomController) HandleUpdateRoomPhotos(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
 	if !(security.CheckRole(claims, model.HOTELIER, false) || security.CheckRole(claims, model.MANAGER, false)) {
@@ -237,10 +238,51 @@ func (roomReceiver *RoomController) HandleUpdateRoomPhotos(c echo.Context) error
 		ID:     c.Param("id"),
 		Photos: strings.Join(urls, ";"),
 	}
-	room, err = roomReceiver.RoomRepo.UpdateRoomPhotos(room)
+	room, err = roomController.RoomRepo.UpdateRoomPhotos(room)
 	if err != nil {
 		logger.Error("Error save database", zap.Error(err))
 		return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
 	}
 	return response.Ok(c, "Cập nhật hình ảnh thành công", room)
+}
+
+// HandleGetRatePlanByRoomType godoc
+// @Summary Get rateplans list by room type
+// @Tags -service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /room/:id/rateplans [get]
+func (roomController *RoomController) HandleGetRatePlanByRoomType(c echo.Context) error {
+	var listRatePlan []model.RatePlan
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) ||
+		security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"-", "created_at", "updated_at", "", "rate_packages", "room_type",
+	}, &model.RatePlan{})
+	dataQueryModel.UserId = claims.UserId
+	dataQueryModel.DataId = c.Param("id")
+	listRatePlan, err := roomController.RoomRepo.GetRatePlanByRoomTypeFilter(&dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listRatePlan)
+	}
+
+	return response.Ok(c, "Lấy danh sách rate plan thành công", struct {
+		Data   []model.RatePlan `json:"data"`
+		Paging res.PagingModel  `json:"paging"`
+	}{
+		Data: listRatePlan,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }

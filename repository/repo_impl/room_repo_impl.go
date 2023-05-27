@@ -8,6 +8,7 @@ import (
 	"hotel-booking-api/db"
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
+	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/utils"
@@ -16,6 +17,21 @@ import (
 
 type RoomRepoImpl struct {
 	sql *db.Sql
+}
+
+func (roomReceiver *RoomRepoImpl) GetRatePlanByRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RatePlan, error) {
+	var listRatePlan []model.RatePlan
+	err := GenerateQueryGetData(roomReceiver.sql, queryModel, &model.RatePlan{}, queryModel.ListIgnoreColumns)
+	err = err.Where("room_type_id = ?", queryModel.DataId)
+	var countTotalRows int64
+	err.Model(model.RatePlan{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	err = err.Find(&listRatePlan)
+	if err.Error != nil {
+		logger.Error("Error get list rate plan url ", zap.Error(err.Error))
+		return listRatePlan, err.Error
+	}
+	return listRatePlan, nil
 }
 
 func (roomReceiver *RoomRepoImpl) GetRoomTypeFacility(roomTypeId string) (model.RoomTypeFacility, error) {
