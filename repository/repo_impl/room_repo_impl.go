@@ -163,7 +163,7 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 		KitchenTools:   requestUpdateRoomType.KitchenTool,
 		IsDeleted:      requestUpdateRoomType.IsDelete,
 	}
-	err := roomReceiver.sql.Db.Model(&roomType).Updates(utils.ConvertStructToMap(&roomType))
+	err := roomReceiver.sql.Db.Model(&roomType).Updates(roomType)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return roomType, err.Error
