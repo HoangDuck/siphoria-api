@@ -136,7 +136,6 @@ func ConvertStructToMap(modelStruct any) map[string]interface{} {
 	delete(mapFromJson, "room_type_views")
 	delete(mapFromJson, "room_nights")
 	delete(mapFromJson, "rate_plans")
-	delete(mapFromJson, "kitchen_tool")
 	delete(mapFromJson, "-")
 	return mapFromJson
 }
