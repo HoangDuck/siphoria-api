@@ -2751,13 +2751,13 @@ const docTemplate = `{
                 "apartment": {
                     "type": "boolean"
                 },
-                "bankAccount": {
+                "bank_account": {
                     "type": "string"
                 },
-                "bankBeneficiary": {
+                "bank_beneficiary": {
                     "type": "string"
                 },
-                "bankName": {
+                "bank_name": {
                     "type": "string"
                 },
                 "bar": {
@@ -2944,10 +2944,10 @@ const docTemplate = `{
                 "desk": {
                     "type": "boolean"
                 },
-                "fryer": {
+                "fruit": {
                     "type": "boolean"
                 },
-                "fuirt": {
+                "fryer": {
                     "type": "boolean"
                 },
                 "garden": {

@@ -83,7 +83,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 		Villa:     requestUpdateHotel.Villa,
 		Camping:   requestUpdateHotel.Camping,
 		Motel:     requestUpdateHotel.Motel,
-		HomeStay:  requestUpdateHotel.Homestay,
+		Homestay:  requestUpdateHotel.Homestay,
 	}
 	hotelFacility := model.HotelFacility{
 		HotelId:       idHotel,

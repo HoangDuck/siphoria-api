@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -210,6 +211,8 @@ func (adminController *AdminController) HandleGetHotelByAdmin(c echo.Context) er
 		"hotelier", "created_at", "updated_at", "", "hotel_type", "hotel_facility",
 	}, &model.Hotel{})
 	listHotel, err := adminController.AdminRepo.GetHotelFilter(&dataQueryModel)
+
+	fmt.Println(listHotel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listHotel)
 	}
