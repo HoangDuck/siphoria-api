@@ -108,7 +108,9 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 
 		return hotel, custom_error.HotelNotUpdated
 	}
-	err = hotelReceiver.sql.Db.Model(&hotelType).Updates(utils.ConvertStructToMap(&hotelType))
+	err = hotelReceiver.sql.Db.Model(&hotelType).Updates(utils.ConvertStructToMap(&hotelType, []string{
+		"hotel_id", "created_at", "updated_at", "-",
+	}))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
@@ -116,7 +118,9 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 
 		return hotel, custom_error.HotelNotUpdated
 	}
-	err = hotelReceiver.sql.Db.Model(&hotelFacility).Updates(utils.ConvertStructToMap(&hotelFacility))
+	err = hotelReceiver.sql.Db.Model(&hotelFacility).Updates(utils.ConvertStructToMap(&hotelFacility, []string{
+		"hotelier", "created_at", "updated_at", "",
+	}))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error

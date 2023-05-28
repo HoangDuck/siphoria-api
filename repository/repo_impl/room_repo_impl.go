@@ -142,25 +142,25 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 	}
 	roomTypeFacility := model.RoomTypeFacility{
 		RoomTypeID:     idRoomType,
-		AirConditioner: requestUpdateRoomType.AirConditional,
-		TV:             requestUpdateRoomType.Tivi,
+		AirConditional: requestUpdateRoomType.AirConditional,
+		Tivi:           requestUpdateRoomType.Tivi,
 		Kitchen:        requestUpdateRoomType.Kitchen,
 		PrivatePool:    requestUpdateRoomType.PrivatePool,
 		Heater:         requestUpdateRoomType.Heater,
 		Iron:           requestUpdateRoomType.Iron,
 		Sofa:           requestUpdateRoomType.Sofa,
 		Desk:           requestUpdateRoomType.Desk,
-		SoundProof:     requestUpdateRoomType.Soundproof,
+		Soundproof:     requestUpdateRoomType.Soundproof,
 		Towels:         requestUpdateRoomType.Towels,
 		Toiletries:     requestUpdateRoomType.Toiletries,
 		Shower:         requestUpdateRoomType.Shower,
-		Slipper:        requestUpdateRoomType.Slippers,
-		HairDry:        requestUpdateRoomType.Hairdry,
+		Slippers:       requestUpdateRoomType.Slippers,
+		Hairdry:        requestUpdateRoomType.Hairdry,
 		Fruit:          requestUpdateRoomType.Fuirt,
 		Bbq:            requestUpdateRoomType.Bbq,
 		Wine:           requestUpdateRoomType.Wine,
 		Fryer:          requestUpdateRoomType.Fryer,
-		KitchenTools:   requestUpdateRoomType.KitchenTool,
+		KitchenTool:    requestUpdateRoomType.KitchenTool,
 		IsDeleted:      requestUpdateRoomType.IsDelete,
 	}
 	err := roomReceiver.sql.Db.Model(&roomType).Updates(roomType)
@@ -171,7 +171,9 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 
 		return roomType, custom_error.RoomNotUpdated
 	}
-	err = roomReceiver.sql.Db.Model(&roomTypeViews).Updates(utils.ConvertStructToMap(&roomTypeViews))
+	err = roomReceiver.sql.Db.Model(&roomTypeViews).Updates(utils.ConvertStructToMap(&roomTypeViews, []string{
+		"room_type_id", "created_at", "updated_at", "-",
+	}))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return roomType, err.Error
@@ -179,7 +181,9 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 
 		return roomType, custom_error.RoomNotUpdated
 	}
-	err = roomReceiver.sql.Db.Model(&roomTypeFacility).Updates(utils.ConvertStructToMap(&roomTypeFacility))
+	err = roomReceiver.sql.Db.Model(&roomTypeFacility).Updates(utils.ConvertStructToMap(&roomTypeFacility, []string{
+		"room_type_id", "created_at", "updated_at", "-",
+	}))
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return roomType, err.Error

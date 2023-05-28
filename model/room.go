@@ -43,25 +43,25 @@ type RoomTypeViews struct {
 
 type RoomTypeFacility struct {
 	RoomTypeID     string    `json:"room_type_id" gorm:"primary_key"`
-	AirConditioner bool      `json:"air_conditional" gorm:"air_conditional"`
-	TV             bool      `json:"tivi" gorm:"tivi"`
+	AirConditional bool      `json:"air_conditional" gorm:"air_conditional"`
+	Tivi           bool      `json:"tivi" gorm:"tivi"`
 	Kitchen        bool      `json:"kitchen" gorm:"kitchen"`
 	PrivatePool    bool      `json:"private_pool" gorm:"private_pool"`
 	Heater         bool      `json:"heater" gorm:"heater"`
 	Iron           bool      `json:"iron" gorm:"iron"`
 	Sofa           bool      `json:"sofa" gorm:"sofa"`
 	Desk           bool      `json:"desk" gorm:"desk"`
-	SoundProof     bool      `json:"soundproof" gorm:"soundproof"`
+	Soundproof     bool      `json:"soundproof" gorm:"soundproof"`
 	Towels         bool      `json:"towels" gorm:"towels"`
 	Toiletries     bool      `json:"toiletries" gorm:"toiletries"`
 	Shower         bool      `json:"shower" gorm:"shower"`
-	Slipper        bool      `json:"slippers" gorm:"slippers"`
-	HairDry        bool      `json:"hairdry" gorm:"hairdry"`
+	Slippers       bool      `json:"slippers" gorm:"slippers"`
+	Hairdry        bool      `json:"hairdry" gorm:"hairdry"`
 	Fruit          bool      `json:"fruit" gorm:"fruit"`
 	Bbq            bool      `json:"bbq" gorm:"bbq"`
 	Wine           bool      `json:"wine" gorm:"wine"`
 	Fryer          bool      `json:"fryer" gorm:"fryer"`
-	KitchenTools   bool      `json:"kitchen_tool" gorm:"kitchen_tool"`
+	KitchenTool    bool      `json:"kitchen_tool" gorm:"kitchen_tool"`
 	CreatedAt      time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at" gorm:"updated_at"`
 	IsDeleted      bool      `json:"-" gorm:"is_deleted"`
