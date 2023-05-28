@@ -164,6 +164,7 @@ func (roomReceiver *RoomRepoImpl) UpdateRoomType(requestUpdateRoomType req.Reque
 		IsDeleted:      requestUpdateRoomType.IsDelete,
 	}
 	err := roomReceiver.sql.Db.Model(&roomType).Updates(roomType)
+	err = roomReceiver.sql.Db.Select("activated").Model(&roomType).Updates(roomType)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return roomType, err.Error

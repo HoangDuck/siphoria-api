@@ -101,6 +101,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotel(requestUpdateHotel req.RequestUp
 	}
 
 	err := hotelReceiver.sql.Db.Model(&hotel).Updates(hotel)
+	err = hotelReceiver.sql.Db.Select("activate").Model(&hotel).Updates(hotel)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
 			return hotel, err.Error
