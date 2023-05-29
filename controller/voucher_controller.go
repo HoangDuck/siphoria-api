@@ -77,7 +77,7 @@ func (voucherController *VoucherController) HandleSaveVoucher(c echo.Context) er
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /vouchers [patch]
+// @Router /vouchers/: [patch]
 func (voucherController *VoucherController) HandleUpdateVoucher(c echo.Context) error {
 	reqUpdateVoucher := req.RequestUpdateVoucher{}
 	//binding
@@ -115,4 +115,31 @@ func (voucherController *VoucherController) HandleUpdateVoucher(c echo.Context) 
 		return response.InternalServerError(c, err.Error(), nil)
 	}
 	return response.Ok(c, "Lưu thành công", result)
+}
+
+// HandleDeleteVoucher godoc
+// @Summary Delete voucher
+// @Tags voucher-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /vouchers/:id [delete]
+func (voucherController *VoucherController) HandleDeleteVoucher(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) || security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	voucherId := c.Param("id")
+	voucher := model.Voucher{
+		ID:        voucherId,
+		IsDeleted: true,
+	}
+	result, err := voucherController.VoucherRepo.DeleteVoucher(voucher)
+	if !result {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Xoá thành công", nil)
 }

@@ -1,6 +1,7 @@
 package repo_impl
 
 import (
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -52,27 +53,43 @@ func (roomReceiver *RoomRepoImpl) GetRoomTypeViews(roomTypeId string) (model.Roo
 	return roomTypeViews, nil
 }
 
-func (roomReceiver *RoomRepoImpl) GetRoomNightsByRoomType(roomTypeId string) ([]model.RoomNights, error) {
+func (roomReceiver *RoomRepoImpl) GetRoomNightsByRoomType(c echo.Context, roomTypeId string) ([]model.RoomNights, error) {
 	var roomNightList []model.RoomNights
-	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId).Find(&roomNightList)
+	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId)
+	if c.QueryParam("month") != "" {
+		err = err.Where("DATE_PART('month', availability_at)  = ?", c.QueryParam("month"))
+	}
+	if c.QueryParam("year") != "" {
+		err = err.Where("DATE_PART('year', availability_at)  = ?", c.QueryParam("year"))
+	}
+	err = err.Find(&roomNightList)
 	if err.RowsAffected == 0 {
 		return roomNightList, err.Error
 	}
 	return roomNightList, nil
 }
 
-func (roomReceiver *RoomRepoImpl) GetListRatePlans(roomTypeId string) ([]model.RatePlan, error) {
+func (roomReceiver *RoomRepoImpl) GetListRatePlans(c echo.Context, roomTypeId string) ([]model.RatePlan, error) {
 	var ratePlanList []model.RatePlan
-	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId).Find(&ratePlanList)
+	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId)
+	err = err.Find(&ratePlanList)
 	if err.RowsAffected == 0 {
 		return ratePlanList, err.Error
 	}
 	return ratePlanList, nil
 }
 
-func (roomReceiver *RoomRepoImpl) GetListRatePackages(ratePlanId string) ([]model.RatePackage, error) {
+func (roomReceiver *RoomRepoImpl) GetListRatePackages(c echo.Context, ratePlanId string) ([]model.RatePackage, error) {
 	var ratePackageList []model.RatePackage
-	err := roomReceiver.sql.Db.Where("rate_plan_id = ?", ratePlanId).Find(&ratePackageList)
+	err := roomReceiver.sql.Db.Where("rate_plan_id = ?", ratePlanId)
+
+	if c.QueryParam("month") != "" {
+		err = err.Where("DATE_PART('month', availability_at)  = ?", c.QueryParam("month"))
+	}
+	if c.QueryParam("year") != "" {
+		err = err.Where("DATE_PART('year', availability_at)  = ?", c.QueryParam("year"))
+	}
+	err = err.Find(&ratePackageList)
 	if err.RowsAffected == 0 {
 		return ratePackageList, err.Error
 	}

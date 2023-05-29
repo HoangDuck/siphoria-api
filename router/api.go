@@ -94,6 +94,7 @@ func (api *API) SetupRouter() {
 	room.PATCH("/:id/photos", api.RoomController.HandleUpdateRoomPhotos, middleware.JWTMiddleWare())
 	room.GET("/:id", api.RoomController.HandleGetRoomTypeDetail, middleware.JWTMiddleWare())
 	room.GET("/:id/rateplans", api.RoomController.HandleGetRatePlanByRoomType, middleware.JWTMiddleWare())
+	room.GET("/:id/inventories", api.RoomController.HandleGetRoomInventories, middleware.JWTMiddleWare())
 
 	ratePlan := request.Group("/rateplans")
 	ratePlan.POST("/", api.RatePlanController.HandleSaveRatePlan, middleware.JWTMiddleWare())
@@ -121,7 +122,7 @@ func (api *API) SetupRouter() {
 	admin.PATCH("/update-rating/:id", api.AdminController.HandleUpdateRatingHotel, middleware.JWTMiddleWare())
 	admin.PATCH("/update-cmsrate/:id", api.AdminController.HandleUpdateCommissionRateHotel, middleware.JWTMiddleWare())
 	admin.PATCH("/payouts/:id", api.AdminController.HandleApprovePayoutHotel, middleware.JWTMiddleWare())
-	admin.GET("/works/:id", api.AdminController.HandleGetAccountByAdmin, middleware.JWTMiddleWare())
+	admin.GET("/works/:id", api.AdminController.HandleGetHotelWorkByEmployee, middleware.JWTMiddleWare())
 	admin.DELETE("/works", api.AdminController.HandleDeleteHotelWorkByEmployee, middleware.JWTMiddleWare())
 	admin.POST("/works", api.AdminController.HandleSaveHotelWorkByEmployee, middleware.JWTMiddleWare())
 	log := api.Echo.Group("/manager/log")
@@ -138,4 +139,5 @@ func (api *API) SetupRouter() {
 	voucher := request.Group("/vouchers")
 	voucher.POST("/", api.VoucherController.HandleSaveVoucher, middleware.JWTMiddleWare())
 	voucher.PATCH("/:id", api.VoucherController.HandleUpdateVoucher, middleware.JWTMiddleWare())
+	voucher.DELETE("/:id", api.VoucherController.HandleDeleteVoucher, middleware.JWTMiddleWare())
 }

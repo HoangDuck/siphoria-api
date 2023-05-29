@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/labstack/echo/v4"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
@@ -16,8 +17,8 @@ type RoomRepo interface {
 	GetListRoomTypeDetail(room model.RoomType) ([]model.RoomType, error)
 	GetRoomTypeFacility(roomTypeId string) (model.RoomTypeFacility, error)
 	GetRoomTypeViews(roomTypeId string) (model.RoomTypeViews, error)
-	GetRoomNightsByRoomType(roomTypeId string) ([]model.RoomNights, error)
-	GetListRatePlans(roomTypeId string) ([]model.RatePlan, error)
-	GetListRatePackages(ratePlanId string) ([]model.RatePackage, error)
+	GetRoomNightsByRoomType(c echo.Context, roomTypeId string) ([]model.RoomNights, error)
+	GetListRatePlans(c echo.Context, roomTypeId string) ([]model.RatePlan, error)
+	GetListRatePackages(c echo.Context, ratePlanId string) ([]model.RatePackage, error)
 	GetRatePlanByRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RatePlan, error)
 }

@@ -42,12 +42,12 @@ func (roomController *RoomController) HandleGetHotelSearchById(c echo.Context) e
 		roomTypeList[i].RoomTypeFacility = roomTypeItemFacility
 		roomTypeItemViews, _ := roomController.RoomRepo.GetRoomTypeViews(roomTypeList[i].ID)
 		roomTypeList[i].RoomTypeViews = roomTypeItemViews
-		roomNights, _ := roomController.RoomRepo.GetRoomNightsByRoomType(roomTypeList[i].ID)
+		roomNights, _ := roomController.RoomRepo.GetRoomNightsByRoomType(c, roomTypeList[i].ID)
 		roomTypeList[i].RoomNights = roomNights
-		ratePlans, _ := roomController.RoomRepo.GetListRatePlans(roomTypeList[i].ID)
+		ratePlans, _ := roomController.RoomRepo.GetListRatePlans(c, roomTypeList[i].ID)
 		roomTypeList[i].RatePlans = ratePlans
 		for j := 0; j < len(roomTypeList[i].RatePlans); j++ {
-			ratePackages, _ := roomController.RoomRepo.GetListRatePackages(roomTypeList[i].RatePlans[j].ID)
+			ratePackages, _ := roomController.RoomRepo.GetListRatePackages(c, roomTypeList[i].RatePlans[j].ID)
 			roomTypeList[i].RatePlans[j].RatePackages = ratePackages
 		}
 	}
@@ -284,5 +284,38 @@ func (roomController *RoomController) HandleGetRatePlanByRoomType(c echo.Context
 			Page:       dataQueryModel.PageViewIndex,
 			Offset:     dataQueryModel.Limit,
 		},
+	})
+}
+
+// HandleGetRoomInventories godoc
+// @Summary Get room inventories
+// @Tags -service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /rooms/:id/inventories [get]
+func (roomController *RoomController) HandleGetRoomInventories(c echo.Context) error {
+	roomType := model.RoomType{
+		ID: c.Param("id"),
+	}
+	roomNights, err := roomController.RoomRepo.GetRoomNightsByRoomType(c, roomType.ID)
+	roomType.RoomNights = roomNights
+	ratePlans, err := roomController.RoomRepo.GetListRatePlans(c, roomType.ID)
+	roomType.RatePlans = ratePlans
+	for j := 0; j < len(roomType.RatePlans); j++ {
+		ratePackages, _ := roomController.RoomRepo.GetListRatePackages(c, roomType.RatePlans[j].ID)
+		roomType.RatePlans[j].RatePackages = ratePackages
+	}
+	if err != nil {
+		return response.InternalServerError(c, "Lấy room type thất bại", nil)
+	}
+	return response.Ok(c, "Lấy inventory thành công", struct {
+		RoomNights []model.RoomNights `json:"roomnight"`
+		Rateplans  []model.RatePlan   `json:"rateplans"`
+	}{
+		RoomNights: roomType.RoomNights,
+		Rateplans:  roomType.RatePlans,
 	})
 }

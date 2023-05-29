@@ -1545,6 +1545,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/rooms/:id/inventories": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "-service"
+                ],
+                "summary": "Get room inventories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms/:id/photos": {
             "patch": {
                 "consumes": [
@@ -2262,7 +2296,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/vouchers/:": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -2285,6 +2321,40 @@ const docTemplate = `{
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/vouchers/:id": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "voucher-service"
+                ],
+                "summary": "Delete voucher",
                 "responses": {
                     "200": {
                         "description": "OK",
