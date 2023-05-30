@@ -103,7 +103,7 @@ func (ratePlanController *RatePlanController) HandleUpdateRatePlan(c echo.Contex
 	ratePlanModel := model.RatePlan{
 		ID:            c.Param("rate_plan_id"),
 		Name:          reqUpdateRatePlan.Name,
-		TypeRatePlan:  reqUpdateRatePlan.Type,
+		Type:          reqUpdateRatePlan.Type,
 		Status:        reqUpdateRatePlan.Status,
 		Activate:      reqUpdateRatePlan.Activated,
 		FreeBreakfast: reqUpdateRatePlan.FreeBreakfast,
@@ -148,7 +148,7 @@ func (ratePlanController *RatePlanController) HandleSaveRatePlan(c echo.Context)
 		ID:            ratePlanId,
 		RoomTypeId:    reqAddRatePlan.RoomTypeID,
 		Name:          reqAddRatePlan.Name,
-		TypeRatePlan:  reqAddRatePlan.Type,
+		Type:          reqAddRatePlan.Type,
 		Status:        reqAddRatePlan.Status,
 		Activate:      reqAddRatePlan.Activated,
 		FreeBreakfast: reqAddRatePlan.FreeBreakfast,
