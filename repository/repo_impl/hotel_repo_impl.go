@@ -18,6 +18,21 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
+func (hotelReceiver *HotelRepoImpl) GetPayoutRequestByHotel(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
+	var listPayoutRequest []model.PayoutRequest
+	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.RoomType{}, queryModel.ListIgnoreColumns)
+	err = err.Preload("Hotel").Preload("User").Preload("User").Where("hotel_id = ?", queryModel.DataId)
+	var countTotalRows int64
+	err.Model(model.PayoutRequest{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	err = err.Find(&listPayoutRequest)
+	if err.Error != nil {
+		logger.Error("Error get list room type url ", zap.Error(err.Error))
+		return listPayoutRequest, err.Error
+	}
+	return listPayoutRequest, nil
+}
+
 func (hotelReceiver *HotelRepoImpl) GetHotelMobile() ([]model.Hotel, error) {
 	var listHotel []model.Hotel
 	err := hotelReceiver.sql.Db

@@ -378,3 +378,42 @@ func (hotelController *HotelController) HandleUpdateHotel(c echo.Context) error 
 	}
 	return response.Ok(c, "Cập nhật thông tin khách sạn thành công", hotel)
 }
+
+// HandleGetPayoutRequestByHotel godoc
+// @Summary Get payout request by hotel
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /hotels/:id [get]
+func (hotelController *HotelController) HandleGetPayoutRequestByHotel(c echo.Context) error {
+	var listPayoutRequest []model.PayoutRequest
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) ||
+		security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"pettioner", "hotel", "payer", "", "created_at", "updated_at", "-", "open_at", "close_at",
+	}, &model.Hotel{})
+	dataQueryModel.UserId = claims.UserId
+	listPayoutRequest, err := hotelController.HotelRepo.GetPayoutRequestByHotel(&dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listPayoutRequest)
+	}
+	return response.Ok(c, "Lấy danh sách yêu cầu thanh toán thành công", struct {
+		Data   []model.PayoutRequest `json:"data"`
+		Paging res.PagingModel       `json:"paging"`
+	}{
+		Data: listPayoutRequest,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
+}

@@ -19,4 +19,5 @@ type AdminRepo interface {
 	GetHotelWorkByEmployee(queryModel *query.DataQueryModel) ([]model.Hotel, error)
 	DeleteHotelWorkByEmployee(requestDeleteHotelWorkByEmployee req.RequestDeleteHotelWorkByEmployee) (bool, error)
 	SaveHotelWorkByEmployee(hotelWork model.HotelWork) (model.HotelWork, error)
+	GetPayoutRequest(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error)
 }

@@ -604,6 +604,24 @@ paths:
       summary: Get hotel list
       tags:
       - admin-service
+  /admin/payouts:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get payout by admin
+      tags:
+      - admin-service
   /admin/payouts/:id:
     patch:
       consumes:
@@ -1095,7 +1113,7 @@ paths:
           description: Unprocessable Entity
           schema:
             $ref: '#/definitions/res.Response'
-      summary: Get hotel by Id
+      summary: Get payout request by hotel
       tags:
       - hotel-service
   /hotels/:id/business-license:

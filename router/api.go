@@ -81,6 +81,7 @@ func (api *API) SetupRouter() {
 	hotel.DELETE("/:id/photos", api.HotelController.HandleDeleteHotelBusinessLicense, middleware.JWTMiddleWare())
 	hotel.POST("/:id/payout", api.HotelController.HandleSendRequestPaymentHotel, middleware.JWTMiddleWare())
 	hotel.GET("/:id/rooms", api.HotelController.HandleGetRoomTypeByHotel, middleware.JWTMiddleWare())
+	hotel.GET("/payouts/:id", api.HotelController.HandleGetPayoutRequestByHotel, middleware.JWTMiddleWare())
 
 	room := request.Group("/rooms")
 	room.GET("/welcome-room", func(context echo.Context) error {
@@ -125,6 +126,7 @@ func (api *API) SetupRouter() {
 	admin.GET("/works/:id", api.AdminController.HandleGetHotelWorkByEmployee, middleware.JWTMiddleWare())
 	admin.DELETE("/works", api.AdminController.HandleDeleteHotelWorkByEmployee, middleware.JWTMiddleWare())
 	admin.POST("/works", api.AdminController.HandleSaveHotelWorkByEmployee, middleware.JWTMiddleWare())
+	admin.GET("/payouts", api.AdminController.HandleGetPayoutByAdmin, middleware.JWTMiddleWare())
 	log := api.Echo.Group("/manager/log")
 	log.GET("/checkViewLogs", api.LogsHandler.CheckLogs)
 	log.GET("/checkViewLogsSystem", api.LogsHandler.CheckLogsSystem)

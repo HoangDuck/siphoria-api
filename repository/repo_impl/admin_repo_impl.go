@@ -16,6 +16,21 @@ type AdminRepoImpl struct {
 	sql *db.Sql
 }
 
+func (u *AdminRepoImpl) GetPayoutRequest(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
+	var listPayoutRequest []model.PayoutRequest
+	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
+	err = err.Preload("Hotel").Preload("User").Preload("toán")
+	var countTotalRows int64
+	err.Model(model.PayoutRequest{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	err = err.Find(&listPayoutRequest)
+	if err.Error != nil {
+		logger.Error("Error get list hotel work url ", zap.Error(err.Error))
+		return listPayoutRequest, err.Error
+	}
+	return listPayoutRequest, nil
+}
+
 func (u *AdminRepoImpl) SaveHotelWorkByEmployee(hotelWork model.HotelWork) (model.HotelWork, error) {
 	result := u.sql.Db.Create(&hotelWork)
 	if result.Error != nil {

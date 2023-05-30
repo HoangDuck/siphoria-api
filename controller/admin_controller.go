@@ -442,3 +442,39 @@ func (adminController *AdminController) HandleSaveHotelWorkByEmployee(c echo.Con
 	}
 	return response.Ok(c, "Xoá nhân viên thành công", result)
 }
+
+// HandleGetPayoutByAdmin godoc
+// @Summary Get payout by admin
+// @Tags admin-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /admin/payouts [get]
+func (adminController *AdminController) HandleGetPayoutByAdmin(c echo.Context) error {
+	var listPayout []model.PayoutRequest
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.ACCOUNTANT, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"pettioner", "hotel", "payer", "", "created_at", "updated_at", "-", "open_at", "close_at",
+	}, &model.PayoutRequest{})
+	listPayout, err := adminController.AdminRepo.GetPayoutRequest(&dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listPayout)
+	}
+	return response.Ok(c, "Lấy danh sách yêu cầu thanh toán thành công", struct {
+		Data   []model.PayoutRequest `json:"data"`
+		Paging res.PagingModel       `json:"paging"`
+	}{
+		Data: listPayout,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
+}

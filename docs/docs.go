@@ -166,6 +166,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/payouts": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-service"
+                ],
+                "summary": "Get payout by admin",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/payouts/:id": {
             "patch": {
                 "consumes": [
@@ -907,7 +935,7 @@ const docTemplate = `{
                 "tags": [
                     "hotel-service"
                 ],
-                "summary": "Get hotel by Id",
+                "summary": "Get payout request by hotel",
                 "responses": {
                     "200": {
                         "description": "OK",
