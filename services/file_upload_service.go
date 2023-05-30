@@ -81,7 +81,7 @@ func (fileUpload *FileUploadService) UploadMultipleFilesAPI(c echo.Context) erro
 				log.Fatal(err)
 				return
 			}
-			resultFile = append(resultFile, result.URL)
+			resultFile = append(resultFile, result.SecureURL)
 		}(st)
 	}
 	wg.Wait()
