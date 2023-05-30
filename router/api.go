@@ -100,7 +100,7 @@ func (api *API) SetupRouter() {
 	ratePlan := request.Group("/rateplans")
 	ratePlan.POST("/", api.RatePlanController.HandleSaveRatePlan, middleware.JWTMiddleWare())
 	ratePlan.POST("/rateplan-info", api.RatePlanController.HandleGetRatePlanInfo)
-	ratePlan.POST("/:rate_plan_id", api.RatePlanController.HandleUpdateRatePlan, middleware.JWTMiddleWare())
+	ratePlan.PATCH("/:rate_plan_id", api.RatePlanController.HandleUpdateRatePlan, middleware.JWTMiddleWare())
 
 	booking := request.Group("/booking")
 	booking.GET("/welcome-booking", func(context echo.Context) error {
