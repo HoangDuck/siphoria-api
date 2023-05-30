@@ -151,7 +151,7 @@ func UploadMultipleFiles(c echo.Context) []string {
 			if err != nil {
 				return
 			}
-			resultFile = append(resultFile, result.URL)
+			resultFile = append(resultFile, result.SecureURL)
 		}(st)
 	}
 	wg.Wait()
