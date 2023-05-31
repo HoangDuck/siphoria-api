@@ -264,7 +264,7 @@ func (roomController *RoomController) HandleGetRatePlanByRoomType(c echo.Context
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"-", "created_at", "updated_at", "", "rate_packages", "room_type",
+		"-", "created_at", "updated_at", "", "rate_packages", "room_type", "prices",
 	}, &model.RatePlan{})
 	dataQueryModel.UserId = claims.UserId
 	dataQueryModel.DataId = c.Param("id")
@@ -311,11 +311,35 @@ func (roomController *RoomController) HandleGetRoomInventories(c echo.Context) e
 	if err != nil {
 		return response.InternalServerError(c, "Lấy room type thất bại", nil)
 	}
+
+	var listRoomNightsResponse []res.RoomNightResponse
+	for i, _ := range roomType.RoomNights {
+		listRoomNightsResponse = append(listRoomNightsResponse, res.RoomNightResponse{
+			ID:             roomType.RoomNights[i].ID,
+			AvailabilityAt: roomType.RoomNights[i].AvailabilityAt,
+			Quantity:       roomType.RoomNights[i].Remain,
+		})
+	}
+	var listRatePlansResponse []res.RatePlanResponse
+	for j, _ := range roomType.RatePlans {
+		var ratePlanItem = res.RatePlanResponse{
+			RateplanID: roomType.RatePlans[j].ID,
+		}
+		for k, _ := range roomType.RatePlans[j].RatePackages {
+			ratePlanItem.Prices = append(ratePlanItem.Prices, res.Price{
+				ID:             roomType.RatePlans[j].RatePackages[k].ID,
+				AvailabilityAt: roomType.RatePlans[j].RatePackages[k].AvailabilityAt,
+				Price:          roomType.RatePlans[j].RatePackages[k].Price,
+			})
+		}
+		listRatePlansResponse = append(listRatePlansResponse, ratePlanItem)
+	}
+
 	return response.Ok(c, "Lấy inventory thành công", struct {
-		RoomNights []model.RoomNights `json:"roomnight"`
-		Rateplans  []model.RatePlan   `json:"rateplans"`
+		RoomNights []res.RoomNightResponse `json:"roomnight"`
+		Rateplans  []res.RatePlanResponse  `json:"rateplans"`
 	}{
-		RoomNights: roomType.RoomNights,
-		Rateplans:  roomType.RatePlans,
+		RoomNights: listRoomNightsResponse,
+		Rateplans:  listRatePlansResponse,
 	})
 }

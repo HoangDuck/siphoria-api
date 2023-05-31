@@ -1,6 +1,7 @@
 package repo_impl
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -13,6 +14,7 @@ import (
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/utils"
+	"strconv"
 	"time"
 )
 
@@ -57,7 +59,8 @@ func (roomReceiver *RoomRepoImpl) GetRoomNightsByRoomType(c echo.Context, roomTy
 	var roomNightList []model.RoomNights
 	err := roomReceiver.sql.Db.Where("room_type_id = ?", roomTypeId)
 	if c.QueryParam("month") != "" {
-		err = err.Where("DATE_PART('month', availability_at)  = ?", c.QueryParam("month"))
+		monthValue, _ := strconv.ParseInt(c.QueryParam("month"), 10, 5)
+		err = err.Where("DATE_PART('month', availability_at)  = ?", fmt.Sprintf("%v", monthValue+1))
 	}
 	if c.QueryParam("year") != "" {
 		err = err.Where("DATE_PART('year', availability_at)  = ?", c.QueryParam("year"))
@@ -84,7 +87,8 @@ func (roomReceiver *RoomRepoImpl) GetListRatePackages(c echo.Context, ratePlanId
 	err := roomReceiver.sql.Db.Where("rate_plan_id = ?", ratePlanId)
 
 	if c.QueryParam("month") != "" {
-		err = err.Where("DATE_PART('month', availability_at)  = ?", c.QueryParam("month"))
+		monthValue, _ := strconv.ParseInt(c.QueryParam("month"), 10, 5)
+		err = err.Where("DATE_PART('month', availability_at)  = ?", fmt.Sprintf("%v", monthValue+1))
 	}
 	if c.QueryParam("year") != "" {
 		err = err.Where("DATE_PART('year', availability_at)  = ?", c.QueryParam("year"))

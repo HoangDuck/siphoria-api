@@ -1,5 +1,7 @@
 package res
 
+import "time"
+
 type RoomTypeGroupRatePlan struct {
 	TypeRoomCode     string                `json:"type_room_code"`
 	TypeRoomName     string                `json:"type_room_name"`
@@ -31,4 +33,21 @@ type RoomTypeRevenue struct {
 type ListRoomByFloorItem struct {
 	Floor int `json:"floor"`
 	//ListRoom []model.Room `json:"list_room"`
+}
+
+type RoomNightResponse struct {
+	ID             string    `json:"id"`
+	AvailabilityAt time.Time `json:"availability_at"`
+	Quantity       int       `json:"quantity"`
+}
+
+type RatePlanResponse struct {
+	RateplanID string  `json:"rateplan_id"`
+	Prices     []Price `json:"prices"`
+}
+
+type Price struct {
+	ID             string    `json:"id"`
+	AvailabilityAt time.Time `json:"availability_at"`
+	Price          float32   `json:"price"`
 }
