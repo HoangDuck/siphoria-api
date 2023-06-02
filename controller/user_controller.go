@@ -86,7 +86,9 @@ func (userReceiver *UserController) HandleUpdateAvatar(c echo.Context) error {
 		logger.Error("Error save database", zap.Error(err))
 		return response.InternalServerError(c, "Cập nhật avatar thất bại", nil)
 	}
-	return response.Ok(c, "Cập nhật thành công", nil)
+	return response.Ok(c, "Cập nhật thành công", []string{
+		urls[0],
+	})
 }
 
 // HandleGetUserRank godoc
