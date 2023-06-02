@@ -76,7 +76,7 @@ func (api *API) SetupRouter() {
 	hotel.POST("/search", api.HotelController.HandleSearchHotel)
 	hotel.GET("/:id", api.HotelController.HandleGetHotelById)
 	hotel.PATCH("/:id", api.HotelController.HandleUpdateHotel, middleware.JWTMiddleWare())
-	hotel.POST("/:id/photos", api.HotelController.HandleUpdateHotelPhoto, middleware.JWTMiddleWare())
+	hotel.PATCH("/:id/photos", api.HotelController.HandleUpdateHotelPhoto, middleware.JWTMiddleWare())
 	hotel.PATCH("/:id/business-license", api.HotelController.HandleUpdateHotelBusinessLicense, middleware.JWTMiddleWare())
 	hotel.DELETE("/:id/photos", api.HotelController.HandleDeleteHotelBusinessLicense, middleware.JWTMiddleWare())
 	hotel.POST("/:id/payout", api.HotelController.HandleSendRequestPaymentHotel, middleware.JWTMiddleWare())
