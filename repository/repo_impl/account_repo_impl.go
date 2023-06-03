@@ -83,12 +83,10 @@ func (accountReceiver *AccountRepoImpl) GetCustomerActivatePageUrl() (string, er
 
 func (accountReceiver *AccountRepoImpl) CheckEmailExisted(email string) (bool, error) {
 	var user = model.User{}
-	err := accountReceiver.sql.Db.Where("email in (?) AND is_deleted = false AND status = 0", email).Find(&user)
-	if err != nil {
+	err := accountReceiver.sql.Db.Where("email in (?) AND is_deleted = false AND status in (0,1)", email).Find(&user)
+	if err.RowsAffected != 0 {
 		logger.Error("Error query database", zap.Error(err.Error))
-		if err.RowsAffected != 0 {
-			return true, custom_error.EmailAlreadyExists
-		}
+		return true, custom_error.EmailAlreadyExists
 	}
 	return false, nil
 }
@@ -123,8 +121,8 @@ func (accountReceiver *AccountRepoImpl) GetAccountById(userId string) (model.Use
 
 func (accountReceiver *AccountRepoImpl) CheckLogin(request req.RequestSignIn) (model.User, error) {
 	var user = model.User{}
-	err := accountReceiver.sql.Db.Where("email=?", request.Email).Find(&user)
-	if err != nil {
+	err := accountReceiver.sql.Db.Where("email=? AND is_deleted = false AND status = 1", request.Email).Find(&user)
+	if err.Error != nil {
 		logger.Error("Error query database", zap.Error(err.Error))
 
 		if err.Error == gorm.ErrRecordNotFound {
