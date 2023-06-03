@@ -46,16 +46,15 @@ func (ratePlanReceiver *RatePlanRepoImpl) GetRatePlanInfo(ratePlan model.RatePla
 }
 
 func (ratePlanReceiver *RatePlanRepoImpl) UpdateRatePlanInfo(ratePlan model.RatePlan) (model.RatePlan, error) {
-	var ratePlanResult = model.RatePlan{}
-	err := ratePlanReceiver.sql.Db.Model(&ratePlanResult).Updates(ratePlan)
+	err := ratePlanReceiver.sql.Db.Model(&ratePlan).Updates(ratePlan)
 	if err.Error != nil {
 		if err.Error == gorm.ErrRecordNotFound {
-			return ratePlanResult, err.Error
+			return ratePlan, err.Error
 		}
 
-		return ratePlanResult, custom_error.RateplanNotUpdated
+		return ratePlan, custom_error.RateplanNotUpdated
 	}
-	return ratePlanResult, nil
+	return ratePlan, nil
 }
 
 func (ratePlanReceiver *RatePlanRepoImpl) DeleteRatePlanInfo(condition map[string]interface{}) (bool, error) {
