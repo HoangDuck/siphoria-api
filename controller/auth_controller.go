@@ -119,7 +119,7 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 		LastName:        reqRegister.LastName,
 		FullName:        reqRegister.FirstName + " " + reqRegister.LastName,
 		Role:            model.CUSTOMER.String(),
-		Status:          1,
+		Status:          0,
 		UserKeyFirebase: reqRegister.FcmKey,
 	}
 	//Save account
@@ -396,7 +396,7 @@ func (authReceiver *AuthController) HandleChangePassword(c echo.Context) error {
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
-// @Router /auth/verifyemail/:code [get]
+// @Router /auth/verify/:code [get]
 func (authReceiver *AuthController) HandleActivateAccount(c echo.Context) error {
 	emailCode := c.Param("code")
 	account := model.User{

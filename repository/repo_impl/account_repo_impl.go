@@ -70,7 +70,7 @@ func (accountReceiver *AccountRepoImpl) GetCustomerPageUrl() (string, error) {
 
 func (accountReceiver *AccountRepoImpl) GetCustomerActivatePageUrl() (string, error) {
 	var customerPageConfig model.ConfigurationUrlDefine
-	err := accountReceiver.sql.Db.Where("id=?", 6).Find(&customerPageConfig)
+	err := accountReceiver.sql.Db.Where("id=?", 1).Find(&customerPageConfig)
 	logger.Error("Error get template email url ", zap.Error(err.Error))
 	if err.Error == gorm.ErrRecordNotFound {
 		return "https://siphoria.com/auth/verifyemail/", err.Error
@@ -83,7 +83,7 @@ func (accountReceiver *AccountRepoImpl) GetCustomerActivatePageUrl() (string, er
 
 func (accountReceiver *AccountRepoImpl) CheckEmailExisted(email string) (bool, error) {
 	var user = model.User{}
-	err := accountReceiver.sql.Db.Where("email in (?)", email).Find(&user)
+	err := accountReceiver.sql.Db.Where("email in (?) AND is_deleted = false AND status = 0", email).Find(&user)
 	if err != nil {
 		logger.Error("Error query database", zap.Error(err.Error))
 		if err.RowsAffected != 0 {

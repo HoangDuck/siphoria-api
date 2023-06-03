@@ -40,7 +40,7 @@ func (api *API) SetupRouter() {
 	auth.POST("/change-pwd", api.AuthController.HandleChangePassword, middleware.JWTMiddleWare())
 	auth.POST("/forgot", api.AuthController.HandleSendEmailResetPassword)
 	auth.POST("/reset", api.AuthController.HandleResetPassword)
-	auth.GET("/verifyemail/:code", api.AuthController.HandleActivateAccount)
+	auth.GET("/verify/:code", api.AuthController.HandleActivateAccount)
 	//auth.GET("/deactive/by/account-id", api.AuthController.HandleDeactivateAccount, middleware.JWTMiddleWare())
 
 	//auth.GET("/signGoogle", api.AuthController.HandleAuthenticateWithGoogle)
