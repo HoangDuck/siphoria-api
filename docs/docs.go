@@ -762,7 +762,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/verifyemail/:code": {
+        "/auth/verify/:code": {
             "get": {
                 "consumes": [
                     "application/json"

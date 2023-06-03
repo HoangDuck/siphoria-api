@@ -989,7 +989,7 @@ paths:
       summary: Create new account
       tags:
       - auth-service
-  /auth/verifyemail/:code:
+  /auth/verify/:code:
     get:
       consumes:
       - application/json
