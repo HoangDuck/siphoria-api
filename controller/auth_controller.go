@@ -218,10 +218,10 @@ func (authReceiver *AuthController) HandleAuthenticateWithFacebookCallBack(c ech
 			logger.Error("err gen token data", zap.Error(err))
 			return response.InternalServerError(c, "Đăng ký thất bại", nil)
 		}
-		return response.Redirect(c, "Đăng nhập thành công", accountData.Token)
+		return response.Redirect(c, "Đăng nhập thành công", dataContent)
 
 	}
-	return response.Ok(c, "Đăng nhập thành công", accountData.Token)
+	return response.Ok(c, "Đăng nhập thành công", dataContent)
 }
 
 func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context) error {
