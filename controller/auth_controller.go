@@ -158,6 +158,72 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	return response.Ok(c, "Đăng ký thành công", accountResult.Token)
 }
 
+func (authReceiver *AuthController) HandleAuthenticateWithFacebook(c echo.Context) error {
+	oauthFacebookServiceInstance := services.GetFacebookOauth2ServiceInstance()
+	oauthFacebookServiceInstance.FacebookAuthenticationService(c.Response(), c.Request())
+	return c.String(200, "Redirect URL")
+}
+
+func (authReceiver *AuthController) HandleAuthenticateWithFacebookCallBack(c echo.Context) error {
+	oauthFacebookServiceInstance := services.GetFacebookOauth2ServiceInstance()
+	dataContent := oauthFacebookServiceInstance.FacebookAuthenticationCallBack(c.Response(), c.Request())
+
+	accountData, err := authReceiver.AccountRepo.CheckEmailExisted(fmt.Sprintf("%s", dataContent["email"]))
+	if err == custom_error.EmailAlreadyExists {
+		logger.Info(custom_error.EmailAlreadyExists.Error())
+		//generate token
+		_, err = security.GenToken(&accountData)
+		if err != nil {
+			logger.Error("err gen token", zap.Error(err))
+			return response.InternalServerError(c, "Đăng nhập thất bại", nil)
+		}
+		_, _, err = security.GenRefToken(&accountData)
+		if err != nil {
+			logger.Error("err gen token data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng nhập thất bại", nil)
+		}
+	} else if err == custom_error.UserNotFound {
+		logger.Info(custom_error.UserNotFound.Error())
+		//Generate UUID
+		accountId, err := uuid.NewUUID()
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.Forbidden(c, "Đăng ký thất bại", nil)
+		}
+		//Init account
+		account := model.User{
+			ID:        accountId.String(),
+			Email:     fmt.Sprintf("%s", dataContent["email"]),
+			FirstName: fmt.Sprintf("%s", dataContent["given_name"]),
+			LastName:  fmt.Sprintf("%s", dataContent["family_name"]),
+			FullName:  fmt.Sprintf("%s", dataContent["name"]),
+			Role:      model.CUSTOMER.String(),
+			Password:  "9201372893748932",
+			Status:    1,
+			Avatar:    fmt.Sprintf("%s", dataContent["picture"]),
+		}
+		//Save account
+		accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		_, err = security.GenToken(&accountResult)
+		if err != nil {
+			logger.Error("err gen token", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		_, _, err = security.GenRefToken(&accountResult)
+		if err != nil {
+			logger.Error("err gen token data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		return response.Redirect(c, "Đăng nhập thành công", accountData.Token)
+
+	}
+	return response.Ok(c, "Đăng nhập thành công", accountData.Token)
+}
+
 func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context) error {
 	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
 	oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
@@ -218,18 +284,9 @@ func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.
 			logger.Error("err gen token data", zap.Error(err))
 			return response.InternalServerError(c, "Đăng ký thất bại", nil)
 		}
-		//http.Redirect(c.Response(), c.Request(), "", http.StatusTemporaryRedirect)
-
 		return response.Redirect(c, "Đăng nhập thành công", accountData.Token)
 
 	}
-	//helper.GenerateAccessTokenOauthCookie(c.Response(), accountData.Token.AccessToken+";"+accountData.Token.RefreshToken)
-	//http.Redirect(c.Response(), c.Request(), "https://echo.labstack.com/guide/request/", http.StatusTemporaryRedirect)
-	//c.Response()
-	//c.Request()
-	//return c.Redirect(http.StatusTemporaryRedirect, "https://echo.labstack.com/guide/request/")
-	//return response.Redirect(c, "Đăng nhập thành công", accountData.Token)
-
 	return response.Ok(c, "Đăng nhập thành công", accountData.Token)
 }
 

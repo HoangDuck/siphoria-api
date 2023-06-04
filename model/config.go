@@ -33,6 +33,11 @@ type Config struct {
 	Cloudinary struct {
 		CloudinaryUrl string `yaml:"CLOUDINARY_URL"`
 	}
+	FacebookOauth2 struct {
+		ClientId    string `yaml:"FACEBOOK_CLIENT_ID"`
+		ClientSec   string `yaml:"FACEBOOK_CLIENT_SEC"`
+		RedirectUrl string `yaml:"REDIRECT_URL"`
+	}
 }
 
 type ConfigurationUrlDefine struct {
