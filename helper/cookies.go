@@ -24,3 +24,14 @@ func GenerateStateOauthCookie(responseWriter http.ResponseWriter) string {
 	http.SetCookie(responseWriter, &cookie)
 	return state
 }
+
+func GenerateAccessTokenOauthCookie(responseWriter http.ResponseWriter, token string) {
+	var expiration = time.Now().Add(2 * time.Minute)
+	cookie := http.Cookie{
+		Name:     "token",
+		Value:    token,
+		Expires:  expiration,
+		HttpOnly: true,
+	}
+	http.SetCookie(responseWriter, &cookie)
+}

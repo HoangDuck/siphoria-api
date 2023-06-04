@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
+	"hotel-booking-api/custom_error"
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	response "hotel-booking-api/model/model_func"
@@ -96,7 +98,7 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	}
 	//validate existed email
 	_, err := authReceiver.AccountRepo.CheckEmailExisted(reqRegister.Email)
-	if err != nil {
+	if err == custom_error.EmailAlreadyExists {
 		logger.Error("Error existed email", zap.Error(err))
 		return response.Conflict(c, "Email đã tồn tại", nil)
 	}
@@ -156,31 +158,80 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	return response.Ok(c, "Đăng ký thành công", accountResult.Token)
 }
 
-//func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context) error {
-//	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
-//	oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
-//	return c.String(200, "Redirect URL")
-//}
-//
-//func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.Context) error {
-//	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
-//	dataContent := oauthGoogleServiceInstance.AuthenticationCallBack(c.Response(), c.Request())
-//	//_, err := authReceiver.AccountRepo.CheckEmail(dataContent["email"].(string))
-//	//
-//	//if err != nil {
-//	//	dataContent["isExisted"] = "true"
-//	//	return c.JSON(http.StatusOK, res.Response{
-//	//		StatusCode: http.StatusOK,
-//	//		Message:    "Get data success",
-//	//		Data:       dataContent,
-//	//	})
-//	//}
-//	return c.JSON(http.StatusOK, res.Response{
-//		StatusCode: http.StatusOK,
-//		Message:    "Get data success",
-//		Data:       dataContent,
-//	})
-//}
+func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context) error {
+	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
+	oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
+	return c.String(200, "Redirect URL")
+}
+
+func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.Context) error {
+	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
+	dataContent := oauthGoogleServiceInstance.AuthenticationCallBack(c.Response(), c.Request())
+
+	accountData, err := authReceiver.AccountRepo.CheckEmailExisted(fmt.Sprintf("%s", dataContent["email"]))
+	if err == custom_error.EmailAlreadyExists {
+		logger.Info(custom_error.EmailAlreadyExists.Error())
+		//generate token
+		_, err = security.GenToken(&accountData)
+		if err != nil {
+			logger.Error("err gen token", zap.Error(err))
+			return response.InternalServerError(c, "Đăng nhập thất bại", nil)
+		}
+		_, _, err = security.GenRefToken(&accountData)
+		if err != nil {
+			logger.Error("err gen token data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng nhập thất bại", nil)
+		}
+	} else if err == custom_error.UserNotFound {
+		logger.Info(custom_error.UserNotFound.Error())
+		//Generate UUID
+		accountId, err := uuid.NewUUID()
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.Forbidden(c, "Đăng ký thất bại", nil)
+		}
+		//Init account
+		account := model.User{
+			ID:        accountId.String(),
+			Email:     fmt.Sprintf("%s", dataContent["email"]),
+			FirstName: fmt.Sprintf("%s", dataContent["given_name"]),
+			LastName:  fmt.Sprintf("%s", dataContent["family_name"]),
+			FullName:  fmt.Sprintf("%s", dataContent["name"]),
+			Role:      model.CUSTOMER.String(),
+			Password:  "9201372893748932",
+			Status:    1,
+			Avatar:    fmt.Sprintf("%s", dataContent["picture"]),
+		}
+		//Save account
+		accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		_, err = security.GenToken(&accountResult)
+		if err != nil {
+			logger.Error("err gen token", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		_, _, err = security.GenRefToken(&accountResult)
+		if err != nil {
+			logger.Error("err gen token data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		//http.Redirect(c.Response(), c.Request(), "", http.StatusTemporaryRedirect)
+
+		return response.Redirect(c, "Đăng nhập thành công", accountData.Token)
+
+	}
+	//helper.GenerateAccessTokenOauthCookie(c.Response(), accountData.Token.AccessToken+";"+accountData.Token.RefreshToken)
+	//http.Redirect(c.Response(), c.Request(), "https://echo.labstack.com/guide/request/", http.StatusTemporaryRedirect)
+	//c.Response()
+	//c.Request()
+	//return c.Redirect(http.StatusTemporaryRedirect, "https://echo.labstack.com/guide/request/")
+	//return response.Redirect(c, "Đăng nhập thành công", accountData.Token)
+
+	return response.Ok(c, "Đăng nhập thành công", accountData.Token)
+}
 
 // HandleSignIn godoc
 // @Summary Sign In Account
@@ -286,8 +337,8 @@ func (authReceiver *AuthController) HandleSendEmailResetPassword(c echo.Context)
 	if err := c.Validate(requestResetPassword); err != nil {
 		return response.BadRequest(c, "Email không khả dụng", nil)
 	}
-	isExistedEmail, _ := authReceiver.AccountRepo.CheckEmailExisted(requestResetPassword.Email)
-	if !isExistedEmail {
+	_, err := authReceiver.AccountRepo.CheckEmailExisted(requestResetPassword.Email)
+	if err == custom_error.UserNotFound {
 		return response.InternalServerError(c, "Email không tồn tại", nil)
 	}
 	//generate token

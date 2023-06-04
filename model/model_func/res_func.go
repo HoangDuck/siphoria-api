@@ -93,3 +93,11 @@ func BadGateWay(c echo.Context, message string, data interface{}) error {
 		Data:       data,
 	})
 }
+
+func Redirect(c echo.Context, message string, data interface{}) error {
+	return c.JSON(http.StatusTemporaryRedirect, res.Response{
+		StatusCode: http.StatusTemporaryRedirect,
+		Message:    message,
+		Data:       data,
+	})
+}

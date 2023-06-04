@@ -35,7 +35,6 @@ func (api *API) SetupRouter() {
 	auth := request.Group("/auth")
 	authLogin := auth.Group("/login")
 	authLogin.POST("/general", api.AuthController.HandleSignIn)
-	//authLogin.POST("/gg", api.AuthController.HandleSignInGoogle)
 	auth.POST("/signup", api.AuthController.HandleRegister)
 	auth.POST("/change-pwd", api.AuthController.HandleChangePassword, middleware.JWTMiddleWare())
 	auth.POST("/forgot", api.AuthController.HandleSendEmailResetPassword)
@@ -43,8 +42,8 @@ func (api *API) SetupRouter() {
 	auth.GET("/verify/:code", api.AuthController.HandleActivateAccount)
 	//auth.GET("/deactive/by/account-id", api.AuthController.HandleDeactivateAccount, middleware.JWTMiddleWare())
 
-	//auth.GET("/signGoogle", api.AuthController.HandleAuthenticateWithGoogle)
-	//auth.GET("/google-callback", api.AuthController.HandleAuthenticateWithGoogleCallBack)
+	auth.GET("/gg", api.AuthController.HandleAuthenticateWithGoogle)
+	auth.GET("/google-callback", api.AuthController.HandleAuthenticateWithGoogleCallBack)
 	//auth.POST("/sign-in-google", api.AuthController.HandleSignInGoogleToken, middleware.JWTMiddleWare())
 	//auth.POST("/sign-in-oauth-info", api.AuthController.HandleAuthenticationGoogleWithInfo)
 	//auth.GET("/send-email", api.AuthController.TestSendEmail)

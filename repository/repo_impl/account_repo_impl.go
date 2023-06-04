@@ -81,14 +81,18 @@ func (accountReceiver *AccountRepoImpl) GetCustomerActivatePageUrl() (string, er
 	return customerPageConfig.Value, nil
 }
 
-func (accountReceiver *AccountRepoImpl) CheckEmailExisted(email string) (bool, error) {
+func (accountReceiver *AccountRepoImpl) CheckEmailExisted(email string) (model.User, error) {
 	var user = model.User{}
 	err := accountReceiver.sql.Db.Where("email in (?) AND is_deleted = false AND status in (0,1)", email).Find(&user)
 	if err.RowsAffected != 0 {
 		logger.Error("Error query database", zap.Error(err.Error))
-		return true, custom_error.EmailAlreadyExists
+		return user, custom_error.EmailAlreadyExists
 	}
-	return false, nil
+	if err.RowsAffected == 0 {
+		logger.Error("Error query database", zap.Error(err.Error))
+		return user, custom_error.UserNotFound
+	}
+	return user, nil
 }
 
 func (accountReceiver *AccountRepoImpl) SaveAccount(account model.User) (model.User, error) {

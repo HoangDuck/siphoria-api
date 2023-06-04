@@ -19,7 +19,7 @@ type GoogleOauthService struct {
 
 var oauthService *GoogleOauthService
 
-const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?id_token="
+const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token="
 
 func GetOauth2ServiceInstance() *GoogleOauthService {
 	if oauthService == nil {
