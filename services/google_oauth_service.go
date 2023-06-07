@@ -49,7 +49,7 @@ func (oauth *GoogleOauthService) SetUpConfig(cfg model.Config) {
 }
 
 func (oauth *GoogleOauthService) GoogleAuthenticationService(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "POST" {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
