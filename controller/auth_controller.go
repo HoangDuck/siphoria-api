@@ -250,7 +250,7 @@ func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context)
 	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance(true)
 	oauthGoogleServiceInstance.GoogleLoginConfig.RedirectURL = reqSignIn.CallBackUri
 	urlCallBack := oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
-	return c.Redirect(http.StatusTemporaryRedirect, urlCallBack)
+	return c.Redirect(http.StatusTemporaryRedirect, urlCallBack) //redirect url
 }
 
 func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.Context) error {
