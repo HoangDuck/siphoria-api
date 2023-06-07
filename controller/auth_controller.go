@@ -158,6 +158,13 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	return response.Ok(c, "Đăng ký thành công", accountResult.Token)
 }
 
+// HandleAuthenticateWithFacebook godoc
+// @Summary Login with facebook
+// @Tags auth-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Router /auth/fb [get]
 func (authReceiver *AuthController) HandleAuthenticateWithFacebook(c echo.Context) error {
 	oauthFacebookServiceInstance := services.GetFacebookOauth2ServiceInstance()
 	oauthFacebookServiceInstance.FacebookAuthenticationService(c.Response(), c.Request())
@@ -218,12 +225,21 @@ func (authReceiver *AuthController) HandleAuthenticateWithFacebookCallBack(c ech
 			logger.Error("err gen token data", zap.Error(err))
 			return response.InternalServerError(c, "Đăng ký thất bại", nil)
 		}
+		//logger.Info(dataContent.string())
 		return response.Redirect(c, "Đăng nhập thành công", dataContent)
 
 	}
+	//logger.Error("err gen token data", zap.Error(err))
 	return response.Ok(c, "Đăng nhập thành công", dataContent)
 }
 
+// HandleAuthenticateWithGoogle godoc
+// @Summary Login with google
+// @Tags auth-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Router /auth/gg [get]
 func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context) error {
 	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
 	oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())

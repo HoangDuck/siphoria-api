@@ -843,6 +843,20 @@ paths:
       summary: Handle Change Password
       tags:
       - auth-service
+  /auth/fb:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Login with facebook
+      tags:
+      - auth-service
   /auth/forgot:
     post:
       consumes:
@@ -870,6 +884,20 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Send Email To Reset Password
+      tags:
+      - auth-service
+  /auth/gg:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Login with google
       tags:
       - auth-service
   /auth/login/general:
