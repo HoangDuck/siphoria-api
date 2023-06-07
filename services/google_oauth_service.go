@@ -21,8 +21,8 @@ var oauthService *GoogleOauthService
 
 const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token="
 
-func GetOauth2ServiceInstance() *GoogleOauthService {
-	if oauthService == nil {
+func GetOauth2ServiceInstance(refreshConfig bool) *GoogleOauthService {
+	if oauthService == nil || refreshConfig {
 		oauthService = new(GoogleOauthService)
 		oauthService.SetUpConfig(*ConfigInfo)
 	}

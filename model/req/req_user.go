@@ -96,3 +96,7 @@ type RequestAddToCart struct {
 type RequestUpdatePaymentStatus struct {
 	SessionId string `json:"session_id"`
 }
+
+type RequestSignInGoogleV2 struct {
+	CallBackUri string `json:"callBackUri,omitempty" validate:"required"`
+}

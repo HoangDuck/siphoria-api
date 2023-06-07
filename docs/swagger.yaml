@@ -887,7 +887,7 @@ paths:
       tags:
       - auth-service
   /auth/gg:
-    get:
+    post:
       consumes:
       - application/json
       produces:

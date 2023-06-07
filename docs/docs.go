@@ -604,7 +604,7 @@ const docTemplate = `{
             }
         },
         "/auth/gg": {
-            "get": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],

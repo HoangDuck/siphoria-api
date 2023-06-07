@@ -239,15 +239,21 @@ func (authReceiver *AuthController) HandleAuthenticateWithFacebookCallBack(c ech
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} res.Response
-// @Router /auth/gg [get]
+// @Router /auth/gg [post]
 func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context) error {
-	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
+	reqSignIn := req.RequestSignInGoogleV2{}
+	if err := c.Bind(&reqSignIn); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance(true)
+	oauthGoogleServiceInstance.GoogleLoginConfig.RedirectURL = reqSignIn.CallBackUri
 	oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
 	return c.String(200, "Redirect URL")
 }
 
 func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.Context) error {
-	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
+	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance(false)
 	dataContent := oauthGoogleServiceInstance.AuthenticationCallBack(c.Response(), c.Request())
 
 	accountData, err := authReceiver.AccountRepo.CheckEmailExisted(fmt.Sprintf("%s", dataContent["email"]))
