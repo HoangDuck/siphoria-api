@@ -14,6 +14,7 @@ import (
 	"hotel-booking-api/repository"
 	"hotel-booking-api/security"
 	"hotel-booking-api/services"
+	"net/http"
 	"os"
 )
 
@@ -248,8 +249,8 @@ func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context)
 	}
 	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance(true)
 	oauthGoogleServiceInstance.GoogleLoginConfig.RedirectURL = reqSignIn.CallBackUri
-	oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
-	return c.String(200, "Redirect URL")
+	urlCallBack := oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
+	return c.Redirect(http.StatusTemporaryRedirect, urlCallBack)
 }
 
 func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.Context) error {

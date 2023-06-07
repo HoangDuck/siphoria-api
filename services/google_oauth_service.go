@@ -48,15 +48,16 @@ func (oauth *GoogleOauthService) SetUpConfig(cfg model.Config) {
 	}
 }
 
-func (oauth *GoogleOauthService) GoogleAuthenticationService(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { ////
+func (oauth *GoogleOauthService) GoogleAuthenticationService(w http.ResponseWriter, r *http.Request) string {
+	if r.Method != "POST" {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
+		return ""
 	}
 	// Create oauthState cookie
 	oauthState := helper.GenerateStateOauthCookie(w)
 	u := oauth.GoogleLoginConfig.AuthCodeURL(oauthState)
-	http.Redirect(w, r, u, http.StatusTemporaryRedirect)
+	//http.Redirect(w, r, u, http.StatusTemporaryRedirect)
+	return u
 }
 
 func (oauth *GoogleOauthService) GetUserInfoWithToken(token string) map[string]interface{} {
