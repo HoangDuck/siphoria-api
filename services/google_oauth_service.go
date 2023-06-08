@@ -7,6 +7,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"hotel-booking-api/helper"
+	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	"io"
 	"io/ioutil"
@@ -157,14 +158,13 @@ func (oauth *GoogleOauthService) AuthenticationCallBack(w http.ResponseWriter, r
 
 func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]interface{} {
 	// Exchange Auth Code for Tokens
+	logger.Info(code)
 	token, err := oauth.GoogleLoginConfig.Exchange(
 		context.Background(), code)
 
 	// ERROR : Auth Code Exchange Failed
 	if err != nil {
-		if err != nil {
-			return nil
-		}
+		logger.Infof(err.Error())
 		return nil
 	}
 
@@ -173,9 +173,7 @@ func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]int
 
 	// ERROR : Unable to get user data from google
 	if err != nil {
-		if err != nil {
-			return nil
-		}
+		logger.Infof("Unable to get user data from google")
 		return nil
 	}
 
@@ -188,9 +186,6 @@ func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]int
 	}(response.Body)
 	contents, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		if err != nil {
-			return nil
-		}
 		return nil
 	}
 	value := map[string]interface{}{}

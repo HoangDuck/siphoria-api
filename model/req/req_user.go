@@ -98,5 +98,5 @@ type RequestUpdatePaymentStatus struct {
 }
 
 type RequestSignInGoogleV2 struct {
-	Code string `json:"code,omitempty" validate:"required"`
+	Code string `json:"code" validate:"required"`
 }
