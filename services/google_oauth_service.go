@@ -21,8 +21,8 @@ var oauthService *GoogleOauthService
 
 const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token="
 
-func GetOauth2ServiceInstance(refreshConfig bool) *GoogleOauthService {
-	if oauthService == nil || refreshConfig {
+func GetOauth2ServiceInstance() *GoogleOauthService {
+	if oauthService == nil {
 		oauthService = new(GoogleOauthService)
 		oauthService.SetUpConfig(*ConfigInfo)
 	}
@@ -142,6 +142,52 @@ func (oauth *GoogleOauthService) AuthenticationCallBack(w http.ResponseWriter, r
 	contents, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		_, err := fmt.Fprintf(w, "failed read response: %s", err.Error())
+		if err != nil {
+			return nil
+		}
+		return nil
+	}
+	value := map[string]interface{}{}
+	if err = json.Unmarshal(contents, &value); err != nil {
+		panic(err)
+	}
+	// send back response to browser
+	return value
+}
+
+func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]interface{} {
+	// Exchange Auth Code for Tokens
+	token, err := oauth.GoogleLoginConfig.Exchange(
+		context.Background(), code)
+
+	// ERROR : Auth Code Exchange Failed
+	if err != nil {
+		if err != nil {
+			return nil
+		}
+		return nil
+	}
+
+	// Fetch User Data from google server
+	response, err := http.Get(OauthGoogleUrlAPI + token.AccessToken)
+
+	// ERROR : Unable to get user data from google
+	if err != nil {
+		if err != nil {
+			return nil
+		}
+		return nil
+	}
+
+	// Parse user data JSON Object
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
+	contents, err := ioutil.ReadAll(response.Body)
+	if err != nil {
 		if err != nil {
 			return nil
 		}

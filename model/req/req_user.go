@@ -98,5 +98,5 @@ type RequestUpdatePaymentStatus struct {
 }
 
 type RequestSignInGoogleV2 struct {
-	CallBackUri string `json:"callBackUri,omitempty" validate:"required"`
+	Code string `json:"code,omitempty" validate:"required"`
 }

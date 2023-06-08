@@ -234,27 +234,86 @@ func (authReceiver *AuthController) HandleAuthenticateWithFacebookCallBack(c ech
 	return response.Ok(c, "Đăng nhập thành công", dataContent)
 }
 
-// HandleAuthenticateWithGoogle godoc
-// @Summary Login with google
-// @Tags auth-service
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} res.Response
-// @Router /auth/gg [post]
 func (authReceiver *AuthController) HandleAuthenticateWithGoogle(c echo.Context) error {
 	reqSignIn := req.RequestSignInGoogleV2{}
 	if err := c.Bind(&reqSignIn); err != nil {
 		logger.Error("Error binding data", zap.Error(err))
 		return response.BadRequest(c, err.Error(), nil)
 	}
-	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance(true)
-	oauthGoogleServiceInstance.GoogleLoginConfig.RedirectURL = reqSignIn.CallBackUri
+	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
 	urlCallBack := oauthGoogleServiceInstance.GoogleAuthenticationService(c.Response(), c.Request())
-	return c.Redirect(http.StatusTemporaryRedirect, urlCallBack) //redirect url
+	return c.Redirect(http.StatusOK, urlCallBack) //redirect
+}
+
+// HandleAuthenticateWithGoogleV2 godoc
+// @Summary Login with google
+// @Tags auth-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Router /auth/gg [post]
+func (authReceiver *AuthController) HandleAuthenticateWithGoogleV2(c echo.Context) error {
+	reqSignIn := req.RequestSignInGoogleV2{}
+	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
+	dataContent := oauthGoogleServiceInstance.GetUserInfoWithCode(reqSignIn.Code)
+	accountData, err := authReceiver.AccountRepo.CheckEmailExisted(fmt.Sprintf("%s", dataContent["email"]))
+	if err == custom_error.EmailAlreadyExists {
+		logger.Info(custom_error.EmailAlreadyExists.Error())
+		//generate token
+		_, err = security.GenToken(&accountData)
+		if err != nil {
+			logger.Error("err gen token", zap.Error(err))
+			return response.InternalServerError(c, "Đăng nhập thất bại", nil)
+		}
+		_, _, err = security.GenRefToken(&accountData)
+		if err != nil {
+			logger.Error("err gen token data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng nhập thất bại", nil)
+		}
+	} else if err == custom_error.UserNotFound {
+		logger.Info(custom_error.UserNotFound.Error())
+		//Generate UUID
+		accountId, err := uuid.NewUUID()
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.Forbidden(c, "Đăng ký thất bại", nil)
+		}
+		//Init account
+		account := model.User{
+			ID:        accountId.String(),
+			Email:     fmt.Sprintf("%s", dataContent["email"]),
+			FirstName: fmt.Sprintf("%s", dataContent["given_name"]),
+			LastName:  fmt.Sprintf("%s", dataContent["family_name"]),
+			FullName:  fmt.Sprintf("%s", dataContent["name"]),
+			Role:      model.CUSTOMER.String(),
+			Password:  "9201372893748932",
+			Status:    1,
+			Avatar:    fmt.Sprintf("%s", dataContent["picture"]),
+		}
+		//Save account
+		accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		_, err = security.GenToken(&accountResult)
+		if err != nil {
+			logger.Error("err gen token", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		_, _, err = security.GenRefToken(&accountResult)
+		if err != nil {
+			logger.Error("err gen token data", zap.Error(err))
+			return response.InternalServerError(c, "Đăng ký thất bại", nil)
+		}
+		return response.Redirect(c, "Đăng nhập thành công", accountData.Token)
+
+	}
+	return response.Ok(c, "Đăng nhập thành công", accountData.Token)
 }
 
 func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.Context) error {
-	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance(false)
+	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
 	dataContent := oauthGoogleServiceInstance.AuthenticationCallBack(c.Response(), c.Request())
 
 	accountData, err := authReceiver.AccountRepo.CheckEmailExisted(fmt.Sprintf("%s", dataContent["email"]))

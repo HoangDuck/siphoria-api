@@ -42,7 +42,7 @@ func (api *API) SetupRouter() {
 	auth.GET("/verify/:code", api.AuthController.HandleActivateAccount)
 	//auth.GET("/deactive/by/account-id", api.AuthController.HandleDeactivateAccount, middleware.JWTMiddleWare())
 
-	auth.POST("/gg", api.AuthController.HandleAuthenticateWithGoogle)
+	auth.POST("/gg", api.AuthController.HandleAuthenticateWithGoogleV2)
 	auth.GET("/google-callback", api.AuthController.HandleAuthenticateWithGoogleCallBack)
 	auth.GET("/fb", api.AuthController.HandleAuthenticateWithFacebook)
 	auth.GET("/facebook-callback", api.AuthController.HandleAuthenticateWithFacebookCallBack)
