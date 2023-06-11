@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"hotel-booking-api/helper"
@@ -156,7 +157,7 @@ func (oauth *GoogleOauthService) AuthenticationCallBack(w http.ResponseWriter, r
 	return value
 }
 
-func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]interface{} {
+func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) (map[string]interface{}, error) {
 	// Exchange Auth Code for Tokens
 	logger.Info(code)
 	token, err := oauth.GoogleLoginConfig.Exchange(
@@ -164,8 +165,8 @@ func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]int
 
 	// ERROR : Auth Code Exchange Failed
 	if err != nil {
-		logger.Infof(err.Error())
-		return nil
+		logger.Error("Logger login google", zap.Error(err))
+		return nil, err
 	}
 
 	// Fetch User Data from google server
@@ -173,8 +174,8 @@ func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]int
 
 	// ERROR : Unable to get user data from google
 	if err != nil {
-		logger.Infof("Unable to get user data from google")
-		return nil
+		logger.Infof(err.Error())
+		return nil, err
 	}
 
 	// Parse user data JSON Object
@@ -186,12 +187,12 @@ func (oauth *GoogleOauthService) GetUserInfoWithCode(code string) map[string]int
 	}(response.Body)
 	contents, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	value := map[string]interface{}{}
 	if err = json.Unmarshal(contents, &value); err != nil {
 		panic(err)
 	}
 	// send back response to browser
-	return value
+	return value, nil
 }

@@ -259,7 +259,10 @@ func (authReceiver *AuthController) HandleAuthenticateWithGoogleV2(c echo.Contex
 		return response.BadRequest(c, err.Error(), nil)
 	}
 	oauthGoogleServiceInstance := services.GetOauth2ServiceInstance()
-	dataContent := oauthGoogleServiceInstance.GetUserInfoWithCode(reqSignIn.Code)
+	dataContent, errortest := oauthGoogleServiceInstance.GetUserInfoWithCode(reqSignIn.Code)
+	if errortest != nil {
+		return response.InternalServerError(c, "Error login google", errortest)
+	}
 	accountData, err := authReceiver.AccountRepo.CheckEmailExisted(fmt.Sprintf("%s", dataContent["email"]))
 	if err == custom_error.EmailAlreadyExists {
 		logger.Info(custom_error.EmailAlreadyExists.Error())
@@ -310,7 +313,7 @@ func (authReceiver *AuthController) HandleAuthenticateWithGoogleV2(c echo.Contex
 			logger.Error("err gen token data", zap.Error(err))
 			return response.InternalServerError(c, "Đăng ký thất bại", nil)
 		}
-		return response.Ok(c, "Đăng nhập thành công", accountData.Token)
+		return response.Ok(c, "Đăng nhập thành công", accountResult.Token)
 
 	}
 	return response.Ok(c, "Đăng nhập thành công", accountData.Token)
