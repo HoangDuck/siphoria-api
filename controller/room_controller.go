@@ -264,7 +264,7 @@ func (roomController *RoomController) HandleGetRatePlanByRoomType(c echo.Context
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"-", "created_at", "updated_at", "", "rate_packages", "room_type", "prices",
+		"-", "created_at", "updated_at", "", "rate_packages", "room_type", "prices", "activate", "free_breakfast", "free_lunch", "free_dinner", "room_type_id",
 	}, &model.RatePlan{})
 	dataQueryModel.UserId = claims.UserId
 	dataQueryModel.DataId = c.Param("id")

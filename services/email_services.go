@@ -24,7 +24,7 @@ func GetEmailServiceInstance() *EmailService {
 
 func (service *EmailService) CreateBodyTemplate(content string, buttonName string, url string) string {
 	return "<div style=\"width: 100%;align-items: center;\">" +
-		"<br><img src=\"https://res.cloudinary.com/divdasbv7/image/upload/v1671956138/my-uploads/siphoria_uvrml6.png\" " +
+		"<br><img src=\"https://res.cloudinary.com/dqqdwydoo/image/upload/v1686791558/353946686_220191677493448_7398544158072599447_n_w9v97l.png\" " +
 		"alt=\"Siphoria Logo\" style=\"max-width: 100px;user-select: none;\" />" +
 		"<br><p> " + content + " </p>" +
 		"<br><button style=\"padding: 15px 20px;border-radius: 8px;background-color: #22c55e;color: white;font-weight: 600;border: none;cursor: pointer;\" " +

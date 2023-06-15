@@ -41,7 +41,7 @@ func (hotelController *HotelController) HandleGetRoomTypeByHotel(c echo.Context)
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"hotel", "created_at", "updated_at", "",
+		"hotel", "created_at", "updated_at", "", "activated", "description", "max_adult", "max_children", "bed_nums", "bathroom_nums", "photos", "hotel_id", "-", "room_type_facility", "room_nights", "rate_plans", "room_type_views",
 	}, &model.RoomType{})
 	dataQueryModel.UserId = claims.UserId
 	dataQueryModel.DataId = c.Param("id")
@@ -110,7 +110,7 @@ func (hotelController *HotelController) HandleGetHotelPartner(c echo.Context) er
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"hotelier", "created_at", "updated_at", "",
+		"hotelier", "created_at", "updated_at", "", "overview", "rating", "commission_rate", "status", "activate", "province_code", "district_code", "ward_core", "raw_address", "hotel_photos", "bank_account", "bank_beneficiary", "bank_name", "business_licence", "hotelier_id", "price_hotel", "discount_price", "discount_hotel", "hotel_type", "hotel_facility",
 	}, &model.Hotel{})
 	dataQueryModel.UserId = claims.UserId
 	listHotel, err := hotelController.HotelRepo.GetHotelFilter(&dataQueryModel)
