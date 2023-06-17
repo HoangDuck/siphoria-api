@@ -206,13 +206,14 @@ func (hotelController *HotelController) HandleUpdateHotelPhoto(c echo.Context) e
 		logger.Error("Error create multipart form", zap.Error(err))
 	}
 	var oldUrls []string
-	if _, isExisted := form.Value["text"]; isExisted {
+	if form.Value != nil {
 		logger.Error(form.Value["text"][0])
 		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 		for i := 0; i < len(form.Value["text"]); i++ {
 			oldUrls = append(oldUrls, form.Value["text"][i])
 		}
 	}
+
 	urls := services.UploadMultipleFiles(c)
 	//if len(urls) == 0 {
 	//	logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
@@ -252,7 +253,7 @@ func (hotelController *HotelController) HandleUpdateHotelBusinessLicense(c echo.
 	if err != nil {
 	}
 	var oldUrls []string
-	if _, isExisted := form.Value["text"]; isExisted {
+	if form.Value != nil {
 		logger.Error(form.Value["text"][0])
 		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 		for i := 0; i < len(form.Value["text"]); i++ {

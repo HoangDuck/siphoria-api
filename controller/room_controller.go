@@ -223,7 +223,7 @@ func (roomController *RoomController) HandleUpdateRoomPhotos(c echo.Context) err
 	if err != nil {
 	}
 	var oldUrls []string
-	if _, isExisted := form.Value["text"]; isExisted {
+	if form.Value != nil {
 		logger.Error(form.Value["text"][0])
 		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 		for i := 0; i < len(form.Value["text"]); i++ {

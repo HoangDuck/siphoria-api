@@ -101,10 +101,12 @@ func UploadMultipleFiles(c echo.Context) []string {
 	if err != nil {
 		return []string{}
 	}
-	files, isExisted := form.File["images"]
-	if !isExisted {
+	if form.File == nil {
 		return []string{}
 	}
+
+	files := form.File["images"]
+
 	//generate folder name to contain all uploaded images
 	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
 	err = os.Mkdir(timestamp, os.ModePerm)
