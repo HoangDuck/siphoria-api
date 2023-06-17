@@ -101,9 +101,6 @@ func UploadMultipleFiles(c echo.Context) []string {
 	if err != nil {
 		return []string{}
 	}
-	if form == nil {
-		return []string{}
-	}
 
 	files := form.File["images"]
 
