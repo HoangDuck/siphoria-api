@@ -225,7 +225,10 @@ func (roomController *RoomController) HandleUpdateRoomPhotos(c echo.Context) err
 	var oldUrls []string
 	if form.Value["text"] != nil {
 		logger.Error(form.Value["text"][0])
-		oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
+		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
+		for i := 0; i < len(form.Value["text"]); i++ {
+			oldUrls = append(oldUrls, form.Value["text"][i])
+		}
 	}
 	urls := services.UploadMultipleFiles(c)
 	if len(urls) == 0 {

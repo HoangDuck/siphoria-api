@@ -171,7 +171,7 @@ func (adminController *AdminController) HandleGetAccountByAdmin(c echo.Context) 
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"token", "created_at", "updated_at", "", "avatar", "email", "phone", "gender", "gender", "role", "status", "-", "user_rank",
+		"token", "created_at", "updated_at", "", "avatar", "gender", "gender", "role", "status", "-", "user_rank",
 	}, &model.User{})
 	listUser, err := adminController.AdminRepo.GetAccountFilter(&dataQueryModel)
 	if err != nil {
