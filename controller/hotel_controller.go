@@ -206,7 +206,7 @@ func (hotelController *HotelController) HandleUpdateHotelPhoto(c echo.Context) e
 		logger.Error("Error create multipart form", zap.Error(err))
 	}
 	var oldUrls []string
-	if form.Value != nil {
+	if form != nil {
 		logger.Error(form.Value["text"][0])
 		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 		for i := 0; i < len(form.Value["text"]); i++ {
