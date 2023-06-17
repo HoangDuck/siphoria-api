@@ -235,7 +235,7 @@ func (hotelReceiver *HotelRepoImpl) CreateRequestPayout(payoutRequest model.Payo
 }
 
 func (hotelReceiver *HotelRepoImpl) UpdateHotelBusinessLicensePhotos(hotel model.Hotel) (model.Hotel, error) {
-	err := hotelReceiver.sql.Db.Model(&hotel).Updates(hotel)
+	err := hotelReceiver.sql.Db.Model(&hotel).Select("business_licence").Updates(map[string]interface{}{"business_licence": hotel.BusinessLicence})
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {

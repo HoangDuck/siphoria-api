@@ -122,7 +122,7 @@ func (roomReceiver *RoomRepoImpl) GetRoomTypeDetail(room model.RoomType) (model.
 }
 
 func (roomReceiver *RoomRepoImpl) UpdateRoomPhotos(room model.RoomType) (model.RoomType, error) {
-	err := roomReceiver.sql.Db.Model(&room).Updates(room)
+	err := roomReceiver.sql.Db.Model(&room).Select("photos").Updates(map[string]interface{}{"photos": room.Photos})
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {

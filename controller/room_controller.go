@@ -221,14 +221,12 @@ func (roomController *RoomController) HandleUpdateRoomPhotos(c echo.Context) err
 	}
 	form, err := c.MultipartForm()
 	if err != nil {
+		logger.Error("Error create multipart form", zap.Error(err))
 	}
 	var oldUrls []string
-	if form.Value != nil {
-		logger.Error(form.Value["text"][0])
-		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
-		for i := 0; i < len(form.Value["text"]); i++ {
-			oldUrls = append(oldUrls, form.Value["text"][i])
-		}
+	for i := 0; i < len(form.Value["text"]); i++ {
+		oldUrls = append(oldUrls, form.Value["text"][i])
+		logger.Error(form.Value["text"][i])
 	}
 	urls := services.UploadMultipleFiles(c)
 	//if len(urls) == 0 {

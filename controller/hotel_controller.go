@@ -248,14 +248,12 @@ func (hotelController *HotelController) HandleUpdateHotelBusinessLicense(c echo.
 	}
 	form, err := c.MultipartForm()
 	if err != nil {
+		logger.Error("Error create multipart form", zap.Error(err))
 	}
 	var oldUrls []string
-	if form.Value != nil {
-		logger.Error(form.Value["text"][0])
-		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
-		for i := 0; i < len(form.Value["text"]); i++ {
-			oldUrls = append(oldUrls, form.Value["text"][i])
-		}
+	for i := 0; i < len(form.Value["text"]); i++ {
+		oldUrls = append(oldUrls, form.Value["text"][i])
+		logger.Error(form.Value["text"][i])
 	}
 	urls := services.UploadMultipleFiles(c)
 	//if len(urls) == 0 {
@@ -302,7 +300,7 @@ func (hotelController *HotelController) HandleDeleteHotelBusinessLicense(c echo.
 		ID:          c.Param("id"),
 		HotelPhotos: strings.Join(urls, ";"),
 	}
-	hotel, err := hotelController.HotelRepo.UpdateHotelPhotos(hotel)
+	hotel, err := hotelController.HotelRepo.UpdateHotelBusinessLicensePhotos(hotel)
 	if err != nil {
 		logger.Error("Error save database", zap.Error(err))
 		return response.InternalServerError(c, "Cập nhật avatar thất bại", nil)
