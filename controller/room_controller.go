@@ -223,7 +223,7 @@ func (roomController *RoomController) HandleUpdateRoomPhotos(c echo.Context) err
 	if err != nil {
 	}
 	var oldUrls []string
-	if form.Value["text"] != nil {
+	if _, isExisted := form.Value["text"]; isExisted {
 		logger.Error(form.Value["text"][0])
 		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 		for i := 0; i < len(form.Value["text"]); i++ {
@@ -231,10 +231,10 @@ func (roomController *RoomController) HandleUpdateRoomPhotos(c echo.Context) err
 		}
 	}
 	urls := services.UploadMultipleFiles(c)
-	if len(urls) == 0 {
-		logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
-		return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
-	}
+	//if len(urls) == 0 {
+	//	logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
+	//	return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
+	//}
 	urls = append(urls, oldUrls...)
 	//find customer id by userid(account id)
 	room := model.RoomType{

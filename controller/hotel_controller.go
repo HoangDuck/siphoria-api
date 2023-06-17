@@ -203,21 +203,21 @@ func (hotelController *HotelController) HandleUpdateHotelPhoto(c echo.Context) e
 	}
 	form, err := c.MultipartForm()
 	if err != nil {
+		logger.Error("Error create multipart form", zap.Error(err))
 	}
 	var oldUrls []string
-	if form.Value["text"] != nil {
+	if _, isExisted := form.Value["text"]; isExisted {
 		logger.Error(form.Value["text"][0])
 		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 		for i := 0; i < len(form.Value["text"]); i++ {
 			oldUrls = append(oldUrls, form.Value["text"][i])
 		}
-
 	}
 	urls := services.UploadMultipleFiles(c)
-	if len(urls) == 0 {
-		logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
-		return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
-	}
+	//if len(urls) == 0 {
+	//	logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
+	//	return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
+	//}
 	urls = append(urls, oldUrls...)
 	//find customer id by userid(account id)
 	hotel := model.Hotel{
@@ -252,7 +252,7 @@ func (hotelController *HotelController) HandleUpdateHotelBusinessLicense(c echo.
 	if err != nil {
 	}
 	var oldUrls []string
-	if form.Value["text"] != nil {
+	if _, isExisted := form.Value["text"]; isExisted {
 		logger.Error(form.Value["text"][0])
 		//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 		for i := 0; i < len(form.Value["text"]); i++ {
@@ -260,10 +260,10 @@ func (hotelController *HotelController) HandleUpdateHotelBusinessLicense(c echo.
 		}
 	}
 	urls := services.UploadMultipleFiles(c)
-	if len(urls) == 0 {
-		logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
-		return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
-	}
+	//if len(urls) == 0 {
+	//	logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
+	//	return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
+	//}
 	urls = append(urls, oldUrls...)
 	//find customer id by userid(account id)
 	hotel := model.Hotel{
@@ -295,14 +295,14 @@ func (hotelController *HotelController) HandleDeleteHotelBusinessLicense(c echo.
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	urls := services.UploadMultipleFiles(c)
-	if len(urls) == 0 {
-		logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
-		return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
-	}
+	//if len(urls) == 0 {
+	//	logger.Error("Error upload avatar to cloudinary failed", zap.Error(nil))
+	//	return response.InternalServerError(c, "Cập nhật hình ảnh thất bại", nil)
+	//}
 	//find customer id by userid(account id)
 	hotel := model.Hotel{
 		ID:          c.Param("id"),
-		HotelPhotos: "",
+		HotelPhotos: strings.Join(urls, ";"),
 	}
 	hotel, err := hotelController.HotelRepo.UpdateHotelPhotos(hotel)
 	if err != nil {
