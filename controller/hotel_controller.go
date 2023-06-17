@@ -207,7 +207,7 @@ func (hotelController *HotelController) HandleUpdateHotelPhoto(c echo.Context) e
 	}
 	var oldUrls []string
 	if form != nil {
-		if form.Value != nil {
+		if form.Value["text"] != nil && len(form.Value["text"]) == 0 {
 			logger.Error(form.Value["text"][0])
 			//oldUrls = utils.DecodeJSONArray(form.Value["text"][0])
 			for i := 0; i < len(form.Value["text"]); i++ {
