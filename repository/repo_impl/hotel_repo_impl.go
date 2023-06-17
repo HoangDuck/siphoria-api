@@ -250,7 +250,7 @@ func (hotelReceiver *HotelRepoImpl) UpdateHotelBusinessLicensePhotos(hotel model
 }
 
 func (hotelReceiver *HotelRepoImpl) UpdateHotelPhotos(hotel model.Hotel) (model.Hotel, error) {
-	err := hotelReceiver.sql.Db.Model(&hotel).Updates(hotel)
+	err := hotelReceiver.sql.Db.Model(&hotel).Select("hotel_photos").Updates(map[string]interface{}{"hotel_photos": hotel.HotelPhotos})
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
