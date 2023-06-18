@@ -100,7 +100,7 @@ func (userReceiver *UserController) HandleUpdateAvatar(c echo.Context) error {
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
-// @Router /users/get-rank-available [get]
+// @Router /users/rank-available [get]
 func (userReceiver *UserController) HandleGetUserRank(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
@@ -269,7 +269,9 @@ func (userReceiver *UserController) HandleGetCustomerProfileInfo(c echo.Context)
 	customer := model.User{
 		ID: claims.UserId,
 	}
+	customerRankResult, err := userReceiver.UserRepo.GetUserRank(customer)
 	customerResult, err := userReceiver.UserRepo.GetProfileCustomer(customer)
+	customerResult.UserRank = &customerRankResult
 	if err != nil {
 		logger.Error("Error get profile data", zap.Error(err))
 		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)

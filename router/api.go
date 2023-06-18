@@ -55,7 +55,7 @@ func (api *API) SetupRouter() {
 	user := request.Group("/users")
 	user.GET("/details", api.UserController.HandleGetCustomerProfileInfo, middleware.JWTMiddleWare())
 	user.POST("/update-avatar", api.UserController.HandleUpdateAvatar, middleware.JWTMiddleWare())
-	user.GET("/get-rank-available", api.UserController.HandleGetUserRank, middleware.JWTMiddleWare())
+	user.GET("/rank-available", api.UserController.HandleGetUserRank, middleware.JWTMiddleWare())
 	user.POST("/update-rank", api.UserController.HandleUpdateRank, middleware.JWTMiddleWare())
 	user.PATCH("/update-profile", api.UserController.HandleUpdateProfile, middleware.JWTMiddleWare())
 	user.POST("/add-to-cart", api.UserController.HandleAddToCart, middleware.JWTMiddleWare())

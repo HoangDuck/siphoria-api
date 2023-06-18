@@ -1761,35 +1761,6 @@ paths:
       summary: Get Customer Profile
       tags:
       - user-service
-  /users/get-rank-available:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: user
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/req.RequestUpdateProfile'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.Response'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/res.Response'
-      summary: Get user rank
-      tags:
-      - user-service
   /users/notifications:
     get:
       consumes:
@@ -1918,6 +1889,35 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Get payment by user
+      tags:
+      - user-service
+  /users/rank-available:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: user
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateProfile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get user rank
       tags:
       - user-service
   /users/update-avatar:

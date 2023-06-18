@@ -15,6 +15,15 @@ type AccountRepoImpl struct {
 	sql *db.Sql
 }
 
+func (accountReceiver *AccountRepoImpl) SaveAccountRank(accountRank model.UserRank) (model.UserRank, error) {
+	result := accountReceiver.sql.Db.Preload("Rank").Create(&accountRank)
+	if result.Error != nil {
+		logger.Error("Error insert", zap.Error(result.Error))
+		return accountRank, result.Error
+	}
+	return accountRank, nil
+}
+
 func (accountReceiver *AccountRepoImpl) UpdatePassword(userId string, newPassword string) (bool, error) {
 	var account = model.User{}
 	err := accountReceiver.sql.Db.Model(&account).

@@ -9,6 +9,7 @@ type AccountRepo interface {
 	CheckLogin(request req.RequestSignIn) (model.User, error)
 	GetAccountById(userId string) (model.User, error)
 	SaveAccount(account model.User) (model.User, error)
+	SaveAccountRank(accountRank model.UserRank) (model.UserRank, error)
 	CheckEmailExisted(email string) (model.User, error)
 	GetCustomerPageUrl() (string, error)
 	GetCustomerActivatePageUrl() (string, error)

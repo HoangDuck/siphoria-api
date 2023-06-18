@@ -16,6 +16,7 @@ import (
 	"hotel-booking-api/services"
 	"net/http"
 	"os"
+	"time"
 )
 
 type AuthController struct {
@@ -128,6 +129,27 @@ func (authReceiver *AuthController) HandleRegister(c echo.Context) error {
 	//Save account
 	accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
 
+	//Generate UUID
+	accountRankId, err := uuid.NewUUID()
+	if err != nil {
+		logger.Error("Error uuid data", zap.Error(err))
+		return response.Forbidden(c, "Đăng ký thất bại", nil)
+	}
+	// Defining location using FixedZone method
+	location := time.FixedZone("UTC-7", -6*56*34)
+	accountRank := model.UserRank{
+		ID:        accountRankId.String(),
+		UserId:    accountId.String(),
+		RankId:    "f4c363f1-a942-4f39-8f92-9ae93ed42966",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		BeginAt:   time.Now(),
+		ExpiredAt: time.Date(2099, 12, 31, 23, 59, 59, 59, location),
+	}
+	accountRankResult, err := authReceiver.AccountRepo.SaveAccountRank(accountRank)
+
+	accountResult.UserRank = &accountRankResult
+
 	if err != nil {
 		logger.Error("Error uuid data", zap.Error(err))
 		return response.InternalServerError(c, "Đăng ký thất bại", nil)
@@ -212,6 +234,28 @@ func (authReceiver *AuthController) HandleAuthenticateWithFacebookCallBack(c ech
 		}
 		//Save account
 		accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
+
+		//Generate UUID
+		accountRankId, err := uuid.NewUUID()
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.Forbidden(c, "Đăng ký thất bại", nil)
+		}
+		// Defining location using FixedZone method
+		location := time.FixedZone("UTC-7", -6*56*34)
+		accountRank := model.UserRank{
+			ID:        accountRankId.String(),
+			UserId:    accountId.String(),
+			RankId:    "f4c363f1-a942-4f39-8f92-9ae93ed42966",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			BeginAt:   time.Now(),
+			ExpiredAt: time.Date(2099, 12, 31, 23, 59, 59, 59, location),
+		}
+		accountRankResult, err := authReceiver.AccountRepo.SaveAccountRank(accountRank)
+
+		accountResult.UserRank = &accountRankResult
+
 		if err != nil {
 			logger.Error("Error uuid data", zap.Error(err))
 			return response.InternalServerError(c, "Đăng ký thất bại", nil)
@@ -299,6 +343,28 @@ func (authReceiver *AuthController) HandleAuthenticateWithGoogleV2(c echo.Contex
 		}
 		//Save account
 		accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
+
+		//Generate UUID
+		accountRankId, err := uuid.NewUUID()
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.Forbidden(c, "Đăng ký thất bại", nil)
+		}
+		// Defining location using FixedZone method
+		location := time.FixedZone("UTC-7", -6*56*34)
+		accountRank := model.UserRank{
+			ID:        accountRankId.String(),
+			UserId:    accountId.String(),
+			RankId:    "f4c363f1-a942-4f39-8f92-9ae93ed42966",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			BeginAt:   time.Now(),
+			ExpiredAt: time.Date(2099, 12, 31, 23, 59, 59, 59, location),
+		}
+		accountRankResult, err := authReceiver.AccountRepo.SaveAccountRank(accountRank)
+
+		accountResult.UserRank = &accountRankResult
+
 		if err != nil {
 			logger.Error("Error uuid data", zap.Error(err))
 			return response.InternalServerError(c, "Đăng ký thất bại", nil)
@@ -359,6 +425,28 @@ func (authReceiver *AuthController) HandleAuthenticateWithGoogleCallBack(c echo.
 		}
 		//Save account
 		accountResult, err := authReceiver.AccountRepo.SaveAccount(account)
+
+		//Generate UUID
+		accountRankId, err := uuid.NewUUID()
+		if err != nil {
+			logger.Error("Error uuid data", zap.Error(err))
+			return response.Forbidden(c, "Đăng ký thất bại", nil)
+		}
+		// Defining location using FixedZone method
+		location := time.FixedZone("UTC-7", -6*56*34)
+		accountRank := model.UserRank{
+			ID:        accountRankId.String(),
+			UserId:    accountId.String(),
+			RankId:    "f4c363f1-a942-4f39-8f92-9ae93ed42966",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			BeginAt:   time.Now(),
+			ExpiredAt: time.Date(2099, 12, 31, 23, 59, 59, 59, location),
+		}
+		accountRankResult, err := authReceiver.AccountRepo.SaveAccountRank(accountRank)
+
+		accountResult.UserRank = &accountRankResult
+
 		if err != nil {
 			logger.Error("Error uuid data", zap.Error(err))
 			return response.InternalServerError(c, "Đăng ký thất bại", nil)
