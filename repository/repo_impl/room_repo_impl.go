@@ -24,7 +24,7 @@ type RoomRepoImpl struct {
 
 func (roomReceiver *RoomRepoImpl) UpdateLockRoom() {
 	logger.Info("Update lock room")
-	err := roomReceiver.sql.Db.Where("lock_to < ?", time.Now()).Updates(model.LockRoom{Expired: true})
+	err := roomReceiver.sql.Db.Where("lock_to < ? AND expired = false", time.Now()).Updates(model.LockRoom{Expired: true})
 	if err.Error != nil {
 		logger.Error("Error update lock room", zap.Error(err.Error))
 
