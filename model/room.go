@@ -80,12 +80,14 @@ type RoomNights struct {
 }
 
 type LockRoom struct {
-	ID         string    `json:"id" gorm:"primary_key"`
-	RoomTypeID string    `json:"room_type_id"`
-	RoomType   RoomType  `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	UserId     string    `json:"user_id"`
-	User       User      `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	LockFrom   time.Time `json:"lock_from" gorm:"lock_from"`
-	LockTo     time.Time `json:"lock_to" gorm:"lock_to"`
-	Expired    bool      `json:"expired" gorm:"expired"`
+	ID           string      `json:"id" gorm:"primary_key"`
+	RoomNightsId string      `json:"room_nights_id"`
+	RoomNights   *RoomNights `json:"room_nights,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomTypeID   string      `json:"room_type_id"`
+	RoomType     *RoomType   `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	UserId       string      `json:"user_id"`
+	User         *User       `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	LockFrom     time.Time   `json:"lock_from" gorm:"lock_from"`
+	LockTo       time.Time   `json:"lock_to" gorm:"lock_to"`
+	Expired      bool        `json:"expired" gorm:"expired"`
 }

@@ -88,6 +88,7 @@ func (api *API) SetupRouter() {
 	room.GET("/welcome-room", func(context echo.Context) error {
 		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
 	})
+	room.POST("", api.RoomController.HandleSaveRoomType, middleware.JWTMiddleWare())
 	room.POST("/", api.RoomController.HandleSaveRoomType, middleware.JWTMiddleWare())
 	room.GET("/search/:id", api.RoomController.HandleGetHotelSearchById)
 	room.POST("/roomnights", api.RoomController.HandleUpdateRoomNight, middleware.JWTMiddleWare())
