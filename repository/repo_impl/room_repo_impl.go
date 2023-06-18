@@ -22,6 +22,15 @@ type RoomRepoImpl struct {
 	sql *db.Sql
 }
 
+func (roomReceiver *RoomRepoImpl) UpdateLockRoom() {
+	logger.Info("Update lock room")
+	err := roomReceiver.sql.Db.Where("lock_to < ?", time.Now()).Updates(model.LockRoom{Expired: true})
+	if err.Error != nil {
+		logger.Error("Error update lock room", zap.Error(err.Error))
+
+	}
+}
+
 func (roomReceiver *RoomRepoImpl) GetRatePlanByRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RatePlan, error) {
 	var listRatePlan []model.RatePlan
 	err := GenerateQueryGetData(roomReceiver.sql, queryModel, &model.RatePlan{}, queryModel.ListIgnoreColumns)

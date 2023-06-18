@@ -21,4 +21,5 @@ type RoomRepo interface {
 	GetListRatePlans(c echo.Context, roomTypeId string) ([]model.RatePlan, error)
 	GetListRatePackages(c echo.Context, ratePlanId string) ([]model.RatePackage, error)
 	GetRatePlanByRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RatePlan, error)
+	UpdateLockRoom()
 }
