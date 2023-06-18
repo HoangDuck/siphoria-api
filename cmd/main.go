@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"gopkg.in/robfig/cron.v2"
 	"hotel-booking-api/config"
 	"hotel-booking-api/controller"
 	"hotel-booking-api/db"
@@ -65,11 +66,25 @@ func main() {
 	echoInstance.GET("/swagger/*", echoSwagger.WrapHandler)
 	ConfigureMiddlewaresAndValidator(echoInstance)
 
+	//init routers
 	var api *router.API
 	InitController(api, sql, echoInstance)
+	//init go cron (scheduler)
+	InitSchedulerGoCron(sql, echoInstance)
 
 	//log export port running app
 	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(":%s", os.Getenv("PORT"))))
+}
+
+func InitSchedulerGoCron(sql *db.Sql, echoInstance *echo.Echo) {
+	//init go cron (scheduler)
+	cronInstance := cron.New()
+	schedulerGoCronService := services.SchedulerGoCronService{
+		Echo:     echoInstance,
+		Cron:     cronInstance,
+		RoomRepo: repo_impl.NewRoomRepo(sql),
+	}
+	schedulerGoCronService.InitSchedulerGoCronLockRoom()
 }
 
 func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
@@ -113,7 +128,6 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	}
 
 	paymentController := controller.PaymentController{}
-	//init routers
 	api = &router.API{
 		Echo:                   echoInstance,
 		AuthController:         accountController,
@@ -129,6 +143,7 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		VoucherController:      voucherController,
 		PaymentController:      paymentController,
 	}
+
 	api.SetupRouter()
 }
 
