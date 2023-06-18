@@ -274,7 +274,7 @@ func (userReceiver *UserRepoImpl) UpdateProfileCustomer(user model.User) (model.
 
 func (userReceiver *UserRepoImpl) GetUserRank(customer model.User) (model.UserRank, error) {
 	var userRank = model.UserRank{}
-	err := userReceiver.sql.Db.Limit(1).Order("id desc").Where("user_id=? AND expired_at >= ?", customer.ID, time.Now()).Find(&userRank)
+	err := userReceiver.sql.Db.Limit(1).Order("id desc").Preload("User").Preload("Rank").Where("user_id=? AND expired_at >= ?", customer.ID, time.Now()).Find(&userRank)
 	if err != nil {
 		logger.Error("Error query database", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
