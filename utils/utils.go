@@ -83,10 +83,12 @@ func GetNewId() (string, error) {
 	return newId.String(), nil
 }
 
-func DecodeJSONArray(value string) []string {
+func DecodeJSONArray(value string, isValueDoubleQuote bool) []string {
 	var listStringDecode []string
 	logger.Info(value)
-	value = strings.Replace(value, "\"", "`", -1)
+	if isValueDoubleQuote {
+		value = strings.Replace(value, "\"", "`", -1)
+	}
 	value = strings.Replace(value, "'", "\"", -1)
 	logger.Info(value)
 	err := json.Unmarshal([]byte(value), &listStringDecode)

@@ -258,7 +258,7 @@ func (roomReceiver *RoomRepoImpl) UpdateRatePackages(requestAddRatePackages req.
 }
 
 func (roomReceiver *RoomRepoImpl) UpdateRoomNight(requestUpdateRoomNight req.RequestUpdateRoomNight) ([]model.RoomNights, error) {
-	listDayAvailable := utils.DecodeJSONArray(requestUpdateRoomNight.SelectedDate)
+	listDayAvailable := utils.DecodeJSONArray(requestUpdateRoomNight.SelectedDate, false)
 	var listRoomNights []model.RoomNights
 	listRoomNights = []model.RoomNights{}
 	for _, roomNightDay := range listDayAvailable {
