@@ -440,7 +440,7 @@ func (adminController *AdminController) HandleSaveHotelWorkByEmployee(c echo.Con
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
-	return response.Ok(c, "Xoá nhân viên thành công", result)
+	return response.Ok(c, "Thêm nhân viên thành công", result)
 }
 
 // HandleGetPayoutByAdmin godoc
