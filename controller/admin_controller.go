@@ -148,7 +148,7 @@ func (adminController *AdminController) HandleGetHotelWorkByEmployee(c echo.Cont
 	}
 	return response.Ok(c, "Lấy danh sách khách sạn nhân viên làm việc thành công", struct {
 		UserId  string        `json:"user_id"`
-		HotelId []model.Hotel `json:"hotel_id"`
+		HotelId []model.Hotel `json:"hotels"`
 	}{
 		UserId:  dataQueryModel.UserId,
 		HotelId: listHotel,
