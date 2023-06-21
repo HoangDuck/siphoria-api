@@ -54,6 +54,14 @@ func (ratePlanReceiver *RatePlanRepoImpl) UpdateRatePlanInfo(ratePlan model.Rate
 
 		return ratePlan, custom_error.RateplanNotUpdated
 	}
+	err = ratePlanReceiver.sql.Db.Model(&ratePlan).Select("free_breakfast", "free_lunch", "free_dinner").Updates(ratePlan)
+	if err.Error != nil {
+		if err.Error == gorm.ErrRecordNotFound {
+			return ratePlan, err.Error
+		}
+
+		return ratePlan, custom_error.RateplanNotUpdated
+	}
 	return ratePlan, nil
 }
 
