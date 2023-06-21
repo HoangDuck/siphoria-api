@@ -74,7 +74,33 @@ func (hotelController *HotelController) HandleGetRoomTypeByHotel(c echo.Context)
 // @Failure 422 {object} res.Response
 // @Router /hotels/search [post]
 func (hotelController *HotelController) HandleSearchHotel(c echo.Context) error {
-	return response.Ok(c, "Cập nhật thành công", nil)
+	isCityParamValid := c.QueryParam("city") == ""
+	if isCityParamValid {
+		return response.BadRequest(c, "Invalid city data", nil)
+	}
+	isFromDayParamValid := c.QueryParam("from") == ""
+	if isFromDayParamValid {
+		return response.BadRequest(c, "Invalid from date data", nil)
+	} else {
+		_, err := time.Parse("2006-01-02", c.QueryParam("from"))
+		if err != nil {
+			return response.BadRequest(c, "Invalid from format date data", nil)
+		}
+	}
+	isToDayParamValid := c.QueryParam("to") == ""
+	if isToDayParamValid {
+		return response.BadRequest(c, "Invalid to date data", nil)
+	} else {
+		_, err := time.Parse("2006-01-02", c.QueryParam("to"))
+		if err != nil {
+			return response.BadRequest(c, "Invalid to format date data", nil)
+		}
+	}
+	listHotel, err := hotelController.HotelRepo.GetListHotelSearch(c)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listHotel)
+	}
+	return response.Ok(c, "Lấy danh sách khách sạn thành công", listHotel)
 }
 
 // HandleGetHotelById godoc

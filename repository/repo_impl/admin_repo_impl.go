@@ -59,12 +59,13 @@ func (u *AdminRepoImpl) DeleteHotelWorkByEmployee(requestDeleteHotelWorkByEmploy
 func (u *AdminRepoImpl) GetHotelWorkByEmployee(queryModel *query.DataQueryModel) ([]model.Hotel, error) {
 	var listHotelWork []model.Hotel
 	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
-	err = err.Where("id in (select hotel_id from hotel_works where user_id = ?)", queryModel.UserId)
+	err = err.Preload("HotelType").Preload("HotelFacility").Where("id in (select hotel_id from hotel_works where user_id = ?)", queryModel.UserId)
 	err = err.Find(&listHotelWork)
 	if err.Error != nil {
 		logger.Error("Error get list hotel work url ", zap.Error(err.Error))
 		return listHotelWork, err.Error
 	}
+	logger.Info("get list hotel work url ", zap.Error(err.Error))
 	return listHotelWork, nil
 }
 

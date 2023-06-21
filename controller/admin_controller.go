@@ -139,9 +139,9 @@ func (adminController *AdminController) HandleGetHotelWorkByEmployee(c echo.Cont
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"hotelier", "created_at", "updated_at", "", "overview", "rating", "commission_rate", "status", "activate", "province_code", "district_code", "ward_core", "raw_address", "hotel_photos", "bank_account", "bank_beneficiary", "bank_name", "business_licence", "hotelier_id", "price_hotel", "discount_price", "discount_hotel", "hotel_type", "hotel_facility",
+		"hotelier", "created_at", "updated_at", "", "hotel_type", "hotel_facility",
 	}, &model.Hotel{})
-	dataQueryModel.UserId = claims.UserId
+	dataQueryModel.UserId = c.Param("id")
 	listHotel, err := adminController.AdminRepo.GetHotelWorkByEmployee(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)

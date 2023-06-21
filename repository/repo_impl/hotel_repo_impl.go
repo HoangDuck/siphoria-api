@@ -1,6 +1,7 @@
 package repo_impl
 
 import (
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
@@ -16,6 +17,16 @@ import (
 
 type HotelRepoImpl struct {
 	sql *db.Sql
+}
+
+func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]model.Hotel, error) {
+	//var listHotelData []model.Hotel
+	//from := context.QueryParam("from")
+	//to := context.QueryParam("to")
+	//city := context.QueryParam("city")
+	//err := hotelReceiver.sql.Db.Model(model.Hotel{}).Where("")
+	var listHotelSearch []model.Hotel
+	return listHotelSearch, nil
 }
 
 func (hotelReceiver *HotelRepoImpl) GetPayoutRequestByHotel(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
