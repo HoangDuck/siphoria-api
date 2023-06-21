@@ -58,6 +58,7 @@ func GetQueryDataModel(c echo.Context, listIgnoreColumns []string, modelStruct a
 	model.Start = start
 	model.End = end
 	model.ListIgnoreColumns = listIgnoreColumns
+	model.IsShowDeleted = false
 	return model
 }
 
