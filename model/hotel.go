@@ -73,13 +73,13 @@ type HotelFacility struct {
 }
 
 type HotelSearch struct {
-	ID           string `json:"id" gorm:"id"`
-	Name         string `json:"name" gorm:"name"`
-	Overview     string `json:"overview" gorm:"overview"`
-	Rating       int    `json:"rating_code" gorm:"rating_code"`
-	ProvinceCode int    `json:"province_code" gorm:"province_code"`
-	RawAddress   string `json:"raw_address" gorm:"raw_address"`
-	HotelPhotos  string `json:"hotel_photos" gorm:"hotel_photos"`
-	IsAvailable  string `json:"is_available" gorm:"is_available"`
-	AvgPrice     string `json:"avg_price" gorm:"avg_price"`
+	ID           string  `json:"id" gorm:"id"`
+	Name         string  `json:"name" gorm:"name"`
+	Overview     string  `json:"overview" gorm:"overview"`
+	RatingCode   float32 `json:"rating_code" gorm:"rating_code"`
+	ProvinceCode int     `json:"province_code" gorm:"province_code"`
+	RawAddress   string  `json:"raw_address" gorm:"raw_address"`
+	HotelPhotos  string  `json:"hotel_photos" gorm:"hotel_photos"`
+	IsAvailable  string  `json:"is_available" gorm:"is_available"`
+	AvgPrice     string  `json:"avg_price" gorm:"avg_price"`
 }

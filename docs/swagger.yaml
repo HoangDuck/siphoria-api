@@ -1275,34 +1275,6 @@ paths:
       summary: Get hotel mobile
       tags:
       - hotel-service
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: hotel
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/req.RequestUpdateProfile'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.Response'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/res.Response'
-      summary: Search Hotel
-      tags:
-      - hotel-service
   /payment/create-payment-momo:
     get:
       consumes:

@@ -25,6 +25,7 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 	from := context.QueryParam("from")
 	to := context.QueryParam("to")
 	city := context.QueryParam("city")
+	rating := context.QueryParam("rating")
 	n_o_r := 1
 	if context.QueryParam("n_o_r") != "" {
 		temp_n_o_r, err := strconv.ParseInt(context.QueryParam("n_o_r"), 10, 32)
@@ -49,7 +50,10 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 		}
 		n_o_c = int(temp_n_o_c)
 	}
-	err := hotelReceiver.sql.Db.Raw("select * from fn_searchhotel(?,?,?,?,?,?)", from, to, n_o_r, n_o_a, n_o_c, city).Scan(&listHotelData)
+	if rating == "" {
+		rating = "1,2,3,4,5"
+	}
+	err := hotelReceiver.sql.Db.Raw("select * from fn_searchhotel(?,?,?,?,?,?,?::text)", from, to, n_o_r, n_o_a, n_o_c, city, rating).Scan(&listHotelData)
 	if err.Error != nil {
 		return listHotelData, err.Error
 	}
