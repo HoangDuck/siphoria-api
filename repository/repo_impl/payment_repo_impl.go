@@ -208,7 +208,7 @@ func (paymentReceiver *PaymentRepoImpl) GetMomoHostingUrl() (string, error) {
 
 func (paymentReceiver *PaymentRepoImpl) GetRedirectMomoUrl() (string, error) {
 	var momoConfig model.ConfigurationUrlDefine
-	err := paymentReceiver.sql.Db.Where("id=?", 3).Find(&momoConfig)
+	err := paymentReceiver.sql.Db.Where("id=?", 4).Find(&momoConfig)
 	logger.Debug("Get momo url", zap.Error(err.Error))
 	if err.Error == gorm.ErrRecordNotFound {
 		return "noUrl", err.Error
