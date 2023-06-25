@@ -20,6 +20,21 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
+func (hotelReceiver *HotelRepoImpl) GetReviewsByHotel(queryModel *query.DataQueryModel) ([]model.Review, error) {
+	var listReview []model.Review
+	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Review{}, queryModel.ListIgnoreColumns)
+	err = err.Preload("User").Preload("User").Where("hotel_id = ?", queryModel.DataId)
+	var countTotalRows int64
+	err.Model(model.Review{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	err = err.Find(&listReview)
+	if err.Error != nil {
+		logger.Error("Error get list review url ", zap.Error(err.Error))
+		return listReview, err.Error
+	}
+	return listReview, nil
+}
+
 func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]model.HotelSearch, error) {
 	var listHotelData []model.HotelSearch
 	from := context.QueryParam("from")

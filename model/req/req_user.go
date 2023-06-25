@@ -100,3 +100,15 @@ type RequestUpdatePaymentStatus struct {
 type RequestSignInGoogleV2 struct {
 	Code string `json:"code" validate:"required"`
 }
+
+type RequestAddReview struct {
+	HotelId string `json:"hotel_id"`
+	UserId  string `json:"user_id"`
+	Rating  int    `json:"rating"`
+	Content string `json:"content"`
+}
+
+type RequestUpdateReview struct {
+	Rating  int    `json:"rating"`
+	Content string `json:"content"`
+}

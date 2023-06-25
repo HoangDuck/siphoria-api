@@ -69,6 +69,9 @@ func (api *API) SetupRouter() {
 	user.PUT("/payments", api.UserController.HandleUpdateStatusPayment, middleware.JWTMiddleWare())
 	user.GET("/payments/history", api.UserController.HandleGetPaymentsHistory, middleware.JWTMiddleWare())
 	user.GET("/payments/pending-checkin", api.UserController.HandleGetPaymentsHistory, middleware.JWTMiddleWare())
+	user.POST("/reviews", api.UserController.HandleSaveReview, middleware.JWTMiddleWare())
+	user.PATCH("/reviews/:id", api.UserController.HandleUpdateReview, middleware.JWTMiddleWare())
+	user.DELETE("/reviews/:id", api.UserController.HandleDeleteReview, middleware.JWTMiddleWare())
 
 	hotel := request.Group("/hotels")
 	hotel.GET("/", api.HotelController.HandleGetHotelPartner, middleware.JWTMiddleWare())
@@ -83,6 +86,7 @@ func (api *API) SetupRouter() {
 	hotel.POST("/:id/payout", api.HotelController.HandleSendRequestPaymentHotel, middleware.JWTMiddleWare())
 	hotel.GET("/:id/rooms", api.HotelController.HandleGetRoomTypeByHotel, middleware.JWTMiddleWare())
 	hotel.GET("/payouts/:id", api.HotelController.HandleGetPayoutRequestByHotel, middleware.JWTMiddleWare())
+	hotel.GET("/reviews/:id", api.HotelController.HandleGetReviewByHotel)
 
 	room := request.Group("/rooms")
 	room.GET("/welcome-room", func(context echo.Context) error {

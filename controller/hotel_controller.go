@@ -446,3 +446,36 @@ func (hotelController *HotelController) HandleGetPayoutRequestByHotel(c echo.Con
 		},
 	})
 }
+
+// HandleGetReviewByHotel godoc
+// @Summary Get reviews by hotel
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /reviews/:id [get]
+func (hotelController *HotelController) HandleGetReviewByHotel(c echo.Context) error {
+	var listReview []model.Review
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"hotel_id", "hotel", "user_id", "", "created_at", "updated_at", "-", "", "close_at",
+	}, &model.Review{})
+	dataQueryModel.DataId = c.Param("id")
+	listReview, err := hotelController.HotelRepo.GetReviewsByHotel(&dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listReview)
+	}
+	return response.Ok(c, "Lấy danh sách yêu cầu thanh toán thành công", struct {
+		Data   []model.Review  `json:"data"`
+		Paging res.PagingModel `json:"paging"`
+	}{
+		Data: listReview,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
+}

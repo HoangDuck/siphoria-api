@@ -20,5 +20,8 @@ type UserRepo interface {
 	UpdatePaymentStatus(payment model.Payment) (bool, error)
 	GetUserPaymentHistory(user model.User) ([]model.Payment, error)
 	GetUserPaymentPendingCheckin(user model.User) ([]model.Payment, error)
+	SaveReview(review model.Review) (model.Review, error)
+	UpdateReview(review model.Review) (model.Review, error)
+	DeleteReview(review model.Review) (bool, error)
 	//CheckProfileCustomerExistByIdentify(user model.User) (model.User, error)
 }

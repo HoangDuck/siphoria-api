@@ -14,6 +14,7 @@ import (
 	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
 	"net/http"
+	"time"
 )
 
 type UserController struct {
@@ -462,4 +463,117 @@ func (userReceiver *UserController) HandleGetPaymentsPendingCheckin(c echo.Conte
 		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
 	}
 	return c.JSON(http.StatusOK, listPaymentUser)
+}
+
+// HandleSaveReview godoc
+// @Summary Save review
+// @Tags review-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestAddRatePlan true "review"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/reviews [post]
+func (userReceiver *UserController) HandleSaveReview(c echo.Context) error {
+	reqAddReview := req.RequestAddReview{}
+	if err := c.Bind(&reqAddReview); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return err
+	}
+	err := c.Validate(reqAddReview)
+	if err != nil {
+		logger.Error("Error validate data", zap.Error(err))
+		return response.BadRequest(c, "Thông tin không hợp lệ", nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	reviewId, err := utils.GetNewId()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	review := model.Review{
+		ID:        reviewId,
+		UserId:    claims.UserId,
+		HotelId:   reqAddReview.HotelId,
+		Content:   reqAddReview.Content,
+		Rating:    reqAddReview.Rating,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		IsDeleted: false,
+	}
+	result, err := userReceiver.UserRepo.SaveReview(review)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Lưu thành công", result)
+}
+
+// HandleUpdateReview godoc
+// @Summary Update review
+// @Tags review-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestUpdateReview true "review"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/reviews/:id [patch]
+func (userReceiver *UserController) HandleUpdateReview(c echo.Context) error {
+	reqUpdateReview := req.RequestUpdateReview{}
+	if err := c.Bind(&reqUpdateReview); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return err
+	}
+	err := c.Validate(reqUpdateReview)
+	if err != nil {
+		logger.Error("Error validate data", zap.Error(err))
+		return response.BadRequest(c, "Thông tin không hợp lệ", nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if claims.Role != model.CUSTOMER.String() {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	//find customer id by userid(account id)
+	review := model.Review{
+		ID:      c.Param("id"),
+		UserId:  claims.UserId,
+		Content: reqUpdateReview.Content,
+		Rating:  reqUpdateReview.Rating,
+	}
+	review, err = userReceiver.UserRepo.UpdateReview(review)
+	if err != nil {
+		logger.Error("Error query data", zap.Error(err))
+		return response.InternalServerError(c, "Cập nhật thất bại", nil)
+	}
+	return response.Ok(c, "Cập nhật thành công", review)
+}
+
+// HandleDeleteReview godoc
+// @Summary Delete review
+// @Tags review-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/reviews/:id [delete]
+func (userReceiver *UserController) HandleDeleteReview(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.CUSTOMER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	reviewId := c.Param("id")
+	review := model.Review{
+		ID:        reviewId,
+		IsDeleted: true,
+	}
+	result, err := userReceiver.UserRepo.DeleteReview(review)
+	if !result {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	return response.Ok(c, "Xoá thành công", nil)
 }

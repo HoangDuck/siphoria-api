@@ -391,6 +391,13 @@ definitions:
       type:
         type: string
     type: object
+  req.RequestUpdateReview:
+    properties:
+      content:
+        type: string
+      rating:
+        type: integer
+    type: object
   req.RequestUpdateRoomNight:
     properties:
       quantity:
@@ -1413,6 +1420,28 @@ paths:
       summary: Update rateplan
       tags:
       - rateplan-service
+  /reviews/:id:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get reviews by hotel
+      tags:
+      - hotel-service
   /room/:id/rateplans:
     get:
       consumes:
@@ -1892,6 +1921,85 @@ paths:
       summary: Get user rank
       tags:
       - user-service
+  /users/reviews:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: review
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestAddRatePlan'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Save review
+      tags:
+      - review-service
+  /users/reviews/:id:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Delete review
+      tags:
+      - review-service
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: review
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestUpdateReview'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Update review
+      tags:
+      - review-service
   /users/update-avatar:
     post:
       consumes:

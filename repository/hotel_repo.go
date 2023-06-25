@@ -18,4 +18,5 @@ type HotelRepo interface {
 	GetHotelMobile() ([]model.Hotel, error)
 	GetPayoutRequestByHotel(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error)
 	GetListHotelSearch(context echo.Context) ([]model.HotelSearch, error)
+	GetReviewsByHotel(queryModel *query.DataQueryModel) ([]model.Review, error)
 }

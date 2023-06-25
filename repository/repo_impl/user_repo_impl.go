@@ -18,6 +18,41 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) DeleteReview(review model.Review) (bool, error) {
+	err := userReceiver.sql.Db.Select("is_deleted").Model(&review).Updates(review)
+	if err.Error != nil {
+		logger.Error("Error update review failed ", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, err.Error
+		}
+		return false, err.Error
+	}
+	return true, nil
+}
+
+func (userReceiver *UserRepoImpl) UpdateReview(review model.Review) (model.Review, error) {
+	err := userReceiver.sql.Db.Model(&review).Updates(review)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return review, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return review, err.Error
+		}
+		return review, err.Error
+	}
+	return review, nil
+}
+
+func (userReceiver *UserRepoImpl) SaveReview(review model.Review) (model.Review, error) {
+	result := userReceiver.sql.Db.Create(&review)
+	if result.Error != nil {
+		return review, result.Error
+	}
+	return review, nil
+}
+
 func (userReceiver *UserRepoImpl) GetUserPaymentPendingCheckin(user model.User) ([]model.Payment, error) {
 	var listPaymentUser []model.Payment
 	err := userReceiver.sql.Db.Where("user_id = ? AND status = ?", user.ID, "paid").Preload("User").

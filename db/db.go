@@ -62,7 +62,7 @@ func (s *Sql) SetupDB() {
 		//model.Wallet{},
 		//model.WalletTransaction{},
 		//model.RatePackage{},
-		model.Rank{},
+		model.Review{},
 		//model.UserRank{},
 		//model.PaymentDetail{},
 		//model.Cart{},
