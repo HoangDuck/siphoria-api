@@ -127,7 +127,10 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		VoucherRepo: repo_impl.NewVoucherRepo(sql),
 	}
 
-	paymentController := controller.PaymentController{}
+	paymentController := controller.PaymentController{
+		PaymentRepo: repo_impl.NewPaymentRepo(sql),
+	}
+
 	api = &router.API{
 		Echo:                   echoInstance,
 		AuthController:         accountController,
