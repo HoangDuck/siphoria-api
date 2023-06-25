@@ -12,6 +12,7 @@ import (
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/utils"
+	"strconv"
 	"strings"
 )
 
@@ -19,14 +20,40 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
-func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]model.Hotel, error) {
-	//var listHotelData []model.Hotel
-	//from := context.QueryParam("from")
-	//to := context.QueryParam("to")
-	//city := context.QueryParam("city")
-	//err := hotelReceiver.sql.Db.Model(model.Hotel{}).Where("")
-	var listHotelSearch []model.Hotel
-	return listHotelSearch, nil
+func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]model.HotelSearch, error) {
+	var listHotelData []model.HotelSearch
+	from := context.QueryParam("from")
+	to := context.QueryParam("to")
+	city := context.QueryParam("city")
+	n_o_r := 1
+	if context.QueryParam("n_o_r") != "" {
+		temp_n_o_r, err := strconv.ParseInt(context.QueryParam("n_o_r"), 10, 32)
+		if err != nil {
+			temp_n_o_r = 1
+		}
+		n_o_r = int(temp_n_o_r)
+	}
+	n_o_a := 1
+	if context.QueryParam("n_o_a") != "" {
+		temp_n_o_a, err := strconv.ParseInt(context.QueryParam("n_o_a"), 10, 32)
+		if err != nil {
+			temp_n_o_a = 1
+		}
+		n_o_a = int(temp_n_o_a)
+	}
+	n_o_c := 1
+	if context.QueryParam("n_o_c") != "" {
+		temp_n_o_c, err := strconv.ParseInt(context.QueryParam("n_o_c"), 10, 32)
+		if err != nil {
+			temp_n_o_c = 1
+		}
+		n_o_c = int(temp_n_o_c)
+	}
+	err := hotelReceiver.sql.Db.Raw("select * from fn_searchhotel(?,?,?,?,?,?)", from, to, n_o_r, n_o_a, n_o_c, city).Scan(&listHotelData)
+	if err.Error != nil {
+		return listHotelData, err.Error
+	}
+	return listHotelData, nil
 }
 
 func (hotelReceiver *HotelRepoImpl) GetPayoutRequestByHotel(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {

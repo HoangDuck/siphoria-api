@@ -17,5 +17,5 @@ type HotelRepo interface {
 	GetRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RoomType, error)
 	GetHotelMobile() ([]model.Hotel, error)
 	GetPayoutRequestByHotel(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error)
-	GetListHotelSearch(context echo.Context) ([]model.Hotel, error)
+	GetListHotelSearch(context echo.Context) ([]model.HotelSearch, error)
 }

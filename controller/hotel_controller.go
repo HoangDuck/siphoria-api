@@ -72,7 +72,7 @@ func (hotelController *HotelController) HandleGetRoomTypeByHotel(c echo.Context)
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
-// @Router /hotels/search [post]
+// @Router /hotels/search [get]
 func (hotelController *HotelController) HandleSearchHotel(c echo.Context) error {
 	isCityParamValid := c.QueryParam("city") == ""
 	if isCityParamValid {
@@ -84,7 +84,7 @@ func (hotelController *HotelController) HandleSearchHotel(c echo.Context) error 
 	} else {
 		_, err := time.Parse("2006-01-02", c.QueryParam("from"))
 		if err != nil {
-			return response.BadRequest(c, "Invalid from format date data", nil)
+			return response.BadRequest(c, "Invalid from format date data", err.Error())
 		}
 	}
 	isToDayParamValid := c.QueryParam("to") == ""
