@@ -1,27 +1,24 @@
 package repo_impl
 
-//
-//import (
-//	"fmt"
-//	"go.uber.org/zap"
-//	"gorm.io/gorm"
-//	"hotel-booking-api/custom_error"
-//	"hotel-booking-api/db"
-//	"hotel-booking-api/logger"
-//	"hotel-booking-api/model"
-//	"hotel-booking-api/repository"
-//)
-//
-//type PaymentRepoImpl struct {
-//	sql *db.Sql
-//}
-//
-//func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
-//	return &PaymentRepoImpl{
-//		sql: sql,
-//	}
-//}
-//
+import (
+	"go.uber.org/zap"
+	"gorm.io/gorm"
+	"hotel-booking-api/db"
+	"hotel-booking-api/logger"
+	"hotel-booking-api/model"
+	"hotel-booking-api/repository"
+)
+
+type PaymentRepoImpl struct {
+	sql *db.Sql
+}
+
+func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
+	return &PaymentRepoImpl{
+		sql: sql,
+	}
+}
+
 //func (paymentReceiver *PaymentRepoImpl) GetPaymentListByCondition(condition map[string]interface{}) ([]model.Payment, error) {
 //	var listPayment []model.Payment
 //	if condition["isGetAll"] == "true" {
@@ -190,17 +187,17 @@ package repo_impl
 //	}
 //	return listPayment, err.Error
 //}
-//
-//func (paymentReceiver *PaymentRepoImpl) GetMomoHostingUrl() (string, error) {
-//	var momoConfig model.ConfigurationUrlDefine
-//	err := paymentReceiver.sql.Db.Where("id=?", 1).Find(&momoConfig)
-//	logger.Debug("Get momo url", zap.Error(err.Error))
-//	if err.Error == gorm.ErrRecordNotFound {
-//		return "noUrl", err.Error
-//	}
-//	return momoConfig.Value, nil
-//}
-//
+
+func (paymentReceiver *PaymentRepoImpl) GetMomoHostingUrl() (string, error) {
+	var momoConfig model.ConfigurationUrlDefine
+	err := paymentReceiver.sql.Db.Where("id=?", 3).Find(&momoConfig)
+	logger.Debug("Get momo url", zap.Error(err.Error))
+	if err.Error == gorm.ErrRecordNotFound {
+		return "noUrl", err.Error
+	}
+	return momoConfig.Value, nil
+}
+
 //func (paymentReceiver *PaymentRepoImpl) SavePaymentOnlineDetail(paymentDetail model.PaymentDetailOnline) (model.PaymentDetailOnline, error) {
 //	result := paymentReceiver.sql.Db.Create(&paymentDetail)
 //	if result.Error != nil {
@@ -208,17 +205,17 @@ package repo_impl
 //	}
 //	return paymentDetail, nil
 //}
-//
-//func (paymentReceiver *PaymentRepoImpl) GetRedirectMomoUrl() (string, error) {
-//	var momoConfig model.ConfigurationUrlDefine
-//	err := paymentReceiver.sql.Db.Where("id=?", 3).Find(&momoConfig)
-//	logger.Debug("Get momo url", zap.Error(err.Error))
-//	if err.Error == gorm.ErrRecordNotFound {
-//		return "noUrl", err.Error
-//	}
-//	return momoConfig.Value, nil
-//}
-//
+
+func (paymentReceiver *PaymentRepoImpl) GetRedirectMomoUrl() (string, error) {
+	var momoConfig model.ConfigurationUrlDefine
+	err := paymentReceiver.sql.Db.Where("id=?", 3).Find(&momoConfig)
+	logger.Debug("Get momo url", zap.Error(err.Error))
+	if err.Error == gorm.ErrRecordNotFound {
+		return "noUrl", err.Error
+	}
+	return momoConfig.Value, nil
+}
+
 //func (paymentReceiver *PaymentRepoImpl) DeletePaymentByBookingID(payment model.Payment) (bool, error) {
 //	err := paymentReceiver.sql.Db.Model(&payment).Where("booking_id=?", payment.BookingID).Delete(payment)
 //	if err != nil {
