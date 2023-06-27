@@ -38,6 +38,11 @@ type Config struct {
 		ClientSec   string `yaml:"FACEBOOK_CLIENT_SEC"`
 		RedirectUrl string `yaml:"REDIRECT_URL"`
 	}
+	VNPay struct {
+		VNPTmnCode    string `yaml:"vnp_TmnCode"`
+		VNPHashSecret string `yaml:"vnp_HashSecret"`
+		VNPUrl        string `yaml:"vnp_Url"`
+	}
 }
 
 type ConfigurationUrlDefine struct {

@@ -18,6 +18,48 @@ type PaymentController struct {
 	PaymentRepo repository.PaymentRepo
 }
 
+// CreatePaymentWithVNPay godoc
+// @Summary Create payment vnpay
+// @Tags payment-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCreatePayment true "payment"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /payment/create-vnpay [get]
+func (paymentReceiver *PaymentController) CreatePaymentWithVNPay(c echo.Context) error {
+	vnpayService := services.GetVNPayServiceInstance()
+	//momoUrl := "https://momo.vn"
+	momoUrl, err := paymentReceiver.PaymentRepo.GetMomoHostingUrl()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	//redirectMomoUrl := "https://momo.vn"
+	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectMomoUrl()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	paymentId, err := uuid.NewUUID()
+	condition := map[string]interface{}{
+		"booking-info":        "VNPay",
+		"amount":              50000,
+		"booking-description": "asdas",
+		"ipn-url":             momoUrl,
+		"redirect-url":        redirectMomoUrl,
+		"payment_id":          paymentId.String(),
+	}
+	dataResponse := vnpayService.VNPayPaymentService(condition)
+	if err != nil {
+		return response.BadRequest(c, "nil", nil)
+	}
+	return c.JSON(http.StatusOK, res.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Tạo thanh toán thành công",
+		Data:       services.ConfigInfo.VNPay.VNPUrl + "?" + dataResponse,
+	})
+}
+
 // CreatePaymentWithMomo godoc
 // @Summary Create payment momo
 // @Tags payment-service
@@ -27,7 +69,7 @@ type PaymentController struct {
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /payment/create-payment-momo [get]
+// @Router /payment/create-momo [get]
 func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) error {
 	momoService := services.GetMomoServiceInstance()
 	//momoUrl := "https://momo.vn"

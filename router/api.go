@@ -120,6 +120,7 @@ func (api *API) SetupRouter() {
 	payment := request.Group("/payments")
 	payment.GET("/create-momo", api.PaymentController.CreatePaymentWithMomo)
 	payment.POST("/result-momo", api.PaymentController.GetResultPaymentMomo)
+	payment.GET("/create-vnpay", api.PaymentController.CreatePaymentWithVNPay)
 
 	admin := request.Group("/admin")
 	admin.POST("/create-account", api.AdminController.HandleCreateAccount, middleware.JWTMiddleWare())
