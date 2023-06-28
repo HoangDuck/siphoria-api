@@ -12,7 +12,7 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 	result := sql.Db
 	//query row by conditions
 	if queryModel.Search != "" {
-		result = result.Where("(unaccent(id) LIKE CONCAT('%', unaccent(?), '%') ",
+		result = result.Where("(unaccent(id) ILIKE CONCAT('%', unaccent(?), '%') ",
 			queryModel.Search)
 		val := reflect.ValueOf(modelStruct).Elem()
 		numberRemainFieldCheck := val.NumField()
@@ -29,11 +29,11 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 			if !utils.Contains(listIgnoreKey, tempElementJson) {
 				if numberRemainFieldCheck == numberIgnoreField {
 					result = result.Or("unaccent("+
-						tempElementJson+"::text) LIKE CONCAT('%', unaccent(?::text), '%'))",
+						tempElementJson+"::text) ILIKE CONCAT('%', unaccent(?), '%'))",
 						queryModel.Search)
 				} else {
 					result = result.Or("unaccent("+
-						tempElementJson+"::text) LIKE CONCAT('%', unaccent(?::text), '%')",
+						tempElementJson+"::text) ILIKE CONCAT('%', unaccent(?), '%')",
 						queryModel.Search)
 				}
 			} else {
