@@ -12,7 +12,7 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 	result := sql.Db
 	//query row by conditions
 	if queryModel.Search != "" {
-		result = result.Where("(fn_convertCoDauToKhongDau(id) LIKE ('%' || fn_convertCoDauToKhongDau(?) || '%')",
+		result = result.Where("(unaccent(id) LIKE CONCAT('%', unaccent(?), '%') ",
 			queryModel.Search)
 		val := reflect.ValueOf(modelStruct).Elem()
 		numberRemainFieldCheck := val.NumField()
@@ -28,12 +28,12 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 			numberRemainFieldCheck--
 			if !utils.Contains(listIgnoreKey, tempElementJson) {
 				if numberRemainFieldCheck == numberIgnoreField {
-					result = result.Or("fn_convertCoDauToKhongDau("+
-						tempElementJson+"::text) LIKE ('%' || fn_convertCoDauToKhongDau(?::text) || '%'))",
+					result = result.Or("unaccent("+
+						tempElementJson+"::text) LIKE CONCAT('%', unaccent(?::text), '%'))",
 						queryModel.Search)
 				} else {
-					result = result.Or("fn_convertCoDauToKhongDau("+
-						tempElementJson+"::text) LIKE ('%' || fn_convertCoDauToKhongDau(?::text) || '%')",
+					result = result.Or("unaccent("+
+						tempElementJson+"::text) LIKE CONCAT('%', unaccent(?::text), '%')",
 						queryModel.Search)
 				}
 			} else {
