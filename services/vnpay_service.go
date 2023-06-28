@@ -57,7 +57,7 @@ func (service VNPayService) VNPayPaymentService(condition map[string]interface{}
 	var vnp_ReturnUrl = fmt.Sprint(condition["ipn-url"])
 	now := time.Now()
 	var vnp_CreateDate = now.Format("20060102150405")
-	var vnp_IpAddr = "127.0.0.1"
+	var vnp_IpAddr = "115.73.215.9"
 	//build raw signature
 	var rawSignature bytes.Buffer
 	rawSignature.WriteString("vnp_Amount=")
