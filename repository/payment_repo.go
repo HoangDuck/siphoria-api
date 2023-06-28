@@ -2,6 +2,7 @@ package repository
 
 type PaymentRepo interface {
 	GetMomoHostingUrl() (string, error)
+	GetVNPayHostingUrl() (string, error)
 	GetRedirectMomoUrl() (string, error)
 	//GetPaymentListByCondition(condition map[string]interface{}) ([]model.Payment, error)
 	//GetPaymentHistoryList(customerID string) ([]model.Payment, error)

@@ -121,6 +121,9 @@ func (api *API) SetupRouter() {
 	payment.GET("/create-momo", api.PaymentController.CreatePaymentWithMomo)
 	payment.POST("/result-momo", api.PaymentController.GetResultPaymentMomo)
 	payment.GET("/create-vnpay", api.PaymentController.CreatePaymentWithVNPay)
+	payment.GET("/vnpay_return", func(context echo.Context) error {
+		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
+	})
 
 	admin := request.Group("/admin")
 	admin.POST("/create-account", api.AdminController.HandleCreateAccount, middleware.JWTMiddleWare())

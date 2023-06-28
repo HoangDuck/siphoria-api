@@ -19,6 +19,16 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) GetVNPayHostingUrl() (string, error) {
+	var vnpayConfig model.ConfigurationUrlDefine
+	err := paymentReceiver.sql.Db.Where("id=?", 5).Find(&vnpayConfig)
+	logger.Debug("Get momo url", zap.Error(err.Error))
+	if err.Error == gorm.ErrRecordNotFound {
+		return "noUrl", err.Error
+	}
+	return vnpayConfig.Value, nil
+}
+
 //func (paymentReceiver *PaymentRepoImpl) GetPaymentListByCondition(condition map[string]interface{}) ([]model.Payment, error) {
 //	var listPayment []model.Payment
 //	if condition["isGetAll"] == "true" {

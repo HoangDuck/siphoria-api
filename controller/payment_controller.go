@@ -31,7 +31,7 @@ type PaymentController struct {
 func (paymentReceiver *PaymentController) CreatePaymentWithVNPay(c echo.Context) error {
 	vnpayService := services.GetVNPayServiceInstance()
 	//momoUrl := "https://momo.vn"
-	momoUrl, err := paymentReceiver.PaymentRepo.GetMomoHostingUrl()
+	vnpayUrl, err := paymentReceiver.PaymentRepo.GetVNPayHostingUrl()
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -45,7 +45,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithVNPay(c echo.Context)
 		"booking-info":        "VNPay",
 		"amount":              50000,
 		"booking-description": "asdas",
-		"ipn-url":             momoUrl,
+		"ipn-url":             vnpayUrl,
 		"redirect-url":        redirectMomoUrl,
 		"payment_id":          paymentId.String(),
 	}
