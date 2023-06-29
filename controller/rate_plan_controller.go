@@ -105,7 +105,7 @@ func (ratePlanController *RatePlanController) HandleUpdateRatePlan(c echo.Contex
 		Name:          reqUpdateRatePlan.Name,
 		Type:          reqUpdateRatePlan.Type,
 		Status:        reqUpdateRatePlan.Status,
-		Activate:      reqUpdateRatePlan.Activated,
+		Activate:      reqUpdateRatePlan.Activate,
 		FreeBreakfast: reqUpdateRatePlan.FreeBreakfast,
 		FreeLunch:     reqUpdateRatePlan.FreeLunch,
 		FreeDinner:    reqUpdateRatePlan.FreeDinner,

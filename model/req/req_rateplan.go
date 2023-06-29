@@ -10,7 +10,7 @@ type RequestUpdateRatePlan struct {
 	Name          string `json:"name,omitempty"`
 	Type          string `json:"type,omitempty"`
 	Status        int    `json:"status,omitempty"`
-	Activated     bool   `json:"activated,omitempty"`
+	Activate      bool   `json:"activate,omitempty"`
 	FreeBreakfast bool   `json:"free_breakfast,omitempty"`
 	FreeLunch     bool   `json:"free_lunch,omitempty"`
 	FreeDinner    bool   `json:"free_dinner,omitempty"`
