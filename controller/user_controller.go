@@ -346,7 +346,7 @@ func (userReceiver *UserController) HandleCreatePaymentFromCart(c echo.Context) 
 		logger.Error("Error get profile data", zap.Error(err))
 		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
 	}
-	return response.Ok(c, "Tạo thanh  thành công", customerResult)
+	return response.Ok(c, "Tạo thanh toán thành công", customerResult)
 }
 
 // HandleGetPayments godoc
@@ -373,7 +373,7 @@ func (userReceiver *UserController) HandleGetPayments(c echo.Context) error {
 		logger.Error("Error query data", zap.Error(err))
 		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
 	}
-	return c.JSON(http.StatusOK, listPaymentUser)
+	return response.Ok(c, "Lấy danh sách thanh toán thành công", listPaymentUser)
 }
 
 // HandleUpdateStatusPayment godoc
@@ -435,7 +435,7 @@ func (userReceiver *UserController) HandleGetPaymentsHistory(c echo.Context) err
 		logger.Error("Error query data", zap.Error(err))
 		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
 	}
-	return c.JSON(http.StatusOK, listPaymentUser)
+	return response.Ok(c, "Lấy danh sách thanh toán", listPaymentUser)
 }
 
 // HandleGetPaymentsPendingCheckin godoc
