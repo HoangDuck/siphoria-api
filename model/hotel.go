@@ -27,7 +27,7 @@ type Hotel struct {
 	PriceHotel      float32       `json:"price_hotel" gorm:"price_hotel"`
 	DiscountPrice   float32       `json:"discount_price" gorm:"discount_price"`
 	DiscountHotel   float32       `json:"discount_hotel" gorm:"discount_hotel"`
-	HotelType       HotelType     `json:"hotel_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	HotelType       *HotelType    `json:"hotel_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	HotelFacility   HotelFacility `json:"hotel_facility" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomTypes       []RoomType    `json:"room_types" gorm:"-"`
 }

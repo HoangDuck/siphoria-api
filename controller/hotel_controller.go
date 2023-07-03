@@ -14,6 +14,7 @@ import (
 	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -114,24 +115,7 @@ func (hotelController *HotelController) HandleSearchHotel(c echo.Context) error 
 // @Failure 422 {object} res.Response
 // @Router /hotels/:id [get]
 func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error {
-	//isFromDayParamValid := c.QueryParam("from") == ""
-	//if isFromDayParamValid {
-	//	return response.BadRequest(c, "Invalid from date data", nil)
-	//} else {
-	//	_, err := time.Parse("2006-01-02", c.QueryParam("from"))
-	//	if err != nil {
-	//		return response.BadRequest(c, "Invalid from format date data", err.Error())
-	//	}
-	//}
-	//isToDayParamValid := c.QueryParam("to") == ""
-	//if isToDayParamValid {
-	//	return response.BadRequest(c, "Invalid to date data", nil)
-	//} else {
-	//	_, err := time.Parse("2006-01-02", c.QueryParam("to"))
-	//	if err != nil {
-	//		return response.BadRequest(c, "Invalid to format date data", nil)
-	//	}
-	//}
+
 	hotel, err := hotelController.HotelRepo.GetHotelById(c)
 	if err != nil {
 		return response.InternalServerError(c, "Lấy room type thất bại", nil)
@@ -154,11 +138,122 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 			roomTypeList[i].RatePlans[j].RatePackages = ratePackages
 		}
 	}
+
 	if err != nil {
 		return response.InternalServerError(c, "Lấy room type thất bại", nil)
 	}
 	hotel.RoomTypes = roomTypeList
-	return c.JSON(http.StatusOK, hotel) //response.Ok(c, "Cập nhật thành công", roomTypeList)
+	listRoomTypeJson := []res.RoomType{}
+	for i := 0; i < len(hotel.RoomTypes); i++ {
+		listRoomNightsJson := []res.RoomNight{}
+		for x := 0; x < len(hotel.RoomTypes[i].RoomNights); x++ {
+			tempRoomNightModel := res.RoomNight{
+				ID:             hotel.RoomTypes[i].RoomNights[x].ID,
+				Inventory:      hotel.RoomTypes[i].RoomNights[x].Inventory,
+				Remain:         hotel.RoomTypes[i].RoomNights[x].Remain,
+				AvailabilityAt: hotel.RoomTypes[i].RoomNights[x].AvailabilityAt.String(),
+				UpdatedAt:      hotel.RoomTypes[i].RoomNights[x].UpdatedAt.Unix(),
+			}
+			listRoomNightsJson = append(listRoomNightsJson, tempRoomNightModel)
+		}
+		listRatePlanJson := []res.RatePlan{}
+		for j := 0; j < len(hotel.RoomTypes[i].RatePlans); j++ {
+			listRatePackagesJson := []res.RatePackage{}
+			for k := 0; k < len(hotel.RoomTypes[i].RatePlans[j].RatePackages); k++ {
+				tempRatePackageModel := res.RatePackage{
+					AvailableAt: hotel.RoomTypes[i].RatePlans[j].RatePackages[k].AvailabilityAt.String(),
+					Currency:    hotel.RoomTypes[i].RatePlans[j].RatePackages[k].Currency,
+					Price:       int(hotel.RoomTypes[i].RatePlans[j].RatePackages[k].Price),
+					UpdatedAt:   hotel.RoomTypes[i].RatePlans[j].RatePackages[k].UpdatedAt.Unix(),
+				}
+				listRatePackagesJson = append(listRatePackagesJson, tempRatePackageModel)
+			}
+			tempType, _ := strconv.Atoi(hotel.RoomTypes[i].RatePlans[j].Type)
+			tempRatePlanModel := res.RatePlan{
+				ID:            hotel.RoomTypes[i].RatePlans[j].ID,
+				Name:          hotel.RoomTypes[i].RatePlans[j].Name,
+				Type:          tempType,
+				Status:        hotel.RoomTypes[i].RatePlans[j].Status,
+				FreeBreakfast: hotel.RoomTypes[i].RatePlans[j].FreeBreakfast,
+				FreeLunch:     hotel.RoomTypes[i].RatePlans[j].FreeLunch,
+				FreeDinner:    hotel.RoomTypes[i].RatePlans[j].FreeDinner,
+				RatePackages:  listRatePackagesJson,
+			}
+			listRatePlanJson = append(listRatePlanJson, tempRatePlanModel)
+		}
+		tempRoomTypeModel := res.RoomType{
+			Description: hotel.RoomTypes[i].Description,
+			Facilities: map[string]bool{
+				"air_conditional": hotel.RoomTypes[i].RoomTypeFacility.AirConditional,
+				"tivi":            hotel.RoomTypes[i].RoomTypeFacility.Tivi,
+				"kitchen":         hotel.RoomTypes[i].RoomTypeFacility.Kitchen,
+				"private_pool":    hotel.RoomTypes[i].RoomTypeFacility.PrivatePool,
+				"iron":            hotel.RoomTypes[i].RoomTypeFacility.Iron,
+				"sofa":            hotel.RoomTypes[i].RoomTypeFacility.Sofa,
+				"desk":            hotel.RoomTypes[i].RoomTypeFacility.Desk,
+				"soundproof":      hotel.RoomTypes[i].RoomTypeFacility.Soundproof,
+				"towels":          hotel.RoomTypes[i].RoomTypeFacility.Towels,
+				"toiletries":      hotel.RoomTypes[i].RoomTypeFacility.Toiletries,
+				"fruit":           hotel.RoomTypes[i].RoomTypeFacility.Fruit,
+				"shower":          hotel.RoomTypes[i].RoomTypeFacility.Shower,
+				"slippers":        hotel.RoomTypes[i].RoomTypeFacility.Slippers,
+				"hairdry":         hotel.RoomTypes[i].RoomTypeFacility.Hairdry,
+				"bbq":             hotel.RoomTypes[i].RoomTypeFacility.Bbq,
+				"wine":            hotel.RoomTypes[i].RoomTypeFacility.Wine,
+				"fryer":           hotel.RoomTypes[i].RoomTypeFacility.Fryer,
+				"kitchen_tool":    hotel.RoomTypes[i].RoomTypeFacility.KitchenTool,
+			}, //json.Marshal(hotel.RoomTypes[i].RoomTypeFacility),
+			ID:           hotel.RoomTypes[i].ID,
+			MaxAdult:     hotel.RoomTypes[i].MaxAdult,
+			MaxChildren:  hotel.RoomTypes[i].MaxChildren,
+			BedNums:      hotel.RoomTypes[i].BedNums,
+			BathroomNums: hotel.RoomTypes[i].BathroomNums,
+			Name:         hotel.RoomTypes[i].Name,
+			Photos:       strings.Split(hotel.RoomTypes[i].Photos, ";"),
+			RoomNights:   listRoomNightsJson,
+			RatePlans:    listRatePlanJson,
+			Views: res.Views{
+				Beach:          hotel.RoomTypes[i].RoomTypeViews.Beach,
+				City:           hotel.RoomTypes[i].RoomTypeViews.City,
+				Lake:           hotel.RoomTypes[i].RoomTypeViews.Lake,
+				Mountain:       hotel.RoomTypes[i].RoomTypeViews.Mountain,
+				PrivateBalcony: hotel.RoomTypes[i].RoomTypeViews.PrivateBalcony,
+				Garden:         hotel.RoomTypes[i].RoomTypeViews.Garden,
+				River:          hotel.RoomTypes[i].RoomTypeViews.River,
+				Bay:            hotel.RoomTypes[i].RoomTypeViews.Bay,
+				Sea:            hotel.RoomTypes[i].RoomTypeViews.Sea,
+				Ocean:          hotel.RoomTypes[i].RoomTypeViews.Ocean,
+			},
+		}
+		listRoomTypeJson = append(listRoomTypeJson, tempRoomTypeModel)
+	}
+	return c.JSON(http.StatusOK, res.HotelDetailModel{
+		Activated:    hotel.Activate,
+		CityCode:     strconv.Itoa(hotel.ProvinceCode),
+		CountryCode:  strconv.Itoa(84),
+		DistrictCode: strconv.Itoa(hotel.DistrictCode),
+		RawAddress:   hotel.RawAddress,
+		Facilities: res.Facilities{
+			Beach:         hotel.HotelFacility.Beach,
+			Pool:          hotel.HotelFacility.Pool,
+			Bar:           hotel.HotelFacility.Bar,
+			NoSmokingRoom: hotel.HotelFacility.NoSmokingRoom,
+			Fitness:       hotel.HotelFacility.Fitness,
+			Spa:           hotel.HotelFacility.Spa,
+			Bath:          hotel.HotelFacility.Bath,
+			Wifi:          hotel.HotelFacility.Wifi,
+			Breakfast:     hotel.HotelFacility.Breakfast,
+			Casio:         hotel.HotelFacility.Casino,
+			Parking:       hotel.HotelFacility.Parking,
+		},
+		ID:          hotel.ID,
+		CreatedAt:   hotel.CreatedAt.Unix(),
+		Name:        hotel.Name,
+		Overview:    hotel.Overview,
+		HotelPhotos: strings.Split(hotel.HotelPhotos, ";"),
+		RoomTypes:   listRoomTypeJson,
+		UpdatedAt:   hotel.UpdatedAt.Unix(),
+	}) //response.Ok(c, "Cập nhật thành công", roomTypeList)
 }
 
 // HandleGetHotelPartner godoc

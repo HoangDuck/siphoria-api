@@ -74,6 +74,14 @@ func (roomReceiver *RoomRepoImpl) GetRoomNightsByRoomType(c echo.Context, roomTy
 	if c.QueryParam("year") != "" {
 		err = err.Where("DATE_PART('year', availability_at)  = ?", c.QueryParam("year"))
 	}
+	from := c.QueryParam("from")
+	to := c.QueryParam("to")
+	if from != "" {
+		err = err.Where("availability_at >= ?", from)
+	}
+	if to != "" {
+		err = err.Where("availability_at <= ?", to)
+	}
 	err = err.Find(&roomNightList)
 	if err.RowsAffected == 0 {
 		return roomNightList, err.Error
@@ -101,6 +109,15 @@ func (roomReceiver *RoomRepoImpl) GetListRatePackages(c echo.Context, ratePlanId
 	}
 	if c.QueryParam("year") != "" {
 		err = err.Where("DATE_PART('year', availability_at)  = ?", c.QueryParam("year"))
+	}
+
+	from := c.QueryParam("from")
+	to := c.QueryParam("to")
+	if from != "" {
+		err = err.Where("availability_at >= ?", from)
+	}
+	if to != "" {
+		err = err.Where("availability_at <= ?", to)
 	}
 	err = err.Find(&ratePackageList)
 	if err.RowsAffected == 0 {

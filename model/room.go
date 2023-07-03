@@ -29,6 +29,7 @@ type RoomTypeViews struct {
 	RoomTypeID     string    `json:"room_type_id" gorm:"primary_key"`
 	Bay            bool      `json:"bay" gorm:"bay"`
 	Sea            bool      `json:"sea" gorm:"sea"`
+	Beach          bool      `json:"beach" gorm:"beach"`
 	Ocean          bool      `json:"ocean" gorm:"ocean"`
 	City           bool      `json:"city" gorm:"city"`
 	Garden         bool      `json:"garden" gorm:"garden"`
