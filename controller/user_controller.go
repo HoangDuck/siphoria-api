@@ -175,7 +175,7 @@ func (userReceiver *UserController) HandleGetCart(c echo.Context) error {
 		logger.Error("Error query data", zap.Error(err))
 		return response.InternalServerError(c, "Lấy danh sách giỏ hàng thành công", nil)
 	}
-	return c.JSON(http.StatusOK, listCartUser)
+	return response.Ok(c, "Lấy danh sách giỏ hàng", listCartUser)
 }
 
 // HandleUpdateRank godoc
