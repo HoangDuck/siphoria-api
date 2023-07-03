@@ -227,7 +227,7 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 		}
 		listRoomTypeJson = append(listRoomTypeJson, tempRoomTypeModel)
 	}
-	return c.JSON(http.StatusOK, res.HotelDetailModel{
+	return response.Ok(c, "Lấy thông tin thành công", res.HotelDetailModel{
 		Activated:    hotel.Activate,
 		CityCode:     strconv.Itoa(hotel.ProvinceCode),
 		CountryCode:  strconv.Itoa(84),
@@ -253,7 +253,7 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 		HotelPhotos: strings.Split(hotel.HotelPhotos, ";"),
 		RoomTypes:   listRoomTypeJson,
 		UpdatedAt:   hotel.UpdatedAt.Unix(),
-	}) //response.Ok(c, "Cập nhật thành công", roomTypeList)
+	})
 }
 
 // HandleGetHotelPartner godoc
