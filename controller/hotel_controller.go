@@ -251,6 +251,7 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 		Name:        hotel.Name,
 		Overview:    hotel.Overview,
 		HotelPhotos: strings.Split(hotel.HotelPhotos, ";"),
+		Rating:      int(hotel.Rating),
 		RoomTypes:   listRoomTypeJson,
 		UpdatedAt:   hotel.UpdatedAt.Unix(),
 	})
