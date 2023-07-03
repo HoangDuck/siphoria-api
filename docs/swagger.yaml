@@ -41,6 +41,27 @@ definitions:
     - status_code
     - status_name
     type: object
+  req.RequestAddToCart:
+    properties:
+      from_date:
+        type: string
+      hotel_id:
+        type: string
+      number_of_adults:
+        type: integer
+      number_of_children:
+        type: integer
+      number_of_rooms:
+        type: integer
+      rate_plan_id:
+        type: string
+      room_type_id:
+        type: string
+      to_date:
+        type: string
+      userId:
+        type: string
+    type: object
   req.RequestAddVoucher:
     properties:
       activated:
@@ -374,7 +395,7 @@ definitions:
     type: object
   req.RequestUpdateRatePlan:
     properties:
-      activated:
+      activate:
         type: boolean
       free_breakfast:
         type: boolean
@@ -1282,7 +1303,7 @@ paths:
       summary: Get hotel mobile
       tags:
       - hotel-service
-  /payment/create-payment-momo:
+  /payment/create-momo:
     get:
       consumes:
       - application/json
@@ -1309,6 +1330,35 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Create payment momo
+      tags:
+      - payment-service
+  /payment/create-vnpay:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: payment
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestCreatePayment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Create payment vnpay
       tags:
       - payment-service
   /ratePlan/rateplan-info:
@@ -1677,7 +1727,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/req.RequestUpdateProfile'
+          $ref: '#/definitions/req.RequestAddToCart'
       produces:
       - application/json
       responses:

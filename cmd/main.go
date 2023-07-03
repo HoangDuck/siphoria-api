@@ -105,6 +105,7 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	}
 	hotelController := controller.HotelController{
 		HotelRepo: repo_impl.NewHotelRepo(sql),
+		RoomRepo:  repo_impl.NewRoomRepo(sql),
 	}
 
 	uploadService := services.FileUploadService{

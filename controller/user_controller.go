@@ -125,7 +125,7 @@ func (userReceiver *UserController) HandleGetUserRank(c echo.Context) error {
 // @Tags user-service
 // @Accept  json
 // @Produce  json
-// @Param data body req.RequestUpdateProfile true "user"
+// @Param data body req.RequestAddToCart true "user"
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response

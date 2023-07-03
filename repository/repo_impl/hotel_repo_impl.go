@@ -20,6 +20,15 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
+func (hotelReceiver *HotelRepoImpl) GetHotelById(context echo.Context) (model.Hotel, error) {
+	var hotel model.Hotel
+	err := hotelReceiver.sql.Db.Preload("HotelFacility").Where("id = ?", context.Param("id")).Find(&hotel)
+	if err.Error != nil {
+		return hotel, err.Error
+	}
+	return hotel, nil
+}
+
 func (hotelReceiver *HotelRepoImpl) GetReviewsByHotel(queryModel *query.DataQueryModel) ([]model.Review, error) {
 	var listReview []model.Review
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Review{}, queryModel.ListIgnoreColumns)

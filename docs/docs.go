@@ -1204,7 +1204,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/payment/create-payment-momo": {
+        "/payment/create-momo": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -1216,6 +1216,51 @@ const docTemplate = `{
                     "payment-service"
                 ],
                 "summary": "Create payment momo",
+                "parameters": [
+                    {
+                        "description": "payment",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestCreatePayment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/create-vnpay": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment-service"
+                ],
+                "summary": "Create payment vnpay",
                 "parameters": [
                     {
                         "description": "payment",
@@ -1819,7 +1864,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.RequestUpdateProfile"
+                            "$ref": "#/definitions/req.RequestAddToCart"
                         }
                     }
                 ],
@@ -2626,6 +2671,38 @@ const docTemplate = `{
                 }
             }
         },
+        "req.RequestAddToCart": {
+            "type": "object",
+            "properties": {
+                "from_date": {
+                    "type": "string"
+                },
+                "hotel_id": {
+                    "type": "string"
+                },
+                "number_of_adults": {
+                    "type": "integer"
+                },
+                "number_of_children": {
+                    "type": "integer"
+                },
+                "number_of_rooms": {
+                    "type": "integer"
+                },
+                "rate_plan_id": {
+                    "type": "string"
+                },
+                "room_type_id": {
+                    "type": "string"
+                },
+                "to_date": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "req.RequestAddVoucher": {
             "type": "object",
             "properties": {
@@ -3129,7 +3206,7 @@ const docTemplate = `{
         "req.RequestUpdateRatePlan": {
             "type": "object",
             "properties": {
-                "activated": {
+                "activate": {
                     "type": "boolean"
                 },
                 "free_breakfast": {

@@ -76,7 +76,7 @@ func (api *API) SetupRouter() {
 	hotel := request.Group("/hotels")
 	hotel.GET("/", api.HotelController.HandleGetHotelPartner, middleware.JWTMiddleWare())
 	hotel.POST("/", api.HotelController.HandleCreateHotel, middleware.JWTMiddleWare())
-	//hotel.GET("/search", api.HotelController.HandleGetHotelSearchMobile)
+	hotel.GET("/search", api.HotelController.HandleGetHotelSearchMobile)
 	hotel.GET("/search", api.HotelController.HandleSearchHotel)
 	hotel.GET("/:id", api.HotelController.HandleGetHotelById)
 	hotel.PATCH("/:id", api.HotelController.HandleUpdateHotel, middleware.JWTMiddleWare())

@@ -222,7 +222,7 @@ namespace class_diagrams {
 "class_diagrams.StatusWork" o-- "class_diagrams.Staff"
 "class_diagrams.StatusAccount" o-- "class_diagrams.StaffAccount"
 "class_diagrams.StatusAccount" o-- "class_diagrams.Account"
-"class_diagrams.Room" "0..1" -- "1..1" "class_diagrams.RoomBusyStatusCategory"
+"class_diagrams.Room" 0"class_diagrams.RoomBusyStatusCategory"
 ("class_diagrams.Room", "class_diagrams.RoomBusyStatusCategory") . "class_diagrams.RoomBusyStatusDetail"
 ("class_diagrams.Booking", "class_diagrams.StatusBooking") . "class_diagrams.BookingDetail"
 

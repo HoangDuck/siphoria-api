@@ -25,13 +25,6 @@ type User struct {
 	UserRank        *UserRank `json:"user_rank"`
 }
 
-type StatusUser struct {
-	ID          int    `json:"id" gorm:"primary_key;autoIncrement"`
-	StatusCode  string `json:"status_code" gorm:"status_code"`
-	StatusName  string `json:"status_name" gorm:"status_name"`
-	Description string `json:"description" gorm:"description"`
-}
-
 type Token struct {
 	AccessToken  string        `json:"access_token"`
 	RefreshToken string        `json:"refresh_token"`

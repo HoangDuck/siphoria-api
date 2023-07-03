@@ -20,6 +20,7 @@ import (
 
 type HotelController struct {
 	HotelRepo repository.HotelRepo
+	RoomRepo  repository.RoomRepo
 }
 
 // HandleGetRoomTypeByHotel godoc
@@ -113,8 +114,51 @@ func (hotelController *HotelController) HandleSearchHotel(c echo.Context) error 
 // @Failure 422 {object} res.Response
 // @Router /hotels/:id [get]
 func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error {
-
-	return response.Ok(c, "Cập nhật thành công", nil)
+	//isFromDayParamValid := c.QueryParam("from") == ""
+	//if isFromDayParamValid {
+	//	return response.BadRequest(c, "Invalid from date data", nil)
+	//} else {
+	//	_, err := time.Parse("2006-01-02", c.QueryParam("from"))
+	//	if err != nil {
+	//		return response.BadRequest(c, "Invalid from format date data", err.Error())
+	//	}
+	//}
+	//isToDayParamValid := c.QueryParam("to") == ""
+	//if isToDayParamValid {
+	//	return response.BadRequest(c, "Invalid to date data", nil)
+	//} else {
+	//	_, err := time.Parse("2006-01-02", c.QueryParam("to"))
+	//	if err != nil {
+	//		return response.BadRequest(c, "Invalid to format date data", nil)
+	//	}
+	//}
+	hotel, err := hotelController.HotelRepo.GetHotelById(c)
+	if err != nil {
+		return response.InternalServerError(c, "Lấy room type thất bại", nil)
+	}
+	roomType := model.RoomType{
+		HotelId: c.Param("id"),
+	}
+	roomTypeList, err := hotelController.RoomRepo.GetListRoomTypeDetail(roomType)
+	for i := 0; i < len(roomTypeList); i++ {
+		roomTypeItemFacility, _ := hotelController.RoomRepo.GetRoomTypeFacility(roomTypeList[i].ID)
+		roomTypeList[i].RoomTypeFacility = roomTypeItemFacility
+		roomTypeItemViews, _ := hotelController.RoomRepo.GetRoomTypeViews(roomTypeList[i].ID)
+		roomTypeList[i].RoomTypeViews = roomTypeItemViews
+		roomNights, _ := hotelController.RoomRepo.GetRoomNightsByRoomType(c, roomTypeList[i].ID)
+		roomTypeList[i].RoomNights = roomNights
+		ratePlans, _ := hotelController.RoomRepo.GetListRatePlans(c, roomTypeList[i].ID)
+		roomTypeList[i].RatePlans = ratePlans
+		for j := 0; j < len(roomTypeList[i].RatePlans); j++ {
+			ratePackages, _ := hotelController.RoomRepo.GetListRatePackages(c, roomTypeList[i].RatePlans[j].ID)
+			roomTypeList[i].RatePlans[j].RatePackages = ratePackages
+		}
+	}
+	if err != nil {
+		return response.InternalServerError(c, "Lấy room type thất bại", nil)
+	}
+	hotel.RoomTypes = roomTypeList
+	return c.JSON(http.StatusOK, hotel) //response.Ok(c, "Cập nhật thành công", roomTypeList)
 }
 
 // HandleGetHotelPartner godoc

@@ -12,5 +12,5 @@ type Notification struct {
 	Data      string    `json:"data" gorm:"data"`
 	Seen      bool      `json:"seen" gorm:"seen"`
 	CreatedAt time.Time `json:"created_at" gorm:"created_at"`
-	TimeSent  time.Time `json:"time_sent" gorm:"xtime_sent"`
+	TimeSent  time.Time `json:"time_sent" gorm:"time_sent"`
 }
