@@ -2026,6 +2026,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/pay": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-service"
+                ],
+                "summary": "Create payment momo",
+                "parameters": [
+                    {
+                        "description": "payment",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestCreatePaymentModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/users/payments": {
             "get": {
                 "consumes": [
@@ -2844,6 +2889,14 @@ const docTemplate = `{
                 },
                 "description": {
                     "description": "PaymentMethod string  ` + "`" + `json:\"payment_method\"` + "`" + `",
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestCreatePaymentModel": {
+            "type": "object",
+            "properties": {
+                "session_id": {
                     "type": "string"
                 }
             }

@@ -158,6 +158,11 @@ definitions:
         description: PaymentMethod string  `json:"payment_method"`
         type: string
     type: object
+  req.RequestCreatePaymentModel:
+    properties:
+      session_id:
+        type: string
+    type: object
   req.RequestCreateRoomType:
     properties:
       activated:
@@ -1832,6 +1837,35 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Get User Notifications
+      tags:
+      - user-service
+  /users/pay:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: payment
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestCreatePaymentModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Create payment momo
       tags:
       - user-service
   /users/payments:
