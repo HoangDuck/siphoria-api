@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/labstack/echo/v4"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
@@ -18,7 +19,7 @@ type UserRepo interface {
 	GetUserPayment(user model.User) ([]model.Payment, error)
 	CreatePaymentFromCart(user model.User) (string, error)
 	UpdatePaymentStatus(payment model.Payment) (bool, error)
-	GetUserPaymentHistory(user model.User) ([]model.Payment, error)
+	GetUserPaymentHistory(context echo.Context, user model.User) ([]model.Payment, error)
 	GetUserPaymentPendingCheckin(user model.User) ([]model.Payment, error)
 	SaveReview(review model.Review) (model.Review, error)
 	UpdateReview(review model.Review) (model.Review, error)

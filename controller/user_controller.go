@@ -432,7 +432,7 @@ func (userReceiver *UserController) HandleGetPaymentsHistory(c echo.Context) err
 	user := model.User{
 		ID: claims.UserId,
 	}
-	listPaymentUser, err := userReceiver.UserRepo.GetUserPaymentHistory(user)
+	listPaymentUser, err := userReceiver.UserRepo.GetUserPaymentHistory(c, user)
 	if err != nil {
 		logger.Error("Error query data", zap.Error(err))
 		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)

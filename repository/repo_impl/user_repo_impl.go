@@ -1,6 +1,7 @@
 package repo_impl
 
 import (
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
@@ -73,9 +74,13 @@ func (userReceiver *UserRepoImpl) GetUserPaymentPendingCheckin(user model.User) 
 	return listPaymentUser, nil
 }
 
-func (userReceiver *UserRepoImpl) GetUserPaymentHistory(user model.User) ([]model.Payment, error) {
+func (userReceiver *UserRepoImpl) GetUserPaymentHistory(context echo.Context, user model.User) ([]model.Payment, error) {
 	var listPaymentUser []model.Payment
-	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Preload("User").
+	err := userReceiver.sql.Db.Where("user_id = ?", user.ID)
+	if context.QueryParam("session_id") != "" {
+		err = err.Where("session_id = ? AND status = ?", context.QueryParam("session_id"), "pending")
+	}
+	err = err.Preload("User").
 		Preload("RatePlan").Preload("RoomType").Preload("Hotel").Find(&listPaymentUser)
 	if err.Error != nil {
 		logger.Error("Error get list cart url ", zap.Error(err.Error))
