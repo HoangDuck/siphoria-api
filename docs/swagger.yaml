@@ -537,7 +537,7 @@ info:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: This is a sample server Petstore server.
+  description: This is a sample server Siphoria server.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -1843,6 +1843,7 @@ paths:
     post:
       consumes:
       - application/json
+      description: Choose payment method by add query param payment_method (?payment_method=momo,?payment_method=vnpay)
       parameters:
       - description: payment
         in: body

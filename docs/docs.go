@@ -2028,6 +2028,7 @@ const docTemplate = `{
         },
         "/users/pay": {
             "post": {
+                "description": "Choose payment method by add query param payment_method (?payment_method=momo,?payment_method=vnpay)",
                 "consumes": [
                     "application/json"
                 ],
@@ -3468,7 +3469,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "HOTEL BOOKING API",
-	Description:      "This is a sample server Petstore server.",
+	Description:      "This is a sample server Siphoria server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

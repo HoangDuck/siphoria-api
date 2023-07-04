@@ -15,6 +15,7 @@ import (
 	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -582,6 +583,7 @@ func (userReceiver *UserController) HandleDeleteReview(c echo.Context) error {
 
 // HandleCreatePayment godoc
 // @Summary Create payment momo
+// @description Choose payment method by add query param payment_method (?payment_method=momo,?payment_method=vnpay)
 // @Tags user-service
 // @Accept  json
 // @Produce  json
@@ -596,7 +598,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		logger.Error("Error binding data", zap.Error(err))
 		return err
 	}
-	paymentMethod := c.QueryParam("payment_method")
+	paymentMethod := strings.ToLower(c.QueryParam("payment_method"))
 	listPaymentSessionId, err := userReceiver.PaymentRepo.GetPaymentListByCondition(reqCreatePayment.SessionID)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)

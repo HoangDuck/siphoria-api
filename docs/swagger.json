@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server Petstore server.",
+        "description": "This is a sample server Siphoria server.",
         "title": "HOTEL BOOKING API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
@@ -2021,6 +2021,7 @@
         },
         "/users/pay": {
             "post": {
+                "description": "Choose payment method by add query param payment_method (?payment_method=momo,?payment_method=vnpay)",
                 "consumes": [
                     "application/json"
                 ],
