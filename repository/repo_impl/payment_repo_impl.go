@@ -128,7 +128,7 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentListByCondition(sessionId stri
 func (paymentReceiver *PaymentRepoImpl) UpdatePaymentStatusFailed(payment model.Payment) (model.Payment, error) {
 	var paymentResult model.Payment
 	tempPaymentFailed := model.Payment{
-		Status: "4",
+		Status: "refunding",
 	}
 	err := paymentReceiver.sql.Db.Model(&paymentResult).Where("session_id = ?", payment.SessionId).Updates(tempPaymentFailed)
 	if err.Error != nil {

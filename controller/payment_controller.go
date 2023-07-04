@@ -145,7 +145,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 		payment := model.Payment{
 			SessionId: paymentID,
 			//BookingID:         booking.ID,
-			Status: "2",
+			Status: "paid",
 		}
 		if resultCode == "0" {
 			//check payment existed
