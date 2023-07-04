@@ -9,6 +9,7 @@ type PaymentRepo interface {
 	GetPaymentListByCondition(sessionId string) ([]model.Payment, error)
 	UpdatePaymentStatusByBookingID(payment model.Payment) (model.Payment, error)
 	UpdatePaymentStatusFailed(payment model.Payment) (model.Payment, error)
+	UpdatePaymentMethodForPending(sessionId string, paymentMethod string) (bool, error)
 	//GetPaymentHistoryList(customerID string) ([]model.Payment, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)

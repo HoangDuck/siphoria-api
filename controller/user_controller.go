@@ -626,28 +626,19 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 	dataResponse := momoService.PaymentService(condition)
 	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
 	if tempResultCode == "0" {
-
+		_, err := userReceiver.PaymentRepo.UpdatePaymentMethodForPending(reqCreatePayment.SessionID, "Momo")
+		if err != nil {
+			return response.InternalServerError(c, "Tạo thanh toán thất bại", err.Error())
+		}
 	} else if tempResultCode == "41" {
 		logger.Error("Error update momo payment " + tempResultCode)
-		return c.JSON(http.StatusInternalServerError, res.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Tạo thanh toán thất bại",
-			Data:       dataResponse,
-		})
+		return response.InternalServerError(c, "Tạo thanh toán thất bại", dataResponse)
 	} else {
 		logger.Error("Error update momo payment " + tempResultCode)
-		return c.JSON(http.StatusInternalServerError, res.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Tạo thanh toán thất bại",
-			Data:       dataResponse,
-		})
+		return response.InternalServerError(c, "Tạo thanh toán thất bại", dataResponse)
 	}
 	if err != nil {
-		return response.BadRequest(c, "nil", nil)
+		return response.BadRequest(c, err.Error(), nil)
 	}
-	return c.JSON(http.StatusOK, res.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Tạo thanh toán thành công",
-		Data:       dataResponse,
-	})
+	return response.Ok(c, "Tạo thanh toán thành công", dataResponse)
 }

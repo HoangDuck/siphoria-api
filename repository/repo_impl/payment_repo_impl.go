@@ -20,6 +20,11 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) UpdatePaymentMethodForPending(sessionId string, paymentMethod string) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (paymentReceiver *PaymentRepoImpl) GetVNPayHostingUrl() (string, error) {
 	var vnpayConfig model.ConfigurationUrlDefine
 	err := paymentReceiver.sql.Db.Where("id=?", 5).Find(&vnpayConfig)
@@ -32,7 +37,7 @@ func (paymentReceiver *PaymentRepoImpl) GetVNPayHostingUrl() (string, error) {
 
 func (paymentReceiver *PaymentRepoImpl) GetPaymentListByCondition(sessionId string) ([]model.Payment, error) {
 	var listPayment []model.Payment
-	err := paymentReceiver.sql.Db.Where(" = ?", sessionId).Find(&listPayment)
+	err := paymentReceiver.sql.Db.Where("session_id = ?", sessionId).Find(&listPayment)
 	if err.Error != nil {
 		return listPayment, err.Error
 	}
