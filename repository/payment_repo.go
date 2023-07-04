@@ -7,6 +7,8 @@ type PaymentRepo interface {
 	GetVNPayHostingUrl() (string, error)
 	GetRedirectMomoUrl() (string, error)
 	GetPaymentListByCondition(sessionId string) ([]model.Payment, error)
+	UpdatePaymentStatusByBookingID(payment model.Payment) (model.Payment, error)
+	UpdatePaymentStatusFailed(payment model.Payment) (model.Payment, error)
 	//GetPaymentHistoryList(customerID string) ([]model.Payment, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)
@@ -16,9 +18,7 @@ type PaymentRepo interface {
 	//GetPaymentOnlineDetail(payment model.Payment) (model.PaymentDetailOnline, error)
 	//GetPaymentOfflineDetail(payment model.Payment) (model.PaymentDetailOffline, error)
 	//UpdatePaymentStatusBooking(booking model.Booking) (model.Booking, error)
-	//UpdatePaymentStatusByBookingID(payment model.Payment) (model.Payment, error)
 	//GetPaymentStatusList() ([]model.PaymentStatus, error)
 	//SavePaymentOnlineDetail(paymentDetail model.PaymentDetailOnline) (model.PaymentDetailOnline, error)
 	//DeletePaymentByBookingID(payment model.Payment) (bool, error)
-	//UpdatePaymentStatusFailed(payment model.Payment) (model.Payment, error)
 }
