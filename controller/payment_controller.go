@@ -122,7 +122,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 	})
 }
 
-func (paymentReceiver *PaymentController) paymentGetResultPaymentMomo(c echo.Context) error {
+func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
 	jsonRequestMomo := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&jsonRequestMomo)
 	if err != nil {
