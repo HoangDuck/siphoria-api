@@ -29,34 +29,15 @@ func (paymentReceiver *PaymentRepoImpl) GetVNPayHostingUrl() (string, error) {
 	return vnpayConfig.Value, nil
 }
 
-//func (paymentReceiver *PaymentRepoImpl) GetPaymentListByCondition(condition map[string]interface{}) ([]model.Payment, error) {
-//	var listPayment []model.Payment
-//	if condition["isGetAll"] == "true" {
-//		err := paymentReceiver.sql.Db.Preload("Booking").Preload("PaymentMethod").Find(&listPayment)
-//		if err != nil {
-//			return listPayment, err.Error
-//		}
-//	} else {
-//		queryString := fmt.Sprintf("Select * from payments "+
-//			"where customer_id in (select ID from customers where lower(full_name) LIKE '%%%s%%') "+ //
-//			"AND created_at >= '%s'::date "+
-//			"AND status_payment_code = '%s' "+
-//			"AND amount >=%.2f "+
-//			"AND payment_method_id in (Select id from payment_methods where lower(provider) LIKE '%%%s%%')", //
-//			condition["full_name"],
-//			condition["payment_time"],
-//			condition["status_payment"],
-//			condition["amount"],
-//			condition["payment_method"])
-//		err := paymentReceiver.sql.Db.Raw(queryString).Preload("Booking").Preload("PaymentMethod").Find(&listPayment)
-//		if err != nil {
-//			logger.Error("Error get data", zap.Error(err.Error))
-//			return listPayment, err.Error
-//		}
-//	}
-//	return listPayment, nil
-//}
-//
+func (paymentReceiver *PaymentRepoImpl) GetPaymentListByCondition(sessionId string) ([]model.Payment, error) {
+	var listPayment []model.Payment
+	err := paymentReceiver.sql.Db.Where(" = ?", sessionId).Find(&listPayment)
+	if err.Error != nil {
+		return listPayment, err.Error
+	}
+	return listPayment, nil
+}
+
 //func (paymentReceiver *PaymentRepoImpl) GetPaymentHistoryList(customerID string) ([]model.Payment, error) {
 //	var listHistoryPayment []model.Payment
 //	err := paymentReceiver.sql.Db.Where("customer_id=?", customerID).Preload("Booking").Preload("PaymentMethod").Find(&listHistoryPayment)

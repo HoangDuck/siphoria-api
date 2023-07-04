@@ -2101,7 +2101,7 @@ const docTemplate = `{
                 "tags": [
                     "user-service"
                 ],
-                "summary": "Get User Notifications",
+                "summary": "Create payment",
                 "responses": {
                     "200": {
                         "description": "OK",

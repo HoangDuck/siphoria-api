@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
@@ -18,7 +19,8 @@ import (
 )
 
 type UserController struct {
-	UserRepo repository.UserRepo
+	UserRepo    repository.UserRepo
+	PaymentRepo repository.PaymentRepo
 }
 
 // HandleGetNotifications godoc
@@ -327,7 +329,7 @@ func (userReceiver *UserController) HandleDeleteCart(c echo.Context) error {
 }
 
 // HandleCreatePaymentFromCart godoc
-// @Summary Get User Notifications
+// @Summary Create payment
 // @Tags user-service
 // @Accept  json
 // @Produce  json
@@ -576,4 +578,76 @@ func (userReceiver *UserController) HandleDeleteReview(c echo.Context) error {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
 	return response.Ok(c, "Xoá thành công", nil)
+}
+
+// HandleCreatePayment godoc
+// @Summary Create payment momo
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCreatePaymentModel true "payment"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /users/pay [post]
+func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
+	reqCreatePayment := req.RequestCreatePaymentModel{}
+	if err := c.Bind(&reqCreatePayment); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return err
+	}
+	momoService := services.GetMomoServiceInstance()
+	//momoUrl := "https://momo.vn"
+	momoUrl, err := userReceiver.PaymentRepo.GetMomoHostingUrl()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	//redirectMomoUrl := "https://momo.vn"
+	redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectMomoUrl()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	listPaymentSessionId, err := userReceiver.PaymentRepo.GetPaymentListByCondition(reqCreatePayment.SessionID)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	var totalPrice float32
+	for i := 0; i < len(listPaymentSessionId); i++ {
+		totalPrice += listPaymentSessionId[i].TotalPrice
+	}
+	condition := map[string]interface{}{
+		"booking-info":        "MOMO",
+		"amount":              totalPrice,
+		"booking-description": "Payment room Siphoria",
+		"ipn-url":             momoUrl,
+		"redirect-url":        redirectMomoUrl,
+		"payment_id":          reqCreatePayment.SessionID,
+	}
+	dataResponse := momoService.PaymentService(condition)
+	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
+	if tempResultCode == "0" {
+
+	} else if tempResultCode == "41" {
+		logger.Error("Error update momo payment " + tempResultCode)
+		return c.JSON(http.StatusInternalServerError, res.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Tạo thanh toán thất bại",
+			Data:       dataResponse,
+		})
+	} else {
+		logger.Error("Error update momo payment " + tempResultCode)
+		return c.JSON(http.StatusInternalServerError, res.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Tạo thanh toán thất bại",
+			Data:       dataResponse,
+		})
+	}
+	if err != nil {
+		return response.BadRequest(c, "nil", nil)
+	}
+	return c.JSON(http.StatusOK, res.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Tạo thanh toán thành công",
+		Data:       dataResponse,
+	})
 }

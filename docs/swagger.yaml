@@ -1874,7 +1874,7 @@ paths:
           description: Unprocessable Entity
           schema:
             $ref: '#/definitions/res.Response'
-      summary: Get User Notifications
+      summary: Create payment
       tags:
       - user-service
     put:

@@ -94,19 +94,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 	dataResponse := momoService.PaymentService(condition)
 	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
 	if tempResultCode == "0" {
-		//payment := model.Payment{
-		//	ID:                paymentId.String(),
-		//	BookingID:         reqCreatePayment.BookingID,
-		//	CustomerID:        reqCreatePayment.CustomerID,
-		//	Amount:            reqCreatePayment.Amount,
-		//	Description:       reqCreatePayment.Description,
-		//	PaymentMethodID:   "2d81bba8-64e0-11ed-934f-089798c34e0e",
-		//	StatusPaymentCode: "1",
-		//}
-		//payment, err = paymentReceiver.PaymentRepo.SavePayment(payment)
-		//if err != nil {
-		//	return response.InternalServerError(c, err.Error(), nil)
-		//}
+
 	} else if tempResultCode == "41" {
 		logger.Error("Error update momo payment " + tempResultCode)
 		return c.JSON(http.StatusInternalServerError, res.Response{

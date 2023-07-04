@@ -112,3 +112,7 @@ type RequestUpdateReview struct {
 	Rating  int    `json:"rating"`
 	Content string `json:"content"`
 }
+
+type RequestCreatePaymentModel struct {
+	SessionID string `json:"session_id"`
+}

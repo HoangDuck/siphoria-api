@@ -1,10 +1,12 @@
 package repository
 
+import "hotel-booking-api/model"
+
 type PaymentRepo interface {
 	GetMomoHostingUrl() (string, error)
 	GetVNPayHostingUrl() (string, error)
 	GetRedirectMomoUrl() (string, error)
-	//GetPaymentListByCondition(condition map[string]interface{}) ([]model.Payment, error)
+	GetPaymentListByCondition(sessionId string) ([]model.Payment, error)
 	//GetPaymentHistoryList(customerID string) ([]model.Payment, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)

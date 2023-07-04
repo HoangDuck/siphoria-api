@@ -68,6 +68,7 @@ func (api *API) SetupRouter() {
 	user.POST("/reviews", api.UserController.HandleSaveReview, middleware.JWTMiddleWare())
 	user.PATCH("/reviews/:id", api.UserController.HandleUpdateReview, middleware.JWTMiddleWare())
 	user.DELETE("/reviews/:id", api.UserController.HandleDeleteReview, middleware.JWTMiddleWare())
+	user.POST("/pay", api.UserController.HandleCreatePayment, middleware.JWTMiddleWare())
 
 	hotel := request.Group("/hotels")
 	hotel.GET("/", api.HotelController.HandleGetHotelPartner, middleware.JWTMiddleWare())
