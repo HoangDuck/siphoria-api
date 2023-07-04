@@ -596,17 +596,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		logger.Error("Error binding data", zap.Error(err))
 		return err
 	}
-	momoService := services.GetMomoServiceInstance()
-	//momoUrl := "https://momo.vn"
-	momoUrl, err := userReceiver.PaymentRepo.GetMomoHostingUrl()
-	if err != nil {
-		return response.InternalServerError(c, err.Error(), nil)
-	}
-	//redirectMomoUrl := "https://momo.vn"
-	redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectMomoUrl()
-	if err != nil {
-		return response.InternalServerError(c, err.Error(), nil)
-	}
+	paymentMethod := c.QueryParam("payment_method")
 	listPaymentSessionId, err := userReceiver.PaymentRepo.GetPaymentListByCondition(reqCreatePayment.SessionID)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
@@ -615,30 +605,74 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 	for i := 0; i < len(listPaymentSessionId); i++ {
 		totalPrice += listPaymentSessionId[i].TotalPrice
 	}
-	condition := map[string]interface{}{
-		"booking-info":        "MOMO",
-		"amount":              totalPrice,
-		"booking-description": "Payment room Siphoria",
-		"ipn-url":             momoUrl,
-		"redirect-url":        redirectMomoUrl,
-		"payment_id":          reqCreatePayment.SessionID,
-	}
-	dataResponse := momoService.PaymentService(condition)
-	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
-	if tempResultCode == "0" {
-		_, err := userReceiver.PaymentRepo.UpdatePaymentMethodForPending(reqCreatePayment.SessionID, "Momo")
+	if paymentMethod == "momo" {
+		momoService := services.GetMomoServiceInstance()
+		//momoUrl := "https://momo.vn"
+		momoUrl, err := userReceiver.PaymentRepo.GetMomoHostingUrl()
+		if err != nil {
+			return response.InternalServerError(c, err.Error(), nil)
+		}
+		//redirectMomoUrl := "https://momo.vn"
+		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectMomoUrl()
+		if err != nil {
+			return response.InternalServerError(c, err.Error(), nil)
+		}
+
+		condition := map[string]interface{}{
+			"booking-info":        "MOMO",
+			"amount":              totalPrice,
+			"booking-description": "Payment room Siphoria",
+			"ipn-url":             momoUrl,
+			"redirect-url":        redirectMomoUrl,
+			"payment_id":          reqCreatePayment.SessionID,
+		}
+		dataResponse := momoService.PaymentService(condition)
+		var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
+		if tempResultCode == "0" {
+			_, err := userReceiver.PaymentRepo.UpdatePaymentMethodForPending(reqCreatePayment.SessionID, "Momo")
+			if err != nil {
+				return response.InternalServerError(c, "Tạo thanh toán thất bại", err.Error())
+			}
+		} else if tempResultCode == "41" {
+			logger.Error("Error update momo payment " + tempResultCode)
+			return response.InternalServerError(c, "Tạo thanh toán thất bại", dataResponse)
+		} else {
+			logger.Error("Error update momo payment " + tempResultCode)
+			return response.InternalServerError(c, "Tạo thanh toán thất bại", dataResponse)
+		}
+		if err != nil {
+			return response.BadRequest(c, err.Error(), nil)
+		}
+		return response.Ok(c, "Tạo thanh toán thành công", dataResponse)
+	} else if paymentMethod == "vnpay" {
+		vnpayService := services.GetVNPayServiceInstance()
+		//momoUrl := "https://momo.vn"
+		vnpayUrl, err := userReceiver.PaymentRepo.GetVNPayHostingUrl()
+		if err != nil {
+			return response.InternalServerError(c, err.Error(), nil)
+		}
+		//redirectMomoUrl := "https://momo.vn"
+		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectMomoUrl()
+		if err != nil {
+			return response.InternalServerError(c, err.Error(), nil)
+		}
+		condition := map[string]interface{}{
+			"booking-info":        "VNPay",
+			"amount":              int(totalPrice) * 100,
+			"booking-description": "asdas",
+			"ipn-url":             vnpayUrl,
+			"redirect-url":        redirectMomoUrl,
+			"payment_id":          reqCreatePayment.SessionID,
+		}
+		dataResponse := vnpayService.VNPayPaymentService(condition)
+		if err != nil {
+			return response.BadRequest(c, err.Error(), nil)
+		}
+		_, err = userReceiver.PaymentRepo.UpdatePaymentMethodForPending(reqCreatePayment.SessionID, "VNPay")
 		if err != nil {
 			return response.InternalServerError(c, "Tạo thanh toán thất bại", err.Error())
 		}
-	} else if tempResultCode == "41" {
-		logger.Error("Error update momo payment " + tempResultCode)
-		return response.InternalServerError(c, "Tạo thanh toán thất bại", dataResponse)
-	} else {
-		logger.Error("Error update momo payment " + tempResultCode)
-		return response.InternalServerError(c, "Tạo thanh toán thất bại", dataResponse)
+		return response.Ok(c, "Tạo thanh toán thành công", services.ConfigInfo.VNPay.VNPUrl+"?"+dataResponse)
 	}
-	if err != nil {
-		return response.BadRequest(c, err.Error(), nil)
-	}
-	return response.Ok(c, "Tạo thanh toán thành công", dataResponse)
+	return response.BadRequest(c, "Phương thức thanh toán chưa được hỗ trợ", nil)
 }

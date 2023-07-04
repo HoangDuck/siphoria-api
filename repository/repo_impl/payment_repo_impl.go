@@ -21,8 +21,17 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 }
 
 func (paymentReceiver *PaymentRepoImpl) UpdatePaymentMethodForPending(sessionId string, paymentMethod string) (bool, error) {
-	//TODO implement me
-	panic("implement me")
+	var payment = model.Payment{
+		PaymentMethod: paymentMethod,
+	}
+	err := paymentReceiver.sql.Db.Where("session_id=? AND status = ?", sessionId, "pending").Updates(payment)
+	if err.Error != nil {
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, custom_error.PaymentNotFound
+		}
+		return false, custom_error.PaymentNotUpdated
+	}
+	return true, nil
 }
 
 func (paymentReceiver *PaymentRepoImpl) GetVNPayHostingUrl() (string, error) {
