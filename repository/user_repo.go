@@ -16,7 +16,7 @@ type UserRepo interface {
 	DeleteCart(cartId string) (bool, error)
 	GetUserCart(user model.User) ([]model.Cart, error)
 	GetUserPayment(user model.User) ([]model.Payment, error)
-	CreatePaymentFromCart(user model.User) (bool, error)
+	CreatePaymentFromCart(user model.User) (string, error)
 	UpdatePaymentStatus(payment model.Payment) (bool, error)
 	GetUserPaymentHistory(user model.User) ([]model.Payment, error)
 	GetUserPaymentPendingCheckin(user model.User) ([]model.Payment, error)

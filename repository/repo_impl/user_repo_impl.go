@@ -129,13 +129,14 @@ func (userReceiver *UserRepoImpl) GetUserPayment(user model.User) ([]model.Payme
 	return listPaymentUser, nil
 }
 
-func (userReceiver *UserRepoImpl) CreatePaymentFromCart(user model.User) (bool, error) {
-	err := userReceiver.sql.Db.Exec("call sp_addpayment(?);",
-		user.ID)
+func (userReceiver *UserRepoImpl) CreatePaymentFromCart(user model.User) (string, error) {
+	sessionId, _ := utils.GetNewId()
+	err := userReceiver.sql.Db.Exec("call sp_addpayment(?,?);",
+		user.ID, sessionId)
 	if err.Error != nil {
-		return false, err.Error
+		return "", err.Error
 	}
-	return true, nil
+	return sessionId, nil
 }
 
 func (userReceiver *UserRepoImpl) GetUserCart(user model.User) ([]model.Cart, error) {
