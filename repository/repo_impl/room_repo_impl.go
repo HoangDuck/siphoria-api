@@ -80,7 +80,7 @@ func (roomReceiver *RoomRepoImpl) GetRoomNightsByRoomType(c echo.Context, roomTy
 		err = err.Where("availability_at >= ?", from)
 	}
 	if to != "" {
-		err = err.Where("availability_at <= ?", to)
+		err = err.Where("availability_at < ?", to)
 	}
 	err = err.Find(&roomNightList)
 	if err.RowsAffected == 0 {
@@ -117,7 +117,7 @@ func (roomReceiver *RoomRepoImpl) GetListRatePackages(c echo.Context, ratePlanId
 		err = err.Where("availability_at >= ?", from)
 	}
 	if to != "" {
-		err = err.Where("availability_at <= ?", to)
+		err = err.Where("availability_at < ?", to)
 	}
 	err = err.Find(&ratePackageList)
 	if err.RowsAffected == 0 {
