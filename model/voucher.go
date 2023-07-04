@@ -21,8 +21,8 @@ type Voucher struct {
 type VoucherExcept struct {
 	CreatedAt  time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" gorm:"updated_at"`
-	HotelId    string    `json:"hotel_id" gorm:"primary_key"`
-	Hotel      Hotel     `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	VoucherId  string    `json:"voucher_id" gorm:"primary_key"`
+	Voucher    Voucher   `json:"voucher" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomTypeId string    `json:"room_type_id" gorm:"primary_key"`
 	RoomType   RoomType  `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	IsDeleted  bool      `json:"-" gorm:"is_deleted"`

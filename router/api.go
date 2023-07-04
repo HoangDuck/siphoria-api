@@ -46,10 +46,6 @@ func (api *API) SetupRouter() {
 	auth.GET("/google-callback", api.AuthController.HandleAuthenticateWithGoogleCallBack)
 	auth.GET("/fb", api.AuthController.HandleAuthenticateWithFacebook)
 	auth.GET("/facebook-callback", api.AuthController.HandleAuthenticateWithFacebookCallBack)
-	//auth.POST("/sign-in-google", api.AuthController.HandleSignInGoogleToken, middleware.JWTMiddleWare())
-	//auth.POST("/sign-in-oauth-info", api.AuthController.HandleAuthenticationGoogleWithInfo)
-	//auth.GET("/send-email", api.AuthController.TestSendEmail)
-	//auth.POST("/check-email", api.AuthController.CheckEmailExisted)
 	auth.POST("/refresh-token", api.AuthController.HandleGenerateNewAccessToken)
 
 	user := request.Group("/users")

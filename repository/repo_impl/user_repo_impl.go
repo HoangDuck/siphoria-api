@@ -180,8 +180,8 @@ func (userReceiver *UserRepoImpl) DeleteCart(cartId string) (bool, error) {
 func (userReceiver *UserRepoImpl) AddToCart(requestAddCart req.RequestAddToCart) (bool, error) {
 	for i := 0; i < requestAddCart.NumberOfRooms; i++ {
 		cartId, _ := utils.GetNewId()
-		dateBeginAt, _ := time.Parse("2006-01-02 15:04:05", requestAddCart.FromDate)
-		dateEndAt, _ := time.Parse("2006-01-02 15:04:05", requestAddCart.ToDate)
+		dateBeginAt, _ := time.Parse("2006-01-02", requestAddCart.FromDate)
+		dateEndAt, _ := time.Parse("2006-01-02", requestAddCart.ToDate)
 
 		cart := model.AddCart{
 			ID:          cartId,
