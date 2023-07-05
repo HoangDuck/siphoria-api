@@ -23,28 +23,7 @@ func GetVNPayServiceInstance() *VNPayService {
 }
 
 func (service VNPayService) VNPayPaymentService(condition map[string]interface{}) string {
-	//flake := sonyflake.NewSonyflake(sonyflake.Settings{})
-	//randome orderID and requestID
-	//b, _ := flake.NextID()
-
-	//var endpoint = "https://test-payment.momo.vn/v2/gateway/api/create"
-	//var accessKey = "yFRGoK0eLSrthX4Y"
-	//var secretKey = "tZNafmaHgldR8XfZA9wiYCFIkaXbzxbu"
-	//var orderInfo = fmt.Sprint(condition["booking-description"])
-	//var partnerCode = "MOMOQDD420220927"
-	//var redirectUrl = fmt.Sprint(condition["redirect-url"])
-	//var ipnUrl = fmt.Sprint(condition["ipn-url"]) + "/api/payment/result-momo"
 	intVar, _ := strconv.Atoi(fmt.Sprint(condition["amount"]))
-	//var amount = intVar
-	//var orderId = fmt.Sprint(condition["booking-info"]) + "_" + fmt.Sprint(condition["payment_id"])
-	//var requestId = strconv.FormatUint(b, 16)
-	//var extraData = ""
-	//var partnerName = "Siphoria"
-	//var storeId = "Test Store"
-	//var orderGroupId = ""
-	//var lang = "vi"
-	//var requestType = "captureWallet"
-	//vnpay data
 	var vnp_Version = "2.1.0"
 	var vnp_Command = "pay"
 	var vnp_TmnCode = ConfigInfo.VNPay.VNPTmnCode

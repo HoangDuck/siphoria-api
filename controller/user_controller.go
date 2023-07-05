@@ -661,17 +661,15 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		if err != nil {
 			return response.InternalServerError(c, err.Error(), nil)
 		}
-		//redirectMomoUrl := "https://momo.vn"
-		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectMomoUrl()
 		if err != nil {
 			return response.InternalServerError(c, err.Error(), nil)
 		}
 		condition := map[string]interface{}{
 			"booking-info":        "VNPay",
 			"amount":              int(totalPrice) * 100,
-			"booking-description": "asdas",
+			"booking-description": "Payment Siphoria",
 			"ipn-url":             vnpayUrl,
-			"redirect-url":        redirectMomoUrl,
+			"redirect-url":        "",
 			"payment_id":          reqCreatePayment.SessionID + "_" + strconv.FormatInt(time.Now().Unix(), 10),
 		}
 		dataResponse := vnpayService.VNPayPaymentService(condition)
@@ -682,7 +680,17 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		if err != nil {
 			return response.InternalServerError(c, "Tạo thanh toán thất bại", err.Error())
 		}
-		return response.Ok(c, "Tạo thanh toán thành công", services.ConfigInfo.VNPay.VNPUrl+"?"+dataResponse)
+		requestId, _ := utils.GetNewId()
+		return response.Ok(c, "Tạo thanh toán thành công", res.DataPaymentRes{
+			Amount:       int(totalPrice),
+			Message:      "Tạo thanh toán thành công",
+			OrderID:      "VNPay" + "_" + fmt.Sprint(condition["payment_id"]),
+			PartnerCode:  "",
+			PayURL:       services.ConfigInfo.VNPay.VNPUrl + "?" + dataResponse,
+			RequestID:    requestId,
+			ResponseTime: time.Now().Unix(),
+			ResultCode:   0,
+		})
 	}
 	return response.BadRequest(c, "Phương thức thanh toán chưa được hỗ trợ", nil)
 }
