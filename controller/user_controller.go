@@ -432,6 +432,7 @@ func (userReceiver *UserController) HandleUpdateStatusPayment(c echo.Context) er
 func (userReceiver *UserController) HandleGetPaymentsHistory(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
+
 	if !(claims.Role == model.CUSTOMER.String()) {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)

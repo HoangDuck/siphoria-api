@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"hotel-booking-api/controller"
 	middleware "hotel-booking-api/middlewares"
+	response "hotel-booking-api/model/model_func"
 	"hotel-booking-api/services"
 )
 
@@ -127,7 +128,8 @@ func (api *API) SetupRouter() {
 	})
 
 	api.Echo.GET("/vnpay_ipn", func(context echo.Context) error {
-		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
+		list := context.QueryParams()
+		return response.Ok(context, "list params", list)
 	})
 
 	admin := request.Group("/admin")
