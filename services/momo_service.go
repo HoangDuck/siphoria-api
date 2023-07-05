@@ -69,7 +69,7 @@ func (service MomoService) PaymentService(condition map[string]interface{}) map[
 	var orderInfo = fmt.Sprint(condition["booking-description"])
 	var partnerCode = "MOMOQDD420220927"
 	var redirectUrl = fmt.Sprint(condition["redirect-url"])
-	var ipnUrl = fmt.Sprint(condition["ipn-url"]) + "/api/payment/result-momo"
+	var ipnUrl = fmt.Sprint(condition["ipn-url"])
 	intVar, _ := strconv.Atoi(fmt.Sprint(condition["amount"]))
 	var amount = intVar
 	var orderId = fmt.Sprint(condition["booking-info"]) + "_" + fmt.Sprint(condition["payment_id"])
