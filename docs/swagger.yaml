@@ -160,6 +160,8 @@ definitions:
     type: object
   req.RequestCreatePaymentModel:
     properties:
+      pay_method:
+        type: string
       session_id:
         type: string
     type: object

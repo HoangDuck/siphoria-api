@@ -2897,6 +2897,9 @@ const docTemplate = `{
         "req.RequestCreatePaymentModel": {
             "type": "object",
             "properties": {
+                "pay_method": {
+                    "type": "string"
+                },
                 "session_id": {
                     "type": "string"
                 }
