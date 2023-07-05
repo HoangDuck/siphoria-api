@@ -137,6 +137,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 	} else {
 		resultCode := fmt.Sprint(jsonRequestMomo["resultCode"])
 		orderId := fmt.Sprint(jsonRequestMomo["orderId"])
+		logger.Info("Order id return from momo: " + orderId)
 		arraySplitOrderId := strings.Split(orderId, "_")
 		//bookingID := fmt.Sprint(arraySplitOrderId[0])
 		paymentID := fmt.Sprint(arraySplitOrderId[0])
