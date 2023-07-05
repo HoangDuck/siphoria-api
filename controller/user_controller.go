@@ -667,7 +667,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		condition := map[string]interface{}{
 			"booking-info":        "VNPay",
 			"amount":              int(totalPrice) * 100,
-			"booking-description": "Payment Siphoria",
+			"booking-description": "paymentsiphoria",
 			"ipn-url":             vnpayUrl,
 			"redirect-url":        "",
 			"payment_id":          reqCreatePayment.SessionID + "_" + strconv.FormatInt(time.Now().Unix(), 10),
