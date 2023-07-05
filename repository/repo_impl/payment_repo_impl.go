@@ -8,6 +8,7 @@ import (
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	"hotel-booking-api/repository"
+	"time"
 )
 
 type PaymentRepoImpl struct {
@@ -18,6 +19,21 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	return &PaymentRepoImpl{
 		sql: sql,
 	}
+}
+
+func (paymentReceiver *PaymentRepoImpl) CancelSessionPayment(userId string) (bool, error) {
+	var lockRoom = model.LockRoom{
+		LockFrom: time.Now(),
+		LockTo:   time.Now().Add(time.Minute * 5),
+	}
+	err := paymentReceiver.sql.Db.Where("user_id=? AND expired = ?", userId, false).Updates(lockRoom)
+	if err.Error != nil {
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, custom_error.PaymentNotFound
+		}
+		return false, custom_error.PaymentNotUpdated
+	}
+	return true, nil
 }
 
 func (paymentReceiver *PaymentRepoImpl) UpdatePaymentMethodForPending(sessionId string, paymentMethod string) (bool, error) {

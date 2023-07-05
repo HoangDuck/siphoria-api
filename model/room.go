@@ -82,6 +82,7 @@ type RoomNights struct {
 
 type LockRoom struct {
 	ID           string      `json:"id" gorm:"primary_key"`
+	SessionId    string      `json:"session_id" gorm:"session_id"`
 	RoomNightsId string      `json:"room_nights_id"`
 	RoomNights   *RoomNights `json:"room_nights,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomTypeID   string      `json:"room_type_id"`

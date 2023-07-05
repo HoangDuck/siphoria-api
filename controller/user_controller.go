@@ -344,11 +344,16 @@ func (userReceiver *UserController) HandleCreatePaymentFromCart(c echo.Context) 
 	customer := model.User{
 		ID: claims.UserId,
 	}
+	_, err := userReceiver.PaymentRepo.CancelSessionPayment(claims.UserId)
+	if err != nil {
+		return response.InternalServerError(c, "Tạo thanh toán thất bại", nil)
+	}
 	customerResult, err := userReceiver.UserRepo.CreatePaymentFromCart(customer)
 	if err != nil {
 		logger.Error("Error get profile data", zap.Error(err))
 		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
 	}
+
 	return response.Ok(c, "Tạo thanh toán thành công", customerResult)
 }
 
@@ -599,6 +604,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		return err
 	}
 	paymentMethod := strings.ToLower(reqCreatePayment.PaymentMethod)
+
 	listPaymentSessionId, err := userReceiver.PaymentRepo.GetPaymentListByCondition(reqCreatePayment.SessionID)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
