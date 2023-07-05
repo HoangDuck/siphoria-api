@@ -114,5 +114,6 @@ type RequestUpdateReview struct {
 }
 
 type RequestCreatePaymentModel struct {
-	SessionID string `json:"session_id"`
+	SessionID     string `json:"session_id"`
+	PaymentMethod string `json:"pay_method"`
 }

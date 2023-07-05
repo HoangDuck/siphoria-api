@@ -39,7 +39,7 @@ func init() {
 
 // @title HOTEL BOOKING API
 // @version 1.0
-// @description This is a sample server Petstore server.
+// @description This is a sample server Siphoria server.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -92,7 +92,8 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		AccountRepo: repo_impl.NewAccountRepo(sql),
 	}
 	userController := controller.UserController{
-		UserRepo: repo_impl.NewUserRepo(sql),
+		UserRepo:    repo_impl.NewUserRepo(sql),
+		PaymentRepo: repo_impl.NewPaymentRepo(sql),
 	}
 
 	logsHandler := controller.LogsHandler{}

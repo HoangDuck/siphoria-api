@@ -598,7 +598,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		logger.Error("Error binding data", zap.Error(err))
 		return err
 	}
-	paymentMethod := strings.ToLower(c.QueryParam("payment_method"))
+	paymentMethod := strings.ToLower(reqCreatePayment.PaymentMethod)
 	listPaymentSessionId, err := userReceiver.PaymentRepo.GetPaymentListByCondition(reqCreatePayment.SessionID)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
