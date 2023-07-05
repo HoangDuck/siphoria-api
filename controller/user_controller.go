@@ -15,6 +15,7 @@ import (
 	"hotel-booking-api/services"
 	"hotel-booking-api/utils"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -620,12 +621,13 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		if err != nil {
 			return response.InternalServerError(c, err.Error(), nil)
 		}
+		logger.Info(momoUrl)
 		//redirectMomoUrl := "https://momo.vn"
 		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectMomoUrl()
 		if err != nil {
 			return response.InternalServerError(c, err.Error(), nil)
 		}
-
+		logger.Info(redirectMomoUrl)
 		condition := map[string]interface{}{
 			"booking-info":        "MOMO",
 			"amount":              totalPrice,
@@ -670,7 +672,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 			"booking-description": "asdas",
 			"ipn-url":             vnpayUrl,
 			"redirect-url":        redirectMomoUrl,
-			"payment_id":          reqCreatePayment.SessionID,
+			"payment_id":          reqCreatePayment.SessionID + "_" + strconv.FormatInt(time.Now().Unix(), 10),
 		}
 		dataResponse := vnpayService.VNPayPaymentService(condition)
 		if err != nil {

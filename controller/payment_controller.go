@@ -81,11 +81,13 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
+	logger.Info(momoUrl)
 	//redirectMomoUrl := "https://momo.vn"
 	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectMomoUrl()
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
+	logger.Info(redirectMomoUrl)
 	paymentId, err := uuid.NewUUID()
 	condition := map[string]interface{}{
 		"booking-info":        "MOMO",
@@ -140,7 +142,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 		logger.Info("Order id return from momo: " + orderId)
 		arraySplitOrderId := strings.Split(orderId, "_")
 		//bookingID := fmt.Sprint(arraySplitOrderId[0])
-		paymentID := fmt.Sprint(arraySplitOrderId[0])
+		paymentID := fmt.Sprint(arraySplitOrderId[1])
 		//booking := model.Booking{
 		//	ID:              bookingID,
 		//	PaymentStatusID: 2,
