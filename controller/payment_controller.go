@@ -13,7 +13,9 @@ import (
 	"hotel-booking-api/repository"
 	"hotel-booking-api/services"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type PaymentController struct {
@@ -91,7 +93,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 		"booking-description": "asdasfsdgfsdgsd",
 		"ipn-url":             momoUrl,
 		"redirect-url":        redirectMomoUrl,
-		"payment_id":          paymentId.String(),
+		"payment_id":          paymentId.String() + strconv.FormatInt(time.Now().Unix(), 10),
 	}
 	dataResponse := momoService.PaymentService(condition)
 	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
