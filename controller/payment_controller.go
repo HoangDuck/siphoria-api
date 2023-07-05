@@ -93,7 +93,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 		"booking-description": "asdasfsdgfsdgsd",
 		"ipn-url":             momoUrl,
 		"redirect-url":        redirectMomoUrl,
-		"payment_id":          paymentId.String() + strconv.FormatInt(time.Now().Unix(), 10),
+		"payment_id":          paymentId.String() + "_" + strconv.FormatInt(time.Now().Unix(), 10),
 	}
 	dataResponse := momoService.PaymentService(condition)
 	var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
@@ -139,15 +139,14 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 		orderId := fmt.Sprint(jsonRequestMomo["orderId"])
 		arraySplitOrderId := strings.Split(orderId, "_")
 		//bookingID := fmt.Sprint(arraySplitOrderId[0])
-		paymentID := fmt.Sprint(arraySplitOrderId[1])
+		paymentID := fmt.Sprint(arraySplitOrderId[0])
 		//booking := model.Booking{
 		//	ID:              bookingID,
 		//	PaymentStatusID: 2,
 		//}
 		payment := model.Payment{
 			SessionId: paymentID,
-			//BookingID:         booking.ID,
-			Status: "paid",
+			Status:    "paid",
 		}
 		if resultCode == "0" {
 			//check payment existed
