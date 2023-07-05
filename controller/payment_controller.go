@@ -127,6 +127,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 }
 
 func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
+	logger.Info("Receive result from momo")
 	jsonRequestMomo := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&jsonRequestMomo)
 	if err != nil {
@@ -163,7 +164,6 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 					Data:       nil,
 				})
 			} else {
-				//_, err = paymentReceiver.PaymentRepo.UpdatePaymentStatusBooking(booking)
 				if err != nil {
 					return c.JSON(http.StatusInternalServerError, res.Response{
 						StatusCode: http.StatusInternalServerError,
