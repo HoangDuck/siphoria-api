@@ -5,7 +5,7 @@ import "hotel-booking-api/model"
 type PaymentRepo interface {
 	GetMomoHostingUrl() (string, error)
 	GetVNPayHostingUrl() (string, error)
-	GetRedirectMomoUrl() (string, error)
+	GetRedirectPaymentUrl() (string, error)
 	GetPaymentListByCondition(sessionId string) ([]model.Payment, error)
 	UpdatePaymentStatusByBookingID(payment model.Payment) (model.Payment, error)
 	UpdatePaymentStatusFailed(payment model.Payment) (model.Payment, error)

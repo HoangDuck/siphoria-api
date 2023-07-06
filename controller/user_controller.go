@@ -624,7 +624,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		}
 		logger.Info(momoUrl)
 		//redirectMomoUrl := "https://momo.vn"
-		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectMomoUrl()
+		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectPaymentUrl()
 		if err != nil {
 			return response.InternalServerError(c, err.Error(), nil)
 		}

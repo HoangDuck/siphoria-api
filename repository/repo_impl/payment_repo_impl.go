@@ -215,7 +215,7 @@ func (paymentReceiver *PaymentRepoImpl) GetMomoHostingUrl() (string, error) {
 //	return paymentDetail, nil
 //}
 
-func (paymentReceiver *PaymentRepoImpl) GetRedirectMomoUrl() (string, error) {
+func (paymentReceiver *PaymentRepoImpl) GetRedirectPaymentUrl() (string, error) {
 	var momoConfig model.ConfigurationUrlDefine
 	err := paymentReceiver.sql.Db.Where("id=?", 4).Find(&momoConfig)
 	logger.Debug("Get momo url", zap.Error(err.Error))

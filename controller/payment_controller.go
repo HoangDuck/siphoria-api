@@ -40,7 +40,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithVNPay(c echo.Context)
 		return response.InternalServerError(c, err.Error(), nil)
 	}
 	//redirectMomoUrl := "https://momo.vn"
-	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectMomoUrl()
+	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectPaymentUrl()
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -83,7 +83,7 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 	}
 	logger.Info(momoUrl)
 	//redirectMomoUrl := "https://momo.vn"
-	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectMomoUrl()
+	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectPaymentUrl()
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
@@ -130,6 +130,10 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 	dataFromVNPay := c.QueryParams()
 	vnpayService := services.GetVNPayServiceInstance()
 	resultCheckSignature := vnpayService.CheckSignatureResultVNPay(c)
+	redirectMomoUrl, err := paymentReceiver.PaymentRepo.GetRedirectPaymentUrl()
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
 	if resultCheckSignature {
 		resultCode := fmt.Sprint(dataFromVNPay.Get("vnp_TransactionStatus"))
 		orderId := fmt.Sprint(dataFromVNPay.Get("vnp_TxnRef"))
@@ -143,17 +147,20 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 		if resultCode == "00" {
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
 			if err != nil {
-				return response.InternalServerError(c, "Thanh toán thất bại", nil)
+				return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
 			}
 		} else {
 			payment.Status = "failed"
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
-			return response.InternalServerError(c, "Thanh toán thất bại", err)
+			if err != nil {
+				
+			}
+			return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
 		}
-		return response.Ok(c, "Thanh toán thành công", "")
+		//return response.Ok(c, "Thanh toán thành công", "")
+		return c.Redirect(http.StatusOK, redirectMomoUrl)
 	}
-
-	return response.InternalServerError(c, "Thanh toán thất bại", nil)
+	return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
 }
 
 func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
@@ -162,11 +169,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 	err := json.NewDecoder(c.Request().Body).Decode(&jsonRequestMomo)
 	if err != nil {
 		logger.Error("Error get momo body request", zap.Error(err))
-		return c.JSON(http.StatusInternalServerError, res.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Thanh toán thất bại",
-			Data:       nil,
-		})
+		return response.InternalServerError(c, "Thanh toán thất bại", nil)
 	} else {
 		resultCode := fmt.Sprint(jsonRequestMomo["resultCode"])
 		orderId := fmt.Sprint(jsonRequestMomo["orderId"])
@@ -180,35 +183,19 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 		if resultCode == "0" {
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
 			if err != nil {
-				return c.JSON(http.StatusInternalServerError, res.Response{
-					StatusCode: http.StatusInternalServerError,
-					Message:    "Thanh toán thất bại",
-					Data:       nil,
-				})
+				return response.InternalServerError(c, "Thanh toán thất bại", nil)
 			}
 		} else {
 			logger.Error("Error get momo result code request", zap.Error(err))
 			payment.Status = "failed"
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
 			if err != nil {
-				return c.JSON(http.StatusInternalServerError, res.Response{
-					StatusCode: http.StatusInternalServerError,
-					Message:    "Thanh toán thất bại",
-					Data:       nil,
-				})
+				return response.InternalServerError(c, "Thanh toán thất bại", nil)
 			}
-			return c.JSON(http.StatusInternalServerError, res.Response{
-				StatusCode: http.StatusInternalServerError,
-				Message:    "Thanh toán thất bại",
-				Data:       nil,
-			})
+			return response.InternalServerError(c, "Thanh toán thất bại", nil)
 		}
 	}
-	return c.JSON(http.StatusOK, res.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Thanh toán thành công",
-		Data:       "",
-	})
+	return response.Ok(c, "Thanh toán thành công", "")
 }
 
 //// HandleGetListPaymentCondition godoc
