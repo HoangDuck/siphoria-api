@@ -148,6 +148,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
 			if err != nil {
 				logger.Info("redirect result payment vnpay update status payment")
+				http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
 				return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
 			}
 		} else {
@@ -158,13 +159,15 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 
 			}
 			logger.Info("redirect result payment vnpay update status payment failed")
-			return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
+			http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
+			return response.InternalServerError(c, "Thanh toán thất bại", nil)
 		}
 		logger.Info("redirect result payment vnpay")
-		//return response.Ok(c, "Thanh toán thành công", "")
-		return c.Redirect(http.StatusOK, redirectMomoUrl)
+		http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
+		return response.Ok(c, "Thanh toán thành công", "")
 	}
-	return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
+	http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
+	return response.InternalServerError(c, "Thanh toán thất bại", nil)
 }
 
 func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
