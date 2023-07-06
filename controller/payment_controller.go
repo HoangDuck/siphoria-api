@@ -127,15 +127,19 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 }
 
 func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) error {
-	dataFromVNPay := c.QueryParams()
+	//dataFromVNPay := c.QueryParams()
 
-	logger.Info(dataFromVNPay.Encode())
-	dataFromVNPay.Del("vnp_SecureHash")
+	vnpayService := services.GetVNPayServiceInstance()
+	resultCheckSignature := vnpayService.CheckSignatureResultVNPay(c)
+
+	if resultCheckSignature {
+
+	}
 
 	return c.JSON(http.StatusOK, res.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Thanh toán thành công",
-		Data:       dataFromVNPay.Encode(),
+		Data:       resultCheckSignature,
 	})
 }
 
@@ -155,20 +159,12 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 		orderId := fmt.Sprint(jsonRequestMomo["orderId"])
 		logger.Info("Order id return from momo: " + orderId)
 		arraySplitOrderId := strings.Split(orderId, "_")
-		//bookingID := fmt.Sprint(arraySplitOrderId[0])
 		paymentID := fmt.Sprint(arraySplitOrderId[1])
-		//booking := model.Booking{
-		//	ID:              bookingID,
-		//	PaymentStatusID: 2,
-		//}
 		payment := model.Payment{
 			SessionId: paymentID,
 			Status:    "paid",
 		}
 		if resultCode == "0" {
-			//check payment existed
-			//payment.DueTimePayment = time.Now()
-			//payment.PaymentTime = time.Now()
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, res.Response{

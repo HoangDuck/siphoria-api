@@ -6,7 +6,9 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"fmt"
+	"github.com/labstack/echo/v4"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -77,6 +79,25 @@ func (service VNPayService) VNPayPaymentService(condition map[string]interface{}
 	rawSignature.WriteString("&vnp_SecureHash=")
 	rawSignature.WriteString(signature)
 
-	///send HTTP to momo endpoint
+	///send HTTP to vnpay endpoint
 	return rawSignature.String()
+}
+
+func (service VNPayService) CheckSignatureResultVNPay(c echo.Context) bool {
+	dataFromVNPay := c.QueryParams()
+	secureHash := dataFromVNPay.Get("vnp_SecureHash")
+	dataFromVNPay.Del("vnp_SecureHash")
+	var rawSignature bytes.Buffer
+	rawSignature.WriteString(strings.Replace(dataFromVNPay.Encode(), "\u0026", "&", -1))
+	hmacSignature := hmac.New(sha512.New, []byte(ConfigInfo.VNPay.VNPHashSecret))
+
+	// Write Data to it
+	hmacSignature.Write(rawSignature.Bytes())
+	fmt.Println("Raw signature: " + rawSignature.String())
+	// Get result and encode as hexadecimal string
+	signature := hex.EncodeToString(hmacSignature.Sum(nil))
+	if signature == secureHash {
+		return true
+	}
+	return false
 }
