@@ -126,6 +126,18 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 	})
 }
 
+func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) error {
+	dataFromVNPay := c.QueryParams()
+
+	logger.Info(dataFromVNPay.Encode())
+
+	return c.JSON(http.StatusOK, res.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Thanh toán thành công",
+		Data:       "",
+	})
+}
+
 func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
 	logger.Info("Receive result from momo")
 	jsonRequestMomo := make(map[string]interface{})
