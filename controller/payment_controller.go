@@ -127,20 +127,33 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 }
 
 func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) error {
-	//dataFromVNPay := c.QueryParams()
-
+	dataFromVNPay := c.QueryParams()
 	vnpayService := services.GetVNPayServiceInstance()
 	resultCheckSignature := vnpayService.CheckSignatureResultVNPay(c)
-
 	if resultCheckSignature {
-
+		resultCode := fmt.Sprint(dataFromVNPay.Get("vnp_TransactionStatus"))
+		orderId := fmt.Sprint(dataFromVNPay.Get("vnp_TxnRef"))
+		logger.Info("Order id return from momo: " + orderId)
+		arraySplitOrderId := strings.Split(orderId, "_")
+		paymentID := fmt.Sprint(arraySplitOrderId[1])
+		payment := model.Payment{
+			SessionId: paymentID,
+			Status:    "paid",
+		}
+		if resultCode == "00" {
+			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
+			if err != nil {
+				return response.InternalServerError(c, "Thanh toán thất bại", nil)
+			}
+		} else {
+			payment.Status = "failed"
+			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
+			return response.InternalServerError(c, "Thanh toán thất bại", err)
+		}
+		return response.Ok(c, "Thanh toán thành công", "")
 	}
 
-	return c.JSON(http.StatusOK, res.Response{
-		StatusCode: http.StatusOK,
-		Message:    "Thanh toán thành công",
-		Data:       resultCheckSignature,
-	})
+	return response.InternalServerError(c, "Thanh toán thất bại", nil)
 }
 
 func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
@@ -172,18 +185,10 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 					Message:    "Thanh toán thất bại",
 					Data:       nil,
 				})
-			} else {
-				if err != nil {
-					return c.JSON(http.StatusInternalServerError, res.Response{
-						StatusCode: http.StatusInternalServerError,
-						Message:    "Thanh toán thất bại",
-						Data:       nil,
-					})
-				}
 			}
 		} else {
 			logger.Error("Error get momo result code request", zap.Error(err))
-			payment.Status = "4"
+			payment.Status = "failed"
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, res.Response{
