@@ -134,7 +134,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 	return c.JSON(http.StatusOK, res.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Thanh toán thành công",
-		Data:       "",
+		Data:       dataFromVNPay.Encode(),
 	})
 }
 
