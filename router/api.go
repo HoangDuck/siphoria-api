@@ -121,6 +121,7 @@ func (api *API) SetupRouter() {
 	payment.GET("/vnpay_return", func(context echo.Context) error {
 		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")
 	})
+	payment.POST("/webhook", api.PaymentController.HandleWebHookStripe)
 
 	api.Echo.GET("/vnpay_return", func(context echo.Context) error {
 		return context.String(200, "Welcome TLCN K19 Tran Kien Khang & Hoang Huu Duc!")

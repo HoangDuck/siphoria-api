@@ -12,7 +12,9 @@ import (
 	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/services"
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -201,6 +203,26 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 			}
 			return response.InternalServerError(c, "Thanh toán thất bại", nil)
 		}
+	}
+	return response.Ok(c, "Thanh toán thành công", "")
+}
+
+func (paymentReceiver *PaymentController) HandleWebHookStripe(c echo.Context) error {
+	stripeService := services.GetStripeServiceInstance()
+	eventType := stripeService.CheckWebHookEvent(c)
+	logger.Infof("event type cong hoa", eventType)
+	switch eventType {
+	case "payment_intent.succeeded":
+
+		log.Printf("Successful payment for %d.", int64(1234))
+		// Then define and call a func to handle the successful payment intent.
+		// handlePaymentIntentSucceeded(paymentIntent)
+	case "payment_method.attached":
+		return response.Ok(c, "Thanh toán thành công", eventType)
+		// Then define and call a func to handle the successful attachment of a PaymentMethod.
+		// handlePaymentMethodAttached(paymentMethod)
+	default:
+		fmt.Fprintf(os.Stderr, "Unhandled event type: %s\n", eventType)
 	}
 	return response.Ok(c, "Thanh toán thành công", "")
 }

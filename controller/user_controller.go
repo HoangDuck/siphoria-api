@@ -692,6 +692,20 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 			ResponseTime: time.Now().Unix(),
 			ResultCode:   0,
 		})
+	} else if paymentMethod == "stripe" {
+		stripeService := services.GetStripeServiceInstance()
+		clientSecret := stripeService.CreatePaymentStripe(int64(totalPrice))
+		requestId, _ := utils.GetNewId()
+		return response.Ok(c, "Tạo thanh toán thành công", res.DataPaymentRes{
+			Amount:       int(totalPrice),
+			Message:      "Tạo thanh toán thành công",
+			OrderID:      "Stripe" + "_" + reqCreatePayment.SessionID,
+			PartnerCode:  "",
+			PayURL:       clientSecret,
+			RequestID:    requestId,
+			ResponseTime: time.Now().Unix(),
+			ResultCode:   0,
+		})
 	}
 	return response.BadRequest(c, "Phương thức thanh toán chưa được hỗ trợ", nil)
 }

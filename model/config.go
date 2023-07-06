@@ -43,6 +43,10 @@ type Config struct {
 		VNPHashSecret string `yaml:"vnp_HashSecret"`
 		VNPUrl        string `yaml:"vnp_Url"`
 	}
+	Stripe struct {
+		PublishableKey string `yaml:"publishable_key"`
+		SecretKey      string `yaml:"secret_key"`
+	}
 }
 
 type ConfigurationUrlDefine struct {
