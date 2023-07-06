@@ -147,16 +147,20 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 		if resultCode == "00" {
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
 			if err != nil {
+				logger.Info("redirect result payment vnpay update status payment")
 				return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
 			}
 		} else {
 			payment.Status = "failed"
 			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
 			if err != nil {
-				
+				logger.Info("redirect result payment vnpay update status payment failed")
+
 			}
+			logger.Info("redirect result payment vnpay update status payment failed")
 			return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
 		}
+		logger.Info("redirect result payment vnpay")
 		//return response.Ok(c, "Thanh toán thành công", "")
 		return c.Redirect(http.StatusOK, redirectMomoUrl)
 	}
