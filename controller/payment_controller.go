@@ -130,6 +130,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 	dataFromVNPay := c.QueryParams()
 
 	logger.Info(dataFromVNPay.Encode())
+	dataFromVNPay.Del("vnp_SecureHash")
 
 	return c.JSON(http.StatusOK, res.Response{
 		StatusCode: http.StatusOK,
