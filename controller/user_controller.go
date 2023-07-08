@@ -396,6 +396,9 @@ func (userReceiver *UserController) HandleGetPayments(c echo.Context) error {
 		"updated_at", "cart_id", "payment_details", "-",
 	}, &model.Payment{})
 	dataQueryModel.UserId = claims.UserId
+	if dataQueryModel.Sort == "" {
+		dataQueryModel.Sort = "created_at"
+	}
 	listPayment, err := userReceiver.PaymentRepo.GetPaymentFilter(c, &dataQueryModel)
 
 	if err != nil {

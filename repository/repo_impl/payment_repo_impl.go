@@ -44,13 +44,15 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 	var listTempPayment []model.Payment
 
 	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
-	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("RoomTypeFacility").Preload("Hotel")
+	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("Hotel")
 	err = err.Where("user_id = ?", queryModel.UserId)
-	if queryModel.Sort == "" {
-		queryModel.Sort = "created_at"
-	}
+
 	if context.QueryParam("state") == "" {
+		logger.Error(context.QueryParam("state"))
 		queryModel.DataId = "paid"
+	} else {
+		logger.Error(context.QueryParam("state"))
+		queryModel.DataId = context.QueryParam("state")
 	}
 	switch queryModel.DataId {
 	case "paid":
@@ -73,6 +75,8 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 			err = err.Where("end_at < ? AND (status = ? OR status = ?)", time.Now(), "paid", "checked")
 			break
 		}
+	default:
+		err = err.Where("end_at > ? AND status = ?", time.Now(), queryModel.DataId)
 	}
 	var countTotalRows int64
 	err.Model(model.Payment{}).Count(&countTotalRows)
@@ -115,6 +119,10 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 			})
 		}
 		listPayment[index].Details = listPaymentDetail
+	}
+
+	if listPayment == nil {
+		listPayment = []res.PaymentResponse{}
 	}
 	if err.Error != nil {
 		logger.Error("Error get list payment url ", zap.Error(err.Error))
