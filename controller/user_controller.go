@@ -740,3 +740,27 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 	}
 	return response.BadRequest(c, "Phương thức thanh toán chưa được hỗ trợ", nil)
 }
+
+func (userReceiver *UserController) HandleCancelBooking(c echo.Context) error {
+	reqCancelBooking := req.RequestCancelBooking{}
+	//binding
+	if err := c.Bind(&reqCancelBooking); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	payment := model.Payment{
+		ID: reqCancelBooking.PaymentId,
+	}
+	result, err := userReceiver.PaymentRepo.CancelBooking(payment)
+	if !result {
+		logger.Error("Error query data", zap.Error(err))
+		return response.InternalServerError(c, "Cập nhật thất bại", err)
+	}
+	return response.Ok(c, "Cập nhật thành công", nil)
+}

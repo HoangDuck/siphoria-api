@@ -24,18 +24,34 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) CancelBooking(payment model.Payment) (bool, error) {
+	err := paymentReceiver.sql.Db.Model(&payment).Where("payment_id=?", payment.ID).Updates(payment)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return false, err.Error
+		}
+		return false, err.Error
+	}
+	return true, nil
+}
+
 func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, queryModel *query.DataQueryModel) ([]res.PaymentResponse, error) {
 	var listPayment []res.PaymentResponse
 	var listTempPayment []model.Payment
+
+	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
+	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("RoomTypeFacility").Preload("Hotel")
+	err = err.Where("user_id = ?", queryModel.UserId)
 	if queryModel.Sort == "" {
 		queryModel.Sort = "created_at"
 	}
 	if context.QueryParam("state") == "" {
 		queryModel.DataId = "paid"
 	}
-	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
-	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("RoomTypeFacility").Preload("Hotel")
-	err = err.Where("user_id = ?", queryModel.UserId)
 	switch queryModel.DataId {
 	case "paid":
 		{

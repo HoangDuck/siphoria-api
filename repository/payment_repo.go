@@ -17,6 +17,7 @@ type PaymentRepo interface {
 	UpdatePaymentMethodForPending(sessionId string, paymentMethod string) (bool, error)
 	CancelSessionPayment(userId string) (bool, error)
 	GetPaymentFilter(context echo.Context, queryModel *query.DataQueryModel) ([]res.PaymentResponse, error)
+	CancelBooking(payment model.Payment) (bool, error)
 	//GetPaymentHistoryList(customerID string) ([]model.Payment, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)

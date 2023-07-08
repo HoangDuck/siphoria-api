@@ -21,7 +21,7 @@ type RequestUpdateBooking struct {
 }
 
 type RequestCancelBooking struct {
-	BookingID string `json:"booking_id"`
+	PaymentId string `json:"payment_id"`
 }
 
 type RequestGetListBooking struct {
