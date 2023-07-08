@@ -39,9 +39,9 @@ func (roomController *RoomController) HandleGetHotelSearchById(c echo.Context) e
 	roomTypeList, err := roomController.RoomRepo.GetListRoomTypeDetail(roomType)
 	for i := 0; i < len(roomTypeList); i++ {
 		roomTypeItemFacility, _ := roomController.RoomRepo.GetRoomTypeFacility(roomTypeList[i].ID)
-		roomTypeList[i].RoomTypeFacility = roomTypeItemFacility
+		roomTypeList[i].RoomTypeFacility = &roomTypeItemFacility
 		roomTypeItemViews, _ := roomController.RoomRepo.GetRoomTypeViews(roomTypeList[i].ID)
-		roomTypeList[i].RoomTypeViews = roomTypeItemViews
+		roomTypeList[i].RoomTypeViews = &roomTypeItemViews
 		roomNights, _ := roomController.RoomRepo.GetRoomNightsByRoomType(c, roomTypeList[i].ID)
 		roomTypeList[i].RoomNights = roomNights
 		ratePlans, _ := roomController.RoomRepo.GetListRatePlans(c, roomTypeList[i].ID)

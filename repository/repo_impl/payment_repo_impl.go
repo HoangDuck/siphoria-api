@@ -34,7 +34,8 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 		queryModel.DataId = "paid"
 	}
 	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
-	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("Hotel")
+	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("RoomTypeFacility").Preload("Hotel")
+	err = err.Where("user_id = ?", queryModel.UserId)
 	switch queryModel.DataId {
 	case "paid":
 		{
@@ -79,11 +80,23 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 		})
 	}
 	for index := 0; index < len(listPayment); index++ {
+		var listTempPaymentDetail []model.PaymentDetail
 		var listPaymentDetail []res.PaymentDetailResponse
-		err = paymentReceiver.sql.Db.Where("payment_id = ?", listPayment[index].ID).Find(&listPaymentDetail)
+
+		err = paymentReceiver.sql.Db.Where("payment_id = ?", listPayment[index].ID).Find(&listTempPaymentDetail)
 		if err.Error != nil {
 			logger.Error("Error get list payment url ", zap.Error(err.Error))
 			continue
+		}
+
+		for indexDetail := 0; indexDetail < len(listTempPaymentDetail); indexDetail++ {
+			listPaymentDetail = append(listPaymentDetail, res.PaymentDetailResponse{
+				ID:          listTempPaymentDetail[indexDetail].ID,
+				Price:       listTempPaymentDetail[indexDetail].Price,
+				DayOff:      listTempPaymentDetail[indexDetail].DayOff,
+				AdultNum:    listTempPaymentDetail[indexDetail].AdultNum,
+				ChildrenNum: listTempPaymentDetail[indexDetail].ChildrenNum,
+			})
 		}
 		listPayment[index].Details = listPaymentDetail
 	}

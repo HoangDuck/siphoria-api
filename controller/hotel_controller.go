@@ -126,9 +126,9 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 	roomTypeList, err := hotelController.RoomRepo.GetListRoomTypeDetail(roomType)
 	for i := 0; i < len(roomTypeList); i++ {
 		roomTypeItemFacility, _ := hotelController.RoomRepo.GetRoomTypeFacility(roomTypeList[i].ID)
-		roomTypeList[i].RoomTypeFacility = roomTypeItemFacility
+		roomTypeList[i].RoomTypeFacility = &roomTypeItemFacility
 		roomTypeItemViews, _ := hotelController.RoomRepo.GetRoomTypeViews(roomTypeList[i].ID)
-		roomTypeList[i].RoomTypeViews = roomTypeItemViews
+		roomTypeList[i].RoomTypeViews = &roomTypeItemViews
 		roomNights, _ := hotelController.RoomRepo.GetRoomNightsByRoomType(c, roomTypeList[i].ID)
 		roomTypeList[i].RoomNights = roomNights
 		ratePlans, _ := hotelController.RoomRepo.GetListRatePlans(c, roomTypeList[i].ID)

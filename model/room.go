@@ -5,24 +5,24 @@ import (
 )
 
 type RoomType struct {
-	ID               string           `json:"id" gorm:"primary_key"`
-	Activated        bool             `json:"activated" gorm:"activated"`
-	Name             string           `json:"name" gorm:"name"`
-	Description      string           `json:"description" gorm:"description"`
-	MaxAdult         int              `json:"max_adult" gorm:"max_adult"`
-	MaxChildren      int              `json:"max_children" gorm:"max_children"`
-	BedNums          int              `json:"bed_nums" gorm:"bed_nums"`
-	BathroomNums     int              `json:"bathroom_nums" gorm:"bathroom_nums"`
-	Photos           string           `json:"photos" gorm:"photos"`
-	CreatedAt        time.Time        `json:"created_at" gorm:"created_at"`
-	UpdatedAt        time.Time        `json:"updated_at" gorm:"updated_at"`
-	HotelId          string           `json:"hotel_id"`
-	Hotel            *Hotel           `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	IsDeleted        bool             `json:"-" gorm:"is_deleted"`
-	RoomTypeFacility RoomTypeFacility `json:"room_type_facility" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	RoomNights       []RoomNights     `json:"room_nights" gorm:"-"`
-	RatePlans        []RatePlan       `json:"rate_plans" gorm:"-"`
-	RoomTypeViews    RoomTypeViews    `json:"room_type_views" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	ID               string            `json:"id" gorm:"primary_key"`
+	Activated        bool              `json:"activated" gorm:"activated"`
+	Name             string            `json:"name" gorm:"name"`
+	Description      string            `json:"description" gorm:"description"`
+	MaxAdult         int               `json:"max_adult" gorm:"max_adult"`
+	MaxChildren      int               `json:"max_children" gorm:"max_children"`
+	BedNums          int               `json:"bed_nums" gorm:"bed_nums"`
+	BathroomNums     int               `json:"bathroom_nums" gorm:"bathroom_nums"`
+	Photos           string            `json:"photos" gorm:"photos"`
+	CreatedAt        time.Time         `json:"created_at" gorm:"created_at"`
+	UpdatedAt        time.Time         `json:"updated_at" gorm:"updated_at"`
+	HotelId          string            `json:"hotel_id"`
+	Hotel            *Hotel            `json:"hotel,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	IsDeleted        bool              `json:"-" gorm:"is_deleted"`
+	RoomTypeFacility *RoomTypeFacility `json:"room_type_facility,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomNights       []RoomNights      `json:"room_nights" gorm:"-"`
+	RatePlans        []RatePlan        `json:"rate_plans" gorm:"-"`
+	RoomTypeViews    *RoomTypeViews    `json:"room_type_views,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type RoomTypeViews struct {

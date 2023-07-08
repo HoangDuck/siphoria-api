@@ -30,13 +30,13 @@ type PaymentResponse struct {
 	User           *model.User             `json:"user,omitempty"`
 	RoomType       *model.RoomType         `json:"room_type,omitempty"`
 	Hotel          *model.Hotel            `json:"hotel,omitempty"`
-	Details        []PaymentDetailResponse `json:"details"`
+	Details        []PaymentDetailResponse `json:"details" gorm:"-"`
 }
 
 type PaymentDetailResponse struct {
-	ID          string  `json:"id"`
-	DayOff      string  `json:"day_off"`
-	Price       float32 `json:"price"`
-	AdultNum    int     `json:"adult_num"`
-	ChildrenNum int     `json:"children_num"`
+	ID          string    `json:"id"`
+	DayOff      time.Time `json:"day_off"`
+	Price       float32   `json:"price"`
+	AdultNum    int       `json:"adult_num"`
+	ChildrenNum int       `json:"children_num"`
 }

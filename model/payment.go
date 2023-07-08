@@ -47,6 +47,7 @@ type Payment struct {
 	CreatedAt       time.Time       `json:"created_at" gorm:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at" gorm:"updated_at"`
 	CartId          string          `json:"cart_id" gorm:"cart_id"`
+	IsDeleted       bool            `json:"-" gorm:"is_deleted"`
 	PaymentDetail   []PaymentDetail `json:"payment_details" gorm:"-"`
 }
 

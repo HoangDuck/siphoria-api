@@ -386,12 +386,16 @@ func (userReceiver *UserController) HandleGetPayments(c echo.Context) error {
 	var listPayment []res.PaymentResponse
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(security.CheckRole(claims, model.ADMIN, false)) {
-		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-	}
+	//if !(security.CheckRole(claims, model.ADMIN, false)) {
+	//	return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	//}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"hotelier", "created_at", "updated_at", "", "overview", "rating", "commission_rate", "status", "activate", "province_code", "district_code", "ward_core", "raw_address", "hotel_photos", "bank_account", "bank_beneficiary", "bank_name", "business_licence", "hotelier_id", "price_hotel", "discount_price", "discount_hotel", "hotel_type", "hotel_facility", "room_types",
+		"id", "status", "user_id", "user", "room_type_id", "room_type",
+		"voucher_id", "voucher", "payout_request_id", "payout_request",
+		"hotel_id", "hotel", "rate_plan_id", "rate_plan", "created_at",
+		"updated_at", "cart_id", "payment_details", "-",
 	}, &model.Payment{})
+	dataQueryModel.UserId = claims.UserId
 	listPayment, err := userReceiver.PaymentRepo.GetPaymentFilter(c, &dataQueryModel)
 
 	if err != nil {
