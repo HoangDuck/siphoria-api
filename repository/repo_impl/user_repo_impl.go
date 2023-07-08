@@ -114,7 +114,7 @@ func (userReceiver *UserRepoImpl) UpdatePaymentStatus(payment model.Payment) (bo
 	return true, nil
 }
 
-func (userReceiver *UserRepoImpl) GetUserPayment(user model.User) ([]model.Payment, error) {
+func (userReceiver *UserRepoImpl) GetUserPayment(context echo.Context, user model.User) ([]model.Payment, error) {
 	var listPaymentUser []model.Payment
 	err := userReceiver.sql.Db.Where("user_id = ? AND status = ?", user.ID, "pending").Preload("User").
 		Preload("RatePlan").Preload("RoomType").Preload("Hotel").Find(&listPaymentUser)

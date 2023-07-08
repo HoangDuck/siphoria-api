@@ -16,7 +16,7 @@ type UserRepo interface {
 	AddToCart(requestAddCart req.RequestAddToCart) (bool, error)
 	DeleteCart(cartId string) (bool, error)
 	GetUserCart(user model.User) ([]model.Cart, error)
-	GetUserPayment(user model.User) ([]model.Payment, error)
+	GetUserPayment(context echo.Context, user model.User) ([]model.Payment, error)
 	CreatePaymentFromCart(user model.User) (string, error)
 	UpdatePaymentStatus(payment model.Payment) (bool, error)
 	GetUserPaymentHistory(context echo.Context, user model.User) ([]model.Payment, error)

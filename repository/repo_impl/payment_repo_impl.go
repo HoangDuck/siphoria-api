@@ -1,12 +1,15 @@
 package repo_impl
 
 import (
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
 	"hotel-booking-api/db"
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
+	"hotel-booking-api/model/query"
+	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"time"
 )
@@ -19,6 +22,76 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	return &PaymentRepoImpl{
 		sql: sql,
 	}
+}
+
+func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, queryModel *query.DataQueryModel) ([]res.PaymentResponse, error) {
+	var listPayment []res.PaymentResponse
+	var listTempPayment []model.Payment
+	if queryModel.Sort == "" {
+		queryModel.Sort = "created_at"
+	}
+	if context.QueryParam("state") == "" {
+		queryModel.DataId = "paid"
+	}
+	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
+	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("Hotel")
+	switch queryModel.DataId {
+	case "paid":
+		{
+			err = err.Where("end_at > ? AND status = ?", time.Now(), queryModel.DataId)
+			break
+		}
+	case "refunded":
+		{
+			err = err.Where("status = ?", queryModel.DataId)
+			break
+		}
+	case "cancel":
+		{
+			err = err.Where("status = ?", queryModel.DataId)
+			break
+		}
+	case "history":
+		{
+			err = err.Where("end_at < ? AND (status = ? OR status = ?)", time.Now(), "paid", "checked")
+			break
+		}
+	}
+	var countTotalRows int64
+	err.Model(model.Payment{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	err = err.Find(&listTempPayment)
+	for index := 0; index < len(listTempPayment); index++ {
+		listPayment = append(listPayment, res.PaymentResponse{
+			ID:             listTempPayment[index].ID,
+			PaymentMethod:  listTempPayment[index].PaymentMethod,
+			RankPrice:      listTempPayment[index].RankPrice,
+			ConvertedPrice: listTempPayment[index].ConvertedPrice,
+			VoucherPrice:   listTempPayment[index].VoucherPrice,
+			TotalPrice:     listTempPayment[index].TotalPrice,
+			StartAt:        listTempPayment[index].StartAt,
+			EndAt:          listTempPayment[index].EndAt,
+			TotalDay:       listTempPayment[index].TotalDay,
+			UpdatedAt:      listTempPayment[index].UpdatedAt,
+			User:           &listTempPayment[index].User,
+			RoomType:       listTempPayment[index].RoomType,
+			Hotel:          listTempPayment[index].Hotel,
+		})
+	}
+	for index := 0; index < len(listPayment); index++ {
+		var listPaymentDetail []res.PaymentDetailResponse
+		err = paymentReceiver.sql.Db.Where("payment_id = ?", listPayment[index].ID).Find(&listPaymentDetail)
+		if err.Error != nil {
+			logger.Error("Error get list payment url ", zap.Error(err.Error))
+			continue
+		}
+		listPayment[index].Details = listPaymentDetail
+	}
+	if err.Error != nil {
+		logger.Error("Error get list payment url ", zap.Error(err.Error))
+		return listPayment, err.Error
+	}
+	return listPayment, nil
 }
 
 func (paymentReceiver *PaymentRepoImpl) CancelSessionPayment(userId string) (bool, error) {

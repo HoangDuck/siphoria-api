@@ -1,6 +1,11 @@
 package repository
 
-import "hotel-booking-api/model"
+import (
+	"github.com/labstack/echo/v4"
+	"hotel-booking-api/model"
+	"hotel-booking-api/model/query"
+	"hotel-booking-api/model/res"
+)
 
 type PaymentRepo interface {
 	GetMomoHostingUrl() (string, error)
@@ -11,6 +16,7 @@ type PaymentRepo interface {
 	UpdatePaymentStatusFailed(payment model.Payment) (model.Payment, error)
 	UpdatePaymentMethodForPending(sessionId string, paymentMethod string) (bool, error)
 	CancelSessionPayment(userId string) (bool, error)
+	GetPaymentFilter(context echo.Context, queryModel *query.DataQueryModel) ([]res.PaymentResponse, error)
 	//GetPaymentHistoryList(customerID string) ([]model.Payment, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)

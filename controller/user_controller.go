@@ -368,21 +368,48 @@ func (userReceiver *UserController) HandleCreatePaymentFromCart(c echo.Context) 
 // @Failure 422 {object} res.Response
 // @Router /users/payments [get]
 func (userReceiver *UserController) HandleGetPayments(c echo.Context) error {
+	//token := c.Get("user").(*jwt.Token)
+	//claims := token.Claims.(*model.JwtCustomClaims)
+	//if !(claims.Role == model.CUSTOMER.String()) {
+	//	logger.Error("Error role access", zap.Error(nil))
+	//	return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	//}
+	//user := model.User{
+	//	ID: claims.UserId,
+	//}
+	//listPaymentUser, err := userReceiver.UserRepo.GetUserPayment(c, user)
+	//if err != nil {
+	//	logger.Error("Error query data", zap.Error(err))
+	//	return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
+	//}
+	//return response.Ok(c, "Lấy danh sách thanh toán thành công", listPaymentUser)
+	var listPayment []res.PaymentResponse
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	if !(claims.Role == model.CUSTOMER.String()) {
-		logger.Error("Error role access", zap.Error(nil))
+	if !(security.CheckRole(claims, model.ADMIN, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	user := model.User{
-		ID: claims.UserId,
-	}
-	listPaymentUser, err := userReceiver.UserRepo.GetUserPayment(user)
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"hotelier", "created_at", "updated_at", "", "overview", "rating", "commission_rate", "status", "activate", "province_code", "district_code", "ward_core", "raw_address", "hotel_photos", "bank_account", "bank_beneficiary", "bank_name", "business_licence", "hotelier_id", "price_hotel", "discount_price", "discount_hotel", "hotel_type", "hotel_facility", "room_types",
+	}, &model.Payment{})
+	listPayment, err := userReceiver.PaymentRepo.GetPaymentFilter(c, &dataQueryModel)
+
 	if err != nil {
-		logger.Error("Error query data", zap.Error(err))
-		return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
+		return response.InternalServerError(c, err.Error(), listPayment)
 	}
-	return response.Ok(c, "Lấy danh sách thanh toán thành công", listPaymentUser)
+
+	return response.Ok(c, "Lấy danh sách thanh toán thành công", struct {
+		Data   []res.PaymentResponse `json:"data"`
+		Paging res.PagingModel       `json:"paging"`
+	}{
+		Data: listPayment,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }
 
 // HandleUpdateStatusPayment godoc
