@@ -913,3 +913,35 @@ func (userReceiver *UserController) HandleGetPaymentsDetail(c echo.Context) erro
 	}
 	return response.Ok(c, "Lấy thông tin thành công", paymentResult)
 }
+
+// HandleApplyVoucher godoc
+// @Summary Handle apply voucher
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestApplyVoucher true "voucher"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/apply-voucher [post]
+func (userReceiver *UserController) HandleApplyVoucher(c echo.Context) error {
+	reqApplyVoucher := req.RequestApplyVoucher{}
+	//binding
+	if err := c.Bind(&reqApplyVoucher); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	result, err := userReceiver.PaymentRepo.ApplyVoucherPayments(reqApplyVoucher)
+	if !result {
+		logger.Error("Error get profile data", zap.Error(err))
+		return response.InternalServerError(c, "Tải dữ liệu thất bại", err)
+	}
+	return response.Ok(c, "Áp dụng voucher thành công", "")
+}

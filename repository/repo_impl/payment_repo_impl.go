@@ -9,6 +9,7 @@ import (
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
+	"hotel-booking-api/model/req"
 	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"time"
@@ -22,6 +23,15 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	return &PaymentRepoImpl{
 		sql: sql,
 	}
+}
+
+func (paymentReceiver *PaymentRepoImpl) ApplyVoucherPayments(requestApplyVoucher req.RequestApplyVoucher) (bool, error) {
+	err := paymentReceiver.sql.Db.Exec("call sp_applyvoucher(?,?);",
+		requestApplyVoucher.Code, requestApplyVoucher.SessionId)
+	if err.Error != nil {
+		return false, err.Error
+	}
+	return true, nil
 }
 
 func (paymentReceiver *PaymentRepoImpl) GetUserWalletInfo(userId string) (model.Wallet, error) {

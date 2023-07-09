@@ -18,3 +18,8 @@ type RequestUpdateVoucher struct {
 	BeginAt   string  `json:"begin_at"`
 	EndAt     string  `json:"end_at"`
 }
+
+type RequestApplyVoucher struct {
+	SessionId string `json:"session_id"`
+	Code      string `json:"code"`
+}

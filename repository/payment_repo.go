@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
+	"hotel-booking-api/model/req"
 	"hotel-booking-api/model/res"
 )
 
@@ -25,6 +26,7 @@ type PaymentRepo interface {
 	SaveWalletTransaction(walletTransaction model.WalletTransaction) (model.WalletTransaction, error)
 	UpdateWalletTransactionStatus(walletTransaction model.WalletTransaction) (model.WalletTransaction, error)
 	GetUserWalletInfo(userId string) (model.Wallet, error)
+	ApplyVoucherPayments(requestApplyVoucher req.RequestApplyVoucher) (bool, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)
 	//UpdatePayment(payment model.Payment) (model.Payment, error)
