@@ -276,6 +276,7 @@ func (hotelReceiver *HotelRepoImpl) CreateRequestPayout(payoutRequest model.Payo
 	err := hotelReceiver.sql.Db.Raw("fn_calculateTotalPricePayment(?,?) as total_price", payoutRequest.HotelId, strings.Join(paymentIds, ",")).Scan(&result)
 	payoutRequest.TotalPrice = result.Sum
 	payoutRequest.PaymentList = strings.Join(paymentIds, ",")
+	err = hotelReceiver.sql.Db.Model(&model.Payment{}).Where("id IN ?", paymentIds).Update("payout_request_id", payoutRequest.ID)
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
