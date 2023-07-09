@@ -57,6 +57,7 @@ func (api *API) SetupRouter() {
 	user.POST("/add-to-cart", api.UserController.HandleAddToCart, middleware.JWTMiddleWare())
 	user.GET("/carts", api.UserController.HandleGetCart, middleware.JWTMiddleWare())
 	user.GET("/payments", api.UserController.HandleGetPayments, middleware.JWTMiddleWare())
+	user.GET("/payments/:id", api.UserController.HandleGetPaymentsDetail, middleware.JWTMiddleWare())
 	user.DELETE("/carts/:id", api.UserController.HandleDeleteCart, middleware.JWTMiddleWare())
 	//user.PATCH("/cancel-payment", api.PaymentController.HandleCancelPayment, middleware.JWTMiddleWare())
 	//user.POST("/create-payment-session", api.PaymentController.HandleCreatePayment, middleware.JWTMiddleWare())
@@ -70,6 +71,8 @@ func (api *API) SetupRouter() {
 	user.DELETE("/reviews/:id", api.UserController.HandleDeleteReview, middleware.JWTMiddleWare())
 	user.POST("/pay", api.UserController.HandleCreatePayment, middleware.JWTMiddleWare())
 	user.POST("/cancel-booking", api.UserController.HandleCancelBooking, middleware.JWTMiddleWare())
+	user.POST("/wallets", api.UserController.HandleTopUp, middleware.JWTMiddleWare())
+	user.GET("/top-up", api.UserController.HandleGetTopUp, middleware.JWTMiddleWare())
 
 	hotel := request.Group("/hotels")
 	hotel.GET("/", api.HotelController.HandleGetHotelPartner, middleware.JWTMiddleWare())

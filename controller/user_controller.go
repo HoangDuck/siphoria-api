@@ -744,6 +744,18 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 	return response.BadRequest(c, "Phương thức thanh toán chưa được hỗ trợ", nil)
 }
 
+// HandleCancelBooking godoc
+// @Summary Handle cancel booking
+// @description Cancel booking
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCancelBooking true "payment"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/cancel-booking [post]
 func (userReceiver *UserController) HandleCancelBooking(c echo.Context) error {
 	reqCancelBooking := req.RequestCancelBooking{}
 	//binding
@@ -766,4 +778,106 @@ func (userReceiver *UserController) HandleCancelBooking(c echo.Context) error {
 		return response.InternalServerError(c, "Cập nhật thất bại", err)
 	}
 	return response.Ok(c, "Cập nhật thành công", nil)
+}
+
+// HandleTopUp godoc
+// @Summary Handle add money to wallet
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestAddMoneyTopUp true "wallet"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/ [post]
+func (userReceiver *UserController) HandleTopUp(c echo.Context) error {
+	reqAddMoneyTopUp := req.RequestAddMoneyTopUp{}
+	//binding
+	if err := c.Bind(&reqAddMoneyTopUp); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	wallet, err := userReceiver.PaymentRepo.GetWalletTopUp(claims.UserId)
+	if err != nil {
+		return response.InternalServerError(c, "Lấy ví tiền thất bại", nil)
+	}
+	wallet.Balance = wallet.Balance + reqAddMoneyTopUp.Amount
+	wallet, err = userReceiver.PaymentRepo.UpdateAddMoneyToTopUp(wallet)
+	if err != nil {
+		return response.InternalServerError(c, "Cập nhật thất bại", nil)
+	}
+	return response.Ok(c, "Cập nhật thành công", wallet)
+}
+
+// HandleGetTopUp godoc
+// @Summary Handle get list wallet transactions
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/top-up [get]
+func (userReceiver *UserController) HandleGetTopUp(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"id", "created_at", "updated_at", "", "wallet", "wallet_id",
+	}, &model.WalletTransaction{})
+	dataQueryModel.UserId = claims.UserId
+	listTransactions, err := userReceiver.PaymentRepo.GetWalletTransactionsFilter(&dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listTransactions)
+	}
+	return response.Ok(c, "Lấy danh sách giao dịch thành công", struct {
+		Data   []model.WalletTransaction `json:"data"`
+		Paging res.PagingModel           `json:"paging"`
+	}{
+		Data: listTransactions,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
+}
+
+// HandleGetPaymentsDetail godoc
+// @Summary Handle get payment details
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /payments/:id [get]
+func (userReceiver *UserController) HandleGetPaymentsDetail(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(claims.Role == model.CUSTOMER.String()) {
+		logger.Error("Error role access", zap.Error(nil))
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	payment := model.Payment{
+		ID: c.Param("id"),
+	}
+	paymentResult, err := userReceiver.PaymentRepo.GetPaymentDetail(payment)
+	if err != nil {
+		return response.InternalServerError(c, "Lấy thông tin thất bại", nil)
+	}
+	return response.Ok(c, "Lấy thông tin thành công", paymentResult)
 }

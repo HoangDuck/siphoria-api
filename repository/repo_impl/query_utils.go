@@ -42,6 +42,7 @@ func GenerateQueryGetData(sql *db.Sql, queryModel *query.DataQueryModel, modelSt
 		}
 
 	}
+
 	if queryModel.Filter != nil {
 		result = result.Where(queryModel.Filter)
 	}

@@ -24,6 +24,86 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) GetWalletTransactionsFilter(queryModel *query.DataQueryModel) ([]model.WalletTransaction, error) {
+	var listWalletTransactions []model.WalletTransaction
+	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.WalletTransaction{}, queryModel.ListIgnoreColumns)
+	err = err.Where("user_id = ?", queryModel.UserId)
+	err = err.Find(&listWalletTransactions)
+	if err.Error != nil {
+		logger.Error("Error get list wallet transaction url ", zap.Error(err.Error))
+		return listWalletTransactions, err.Error
+	}
+	return listWalletTransactions, nil
+}
+
+func (paymentReceiver *PaymentRepoImpl) GetPaymentDetail(payment model.Payment) (res.PaymentResponse, error) {
+	var tempPayment model.Payment
+	var paymentResponse res.PaymentResponse
+	var listTempPaymentDetail []model.PaymentDetail
+	var listPaymentDetailResponse []res.PaymentDetailResponse
+	err := paymentReceiver.sql.Db.Where("id = ?", payment.ID).Find(&tempPayment)
+	if err.Error != nil {
+		return paymentResponse, err.Error
+	}
+	paymentResponse = res.PaymentResponse{
+		ID:             tempPayment.ID,
+		PaymentMethod:  tempPayment.PaymentMethod,
+		RankPrice:      tempPayment.RankPrice,
+		ConvertedPrice: tempPayment.ConvertedPrice,
+		VoucherPrice:   tempPayment.VoucherPrice,
+		TotalPrice:     tempPayment.TotalPrice,
+		StartAt:        tempPayment.StartAt,
+		EndAt:          tempPayment.EndAt,
+		TotalDay:       tempPayment.TotalDay,
+		UpdatedAt:      tempPayment.UpdatedAt,
+		User:           &tempPayment.User,
+		RoomType:       tempPayment.RoomType,
+		Hotel:          tempPayment.Hotel,
+	}
+	err = paymentReceiver.sql.Db.Where("payment_id = ?", paymentResponse.ID).Find(&listTempPaymentDetail)
+	if err.Error != nil {
+		logger.Error("Error get list payment url ", zap.Error(err.Error))
+		return paymentResponse, err.Error
+	}
+
+	for indexDetail := 0; indexDetail < len(listTempPaymentDetail); indexDetail++ {
+		listPaymentDetailResponse = append(listPaymentDetailResponse, res.PaymentDetailResponse{
+			ID:          listTempPaymentDetail[indexDetail].ID,
+			Price:       listTempPaymentDetail[indexDetail].Price,
+			DayOff:      listTempPaymentDetail[indexDetail].DayOff,
+			AdultNum:    listTempPaymentDetail[indexDetail].AdultNum,
+			ChildrenNum: listTempPaymentDetail[indexDetail].ChildrenNum,
+		})
+	}
+	paymentResponse.Details = listPaymentDetailResponse
+	return paymentResponse, nil
+}
+
+func (paymentReceiver *PaymentRepoImpl) UpdateAddMoneyToTopUp(wallet model.Wallet) (model.Wallet, error) {
+	err := paymentReceiver.sql.Db.Model(&wallet).Where("user_id=?", wallet.UserId).Updates(wallet)
+	if err.Error != nil {
+		logger.Error("Error query data", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return wallet, err.Error
+		}
+		if err.Error == gorm.ErrInvalidTransaction {
+			return wallet, err.Error
+		}
+		return wallet, err.Error
+	}
+	return wallet, nil
+}
+
+func (paymentReceiver *PaymentRepoImpl) GetWalletTopUp(userId string) (model.Wallet, error) {
+	wallet := model.Wallet{}
+	err := paymentReceiver.sql.Db.Where("user_id = ?", userId).Find(&wallet)
+	if err.Error != nil {
+		logger.Error("Error get wallet", zap.Error(err.Error))
+		return wallet, err.Error
+	}
+	return wallet, nil
+}
+
 func (paymentReceiver *PaymentRepoImpl) CancelBooking(payment model.Payment) (bool, error) {
 	err := paymentReceiver.sql.Db.Model(&payment).Where("payment_id=?", payment.ID).Updates(payment)
 	if err.Error != nil {

@@ -64,7 +64,7 @@ type RequestStatisticRevenueByDay struct {
 	Mode      int    `json:"mode"`
 }
 
-type RequestStatisticRevenueByRoomType struct {
-	TimeStart string `json:"time_start"`
-	TimeEnd   string `json:"time_end"`
+type RequestAddMoneyTopUp struct {
+	Amount float32 `json:"amount"`
+	Method string  `json:"method"`
 }
