@@ -129,6 +129,9 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 }
 
 func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) error {
+	isAddMoneyToWallet := false
+	var payment model.Payment
+	var walletTransaction model.WalletTransaction
 	dataFromVNPay := c.QueryParams()
 	vnpayService := services.GetVNPayServiceInstance()
 	resultCheckSignature := vnpayService.CheckSignatureResultVNPay(c)
@@ -142,23 +145,47 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 		logger.Info("Order id return from momo: " + orderId)
 		arraySplitOrderId := strings.Split(orderId, "_")
 		paymentID := fmt.Sprint(arraySplitOrderId[1])
-		payment := model.Payment{
-			SessionId: paymentID,
-			Status:    "paid",
-		}
-		if resultCode == "00" {
-			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
-			if err != nil {
-				logger.Info("redirect result payment vnpay update status payment")
-				http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
-				return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
+		if arraySplitOrderId[2] == "add-siphoria-wallet" {
+			isAddMoneyToWallet = true
+			walletTransaction = model.WalletTransaction{
+				ID: paymentID,
 			}
 		} else {
-			payment.Status = "failed"
-			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
-			if err != nil {
-				logger.Info("redirect result payment vnpay update status payment failed")
-
+			payment = model.Payment{
+				SessionId: paymentID,
+				Status:    "paid",
+			}
+		}
+		if resultCode == "00" {
+			if isAddMoneyToWallet {
+				walletTransaction.Status = "success"
+				_, err := paymentReceiver.PaymentRepo.UpdateWalletTransactionStatus(walletTransaction)
+				if err != nil {
+					logger.Info("redirect result payment vnpay update status payment")
+					http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
+					return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
+				}
+			} else {
+				_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
+				if err != nil {
+					logger.Info("redirect result payment vnpay update status payment")
+					http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
+					return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
+				}
+			}
+		} else {
+			if isAddMoneyToWallet {
+				walletTransaction.Status = "failed"
+				_, err := paymentReceiver.PaymentRepo.UpdateWalletTransactionStatus(walletTransaction)
+				if err != nil {
+					logger.Info("redirect result payment vnpay update status payment")
+				}
+			} else {
+				payment.Status = "failed"
+				_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
+				if err != nil {
+					logger.Info("redirect result payment vnpay update status payment failed")
+				}
 			}
 			logger.Info("redirect result payment vnpay update status payment failed")
 			http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
@@ -174,6 +201,9 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 
 func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
 	logger.Info("Receive result from momo")
+	isAddMoneyToWallet := false
+	var payment model.Payment
+	var walletTransaction model.WalletTransaction
 	jsonRequestMomo := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&jsonRequestMomo)
 	if err != nil {
@@ -185,22 +215,47 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 		logger.Info("Order id return from momo: " + orderId)
 		arraySplitOrderId := strings.Split(orderId, "_")
 		paymentID := fmt.Sprint(arraySplitOrderId[1])
-		payment := model.Payment{
-			SessionId: paymentID,
-			Status:    "paid",
+		if arraySplitOrderId[2] == "add-siphoria-wallet" {
+			isAddMoneyToWallet = true
+			walletTransaction = model.WalletTransaction{
+				ID: paymentID,
+			}
+		} else {
+			payment = model.Payment{
+				SessionId: paymentID,
+				Status:    "paid",
+			}
 		}
 		if resultCode == "0" {
-			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
-			if err != nil {
-				return response.InternalServerError(c, "Thanh toán thất bại", nil)
+			if isAddMoneyToWallet {
+				walletTransaction.Status = "success"
+				_, err := paymentReceiver.PaymentRepo.UpdateWalletTransactionStatus(walletTransaction)
+				if err != nil {
+					logger.Info("redirect result payment vnpay update status payment")
+					return response.InternalServerError(c, "Thanh toán thất bại", nil)
+				}
+			} else {
+				_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
+				if err != nil {
+					return response.InternalServerError(c, "Thanh toán thất bại", nil)
+				}
 			}
 		} else {
 			logger.Error("Error get momo result code request", zap.Error(err))
-			payment.Status = "failed"
-			_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
-			if err != nil {
-				return response.InternalServerError(c, "Thanh toán thất bại", nil)
+			if isAddMoneyToWallet {
+				walletTransaction.Status = "failed"
+				_, err := paymentReceiver.PaymentRepo.UpdateWalletTransactionStatus(walletTransaction)
+				if err != nil {
+					return response.InternalServerError(c, "Thanh toán thất bại", nil)
+				}
+			} else {
+				payment.Status = "failed"
+				_, err := paymentReceiver.PaymentRepo.UpdatePaymentStatusFailed(payment)
+				if err != nil {
+					return response.InternalServerError(c, "Thanh toán thất bại", nil)
+				}
 			}
+
 			return response.InternalServerError(c, "Thanh toán thất bại", nil)
 		}
 	}

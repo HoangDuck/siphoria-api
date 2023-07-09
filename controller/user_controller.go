@@ -649,15 +649,41 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 	for i := 0; i < len(listPaymentSessionId); i++ {
 		totalPrice += listPaymentSessionId[i].TotalPrice
 	}
+	return userReceiver.HandlePaymentMethod(c, totalPrice, paymentMethod, reqCreatePayment.SessionID, false)
+}
+
+func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPrice float32, paymentMethod string, sessionId string, isAddMoneyToWallet bool) error {
+	var sessionMessage string
+	if isAddMoneyToWallet {
+		sessionMessage = sessionId + "_" + "add-siphoria-wallet" + "_" + strconv.FormatInt(time.Now().Unix(), 10)
+	} else {
+		sessionMessage = sessionId + "_" + strconv.FormatInt(time.Now().Unix(), 10)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if isAddMoneyToWallet {
+		wallet, err := userReceiver.PaymentRepo.GetUserWalletInfo(claims.UserId)
+		walletTransaction := model.WalletTransaction{
+			ID:        sessionId,
+			WalletId:  wallet.ID,
+			Amount:    totalPrice,
+			Method:    paymentMethod,
+			Currency:  "VND",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+		_, err = userReceiver.PaymentRepo.SaveWalletTransaction(walletTransaction)
+		if err != nil {
+			return response.InternalServerError(c, "Thanh toán thất bại", nil)
+		}
+	}
 	if paymentMethod == "momo" {
 		momoService := services.GetMomoServiceInstance()
-		//momoUrl := "https://momo.vn"
 		momoUrl, err := userReceiver.PaymentRepo.GetMomoHostingUrl()
 		if err != nil {
 			return response.InternalServerError(c, err.Error(), nil)
 		}
 		logger.Info(momoUrl)
-		//redirectMomoUrl := "https://momo.vn"
 		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectPaymentUrl()
 		if err != nil {
 			return response.InternalServerError(c, err.Error(), nil)
@@ -669,12 +695,12 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 			"booking-description": "Payment room Siphoria",
 			"ipn-url":             momoUrl,
 			"redirect-url":        redirectMomoUrl,
-			"payment_id":          reqCreatePayment.SessionID,
+			"payment_id":          sessionMessage,
 		}
 		dataResponse := momoService.PaymentService(condition)
 		var tempResultCode = fmt.Sprint(dataResponse["resultCode"])
 		if tempResultCode == "0" {
-			_, err := userReceiver.PaymentRepo.UpdatePaymentMethodForPending(reqCreatePayment.SessionID, "Momo")
+			_, err := userReceiver.PaymentRepo.UpdatePaymentMethodForPending(sessionId, "Momo")
 			if err != nil {
 				return response.InternalServerError(c, "Tạo thanh toán thất bại", err.Error())
 			}
@@ -705,13 +731,13 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 			"booking-description": "paymentsiphoria",
 			"ipn-url":             vnpayUrl,
 			"redirect-url":        "",
-			"payment_id":          reqCreatePayment.SessionID + "_" + strconv.FormatInt(time.Now().Unix(), 10),
+			"payment_id":          sessionMessage,
 		}
 		dataResponse := vnpayService.VNPayPaymentService(condition)
 		if err != nil {
 			return response.BadRequest(c, err.Error(), nil)
 		}
-		_, err = userReceiver.PaymentRepo.UpdatePaymentMethodForPending(reqCreatePayment.SessionID, "VNPay")
+		_, err = userReceiver.PaymentRepo.UpdatePaymentMethodForPending(sessionId, "VNPay")
 		if err != nil {
 			return response.InternalServerError(c, "Tạo thanh toán thất bại", err.Error())
 		}
@@ -733,7 +759,7 @@ func (userReceiver *UserController) HandleCreatePayment(c echo.Context) error {
 		return response.Ok(c, "Tạo thanh toán thành công", res.DataPaymentRes{
 			Amount:       int(totalPrice),
 			Message:      "Tạo thanh toán thành công",
-			OrderID:      "Stripe" + "_" + reqCreatePayment.SessionID,
+			OrderID:      "Stripe" + "_" + sessionMessage,
 			PartnerCode:  "",
 			PayURL:       clientSecret,
 			RequestID:    requestId,
@@ -804,16 +830,22 @@ func (userReceiver *UserController) HandleTopUp(c echo.Context) error {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	wallet, err := userReceiver.PaymentRepo.GetWalletTopUp(claims.UserId)
+	sessionId, err := utils.GetNewId()
 	if err != nil {
-		return response.InternalServerError(c, "Lấy ví tiền thất bại", nil)
+		logger.Error("Error uuid data", zap.Error(err))
+		return response.Forbidden(c, "Đăng ký thất bại", nil)
 	}
-	wallet.Balance = wallet.Balance + reqAddMoneyTopUp.Amount
-	wallet, err = userReceiver.PaymentRepo.UpdateAddMoneyToTopUp(wallet)
-	if err != nil {
-		return response.InternalServerError(c, "Cập nhật thất bại", nil)
-	}
-	return response.Ok(c, "Cập nhật thành công", wallet)
+	//wallet, err := userReceiver.PaymentRepo.GetWalletTopUp(claims.UserId)
+	//if err != nil {
+	//	return response.InternalServerError(c, "Lấy ví tiền thất bại", nil)
+	//}
+	//wallet.Balance = wallet.Balance + reqAddMoneyTopUp.Amount
+	//wallet, err = userReceiver.PaymentRepo.UpdateAddMoneyToTopUp(wallet)
+	//if err != nil {
+	//	return response.InternalServerError(c, "Cập nhật thất bại", nil)
+	//}
+	paymentMethod := strings.ToLower(reqAddMoneyTopUp.Method)
+	return userReceiver.HandlePaymentMethod(c, reqAddMoneyTopUp.Amount, paymentMethod, sessionId, true)
 }
 
 // HandleGetTopUp godoc

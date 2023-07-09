@@ -24,6 +24,37 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) GetUserWalletInfo(userId string) (model.Wallet, error) {
+	var wallet model.Wallet
+	err := paymentReceiver.sql.Db.Where("user_id=?", userId).Find(&wallet)
+	logger.Debug("Get wallet failed", zap.Error(err.Error))
+	if err.Error == gorm.ErrRecordNotFound {
+		return wallet, err.Error
+	}
+	return wallet, nil
+}
+
+func (paymentReceiver *PaymentRepoImpl) UpdateWalletTransactionStatus(walletTransaction model.WalletTransaction) (model.WalletTransaction, error) {
+	err := paymentReceiver.sql.Db.Model(&walletTransaction).Where("id = ?", walletTransaction.ID).Updates(walletTransaction)
+	if err.Error != nil {
+		logger.Error("Error update wallet transaction payment", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return walletTransaction, custom_error.PaymentNotFound
+		}
+
+		return walletTransaction, custom_error.PaymentNotUpdated
+	}
+	return walletTransaction, nil
+}
+
+func (paymentReceiver *PaymentRepoImpl) SaveWalletTransaction(walletTransaction model.WalletTransaction) (model.WalletTransaction, error) {
+	result := paymentReceiver.sql.Db.Create(&walletTransaction)
+	if result.Error != nil {
+		return walletTransaction, result.Error
+	}
+	return walletTransaction, nil
+}
+
 func (paymentReceiver *PaymentRepoImpl) GetWalletTransactionsFilter(queryModel *query.DataQueryModel) ([]model.WalletTransaction, error) {
 	var listWalletTransactions []model.WalletTransaction
 	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.WalletTransaction{}, queryModel.ListIgnoreColumns)
