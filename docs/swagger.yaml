@@ -9,6 +9,13 @@ definitions:
       ratePlan:
         type: string
     type: object
+  req.RequestAddMoneyTopUp:
+    properties:
+      amount:
+        type: number
+      method:
+        type: string
+    type: object
   req.RequestAddRatePlan:
     properties:
       activated:
@@ -77,6 +84,11 @@ definitions:
       hotel_id:
         type: string
       name:
+        type: string
+    type: object
+  req.RequestCancelBooking:
+    properties:
+      payment_id:
         type: string
     type: object
   req.RequestCreateHotel:
@@ -1368,6 +1380,32 @@ paths:
       summary: Create payment vnpay
       tags:
       - payment-service
+  /payments/:id:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle get payment details
+      tags:
+      - user-service
   /ratePlan/rateplan-info:
     post:
       consumes:
@@ -1724,6 +1762,39 @@ paths:
       summary: Get search hotel by Id
       tags:
       - hotel-service
+  /users/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: wallet
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestAddMoneyTopUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle add money to wallet
+      tags:
+      - user-service
   /users/add-to-cart:
     post:
       consumes:
@@ -1751,6 +1822,40 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Add to cart
+      tags:
+      - user-service
+  /users/cancel-booking:
+    post:
+      consumes:
+      - application/json
+      description: Cancel booking
+      parameters:
+      - description: payment
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestCancelBooking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle cancel booking
       tags:
       - user-service
   /users/carts:
@@ -2087,6 +2192,32 @@ paths:
       summary: Update review
       tags:
       - review-service
+  /users/top-up:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle get list wallet transactions
+      tags:
+      - user-service
   /users/update-avatar:
     post:
       consumes:
