@@ -1981,6 +1981,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/apply-voucher": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-service"
+                ],
+                "summary": "Handle apply voucher",
+                "parameters": [
+                    {
+                        "description": "voucher",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestApplyVoucher"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/users/cancel-booking": {
             "post": {
                 "description": "Cancel booking",
@@ -2965,6 +3016,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestApplyVoucher": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "session_id": {
                     "type": "string"
                 }
             }
