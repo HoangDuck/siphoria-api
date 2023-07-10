@@ -23,6 +23,7 @@ type User struct {
 	DeletedAt       time.Time `json:"-" gorm:"deleted_at"`
 	IsDeleted       bool      `json:"-" gorm:"is_deleted"`
 	UserRank        *UserRank `json:"user_rank"`
+	Wallet          *Wallet   `json:"wallet" gorm:"-"`
 }
 
 type Token struct {

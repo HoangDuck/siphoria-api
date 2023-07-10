@@ -19,6 +19,16 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) GetUserWallet(user model.User) (model.Wallet, error) {
+	var wallet model.Wallet
+	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Find(&wallet)
+	if err.Error != nil {
+		logger.Error("Error get list payment url ", zap.Error(err.Error))
+		return wallet, err.Error
+	}
+	return wallet, nil
+}
+
 func (userReceiver *UserRepoImpl) DeleteReview(review model.Review) (bool, error) {
 	err := userReceiver.sql.Db.Select("is_deleted").Model(&review).Updates(review)
 	if err.Error != nil {

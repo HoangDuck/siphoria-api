@@ -284,9 +284,11 @@ func (userReceiver *UserController) HandleGetCustomerProfileInfo(c echo.Context)
 	customer := model.User{
 		ID: claims.UserId,
 	}
+	walletResult, err := userReceiver.UserRepo.GetUserWallet(customer)
 	customerRankResult, err := userReceiver.UserRepo.GetUserRank(customer)
 	customerResult, err := userReceiver.UserRepo.GetProfileCustomer(customer)
 	customerResult.UserRank = &customerRankResult
+	customerResult.Wallet = &walletResult
 	if err != nil {
 		logger.Error("Error get profile data", zap.Error(err))
 		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
