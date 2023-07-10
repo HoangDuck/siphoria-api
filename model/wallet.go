@@ -16,7 +16,7 @@ type Wallet struct {
 type WalletTransaction struct {
 	ID          string    `json:"id" gorm:"primary_key"`
 	WalletId    string    `json:"wallet_id"`
-	Wallet      Wallet    `json:"wallet" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Wallet      *Wallet   `json:"wallet,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Amount      float32   `json:"amount" gorm:"amount"`
 	Method      string    `json:"method" gorm:"method"`
 	Currency    string    `json:"currency" gorm:"currency"`
