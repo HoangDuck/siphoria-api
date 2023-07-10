@@ -380,27 +380,9 @@ func (userReceiver *UserController) HandleCreatePaymentFromCart(c echo.Context) 
 // @Failure 422 {object} res.Response
 // @Router /users/payments [get]
 func (userReceiver *UserController) HandleGetPayments(c echo.Context) error {
-	//token := c.Get("user").(*jwt.Token)
-	//claims := token.Claims.(*model.JwtCustomClaims)
-	//if !(claims.Role == model.CUSTOMER.String()) {
-	//	logger.Error("Error role access", zap.Error(nil))
-	//	return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-	//}
-	//user := model.User{
-	//	ID: claims.UserId,
-	//}
-	//listPaymentUser, err := userReceiver.UserRepo.GetUserPayment(c, user)
-	//if err != nil {
-	//	logger.Error("Error query data", zap.Error(err))
-	//	return response.InternalServerError(c, "Lấy danh sách thanh toán thành công", nil)
-	//}
-	//return response.Ok(c, "Lấy danh sách thanh toán thành công", listPaymentUser)
 	var listPayment []res.PaymentResponse
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
-	//if !(security.CheckRole(claims, model.ADMIN, false)) {
-	//	return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
-	//}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"id", "status", "user_id", "user", "room_type_id", "room_type",
 		"voucher_id", "voucher", "payout_request_id", "payout_request",

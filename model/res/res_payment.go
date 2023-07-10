@@ -32,6 +32,7 @@ type PaymentResponse struct {
 	Hotel          *model.Hotel            `json:"hotel,omitempty"`
 	RatePlan       *model.RatePlan         `json:"rate_plans,omitempty"`
 	Details        []PaymentDetailResponse `json:"details" gorm:"-"`
+	RoomNights     []model.RoomNights      `json:"room_nights" gorm:"-"`
 }
 
 type PaymentDetailResponse struct {

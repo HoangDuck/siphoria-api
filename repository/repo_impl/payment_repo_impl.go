@@ -12,6 +12,7 @@ import (
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
+	"strings"
 	"time"
 )
 
@@ -233,6 +234,10 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 		}
 
 		for indexDetail := 0; indexDetail < len(listTempPaymentDetail); indexDetail++ {
+			var tempRoomNights model.RoomNights
+			_ = paymentReceiver.sql.Db.Model(&tempRoomNights).Where("room_type_id = ? AND availability_at = ?",
+				listPayment[index].RatePlan.RoomTypeId, strings.Split(listTempPaymentDetail[indexDetail].DayOff.String(), " ")[0]).Find(&tempRoomNights)
+			listPayment[index].RoomNights = append(listPayment[index].RoomNights, tempRoomNights)
 			listPaymentDetail = append(listPaymentDetail, res.PaymentDetailResponse{
 				ID:          listTempPaymentDetail[indexDetail].ID,
 				Price:       listTempPaymentDetail[indexDetail].Price,
