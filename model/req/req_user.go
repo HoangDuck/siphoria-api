@@ -75,6 +75,7 @@ type RequestGetOauthInfo struct {
 
 type RequestUpdateRank struct {
 	RankTo string `json:"rank_to" validate:"required"`
+	Method string `json:"method" validate:"required"`
 }
 
 type RequestRefreshToken struct {

@@ -205,16 +205,26 @@ func (userReceiver *UserController) HandleUpdateRank(c echo.Context) error {
 		logger.Error("Error role access", zap.Error(nil))
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	userRank := model.UserRank{
-		ID:     claims.UserId,
-		RankId: reqUpdateRank.RankTo,
-	}
-	userRank, err := userReceiver.UserRepo.UpdateRankCustomer(userRank)
+	//userRank := model.UserRank{
+	//	ID:     claims.UserId,
+	//	RankId: reqUpdateRank.RankTo,
+	//}
+	sessionId, err := utils.GetNewId()
 	if err != nil {
-		logger.Error("Error query data", zap.Error(err))
-		return response.InternalServerError(c, "Cập nhật thất bại", nil)
+		logger.Error("Error uuid data", zap.Error(err))
+		return response.Forbidden(c, "Đăng ký thất bại", nil)
 	}
-	return response.Ok(c, "Cập nhật thành công", userRank)
+	//wallet, err := userReceiver.PaymentRepo.GetWalletTopUp(claims.UserId)
+	//if err != nil {
+	//	return response.InternalServerError(c, "Lấy ví tiền thất bại", nil)
+	//}
+	//wallet.Balance = wallet.Balance + reqAddMoneyTopUp.Amount
+	//wallet, err = userReceiver.PaymentRepo.UpdateAddMoneyToTopUp(wallet)
+	//if err != nil {
+	//	return response.InternalServerError(c, "Cập nhật thất bại", nil)
+	//}
+	paymentMethod := strings.ToLower(reqUpdateRank.Method)
+	return userReceiver.HandlePaymentMethod(c, 768768, paymentMethod, sessionId, false)
 }
 
 // HandleUpdateProfile godoc

@@ -165,7 +165,8 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 	var listTempPayment []model.Payment
 
 	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
-	err = err.Preload("User").Preload("RatePlan").Preload("RoomType").Preload("Hotel")
+	err = err.Preload("User").Preload("RoomType").Preload("Voucher").Preload("PayoutRequest").
+		Preload("Hotel").Preload("RatePlan")
 	err = err.Where("user_id = ?", queryModel.UserId)
 
 	if context.QueryParam("state") == "" {
@@ -217,6 +218,7 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 			UpdatedAt:      listTempPayment[index].UpdatedAt,
 			User:           &listTempPayment[index].User,
 			RoomType:       listTempPayment[index].RoomType,
+			RatePlan:       listTempPayment[index].RatePlan,
 			Hotel:          listTempPayment[index].Hotel,
 		})
 	}

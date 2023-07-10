@@ -43,7 +43,7 @@ type Payment struct {
 	Hotel           *Hotel          `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	SessionId       string          `json:"session_id" gorm:"session_id"`
 	RatePlanId      string          `json:"rate_plan_id"`
-	RatePlan        *RatePlan       `json:"rate_plan" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RatePlan        *RatePlan       `json:"rate_plans,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	CreatedAt       time.Time       `json:"created_at" gorm:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at" gorm:"updated_at"`
 	CartId          string          `json:"cart_id" gorm:"cart_id"`
