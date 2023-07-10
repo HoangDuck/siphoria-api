@@ -68,7 +68,7 @@ func (paymentReceiver *PaymentRepoImpl) SaveWalletTransaction(walletTransaction 
 func (paymentReceiver *PaymentRepoImpl) GetWalletTransactionsFilter(queryModel *query.DataQueryModel) ([]model.WalletTransaction, error) {
 	var listWalletTransactions []model.WalletTransaction
 	err := GenerateQueryGetData(paymentReceiver.sql, queryModel, &model.WalletTransaction{}, queryModel.ListIgnoreColumns)
-	err = err.Where("user_id = ?", queryModel.UserId)
+	err = err.Where("wallet_id in (Select id from wallets where user_id = ?)", queryModel.UserId)
 	err = err.Find(&listWalletTransactions)
 	if err.Error != nil {
 		logger.Error("Error get list wallet transaction url ", zap.Error(err.Error))
