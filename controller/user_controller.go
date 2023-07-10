@@ -878,7 +878,7 @@ func (userReceiver *UserController) HandleGetTopUp(c echo.Context) error {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
-		"id", "created_at", "updated_at", "", "wallet", "wallet_id",
+		"id", "created_at", "updated_at", "", "wallet", "wallet_id", "", "-",
 	}, &model.WalletTransaction{})
 	dataQueryModel.UserId = claims.UserId
 	listTransactions, err := userReceiver.PaymentRepo.GetWalletTransactionsFilter(&dataQueryModel)

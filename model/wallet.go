@@ -24,4 +24,5 @@ type WalletTransaction struct {
 	Description string    `json:"description" gorm:"description"`
 	CreatedAt   time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"updated_at"`
+	IsDeleted   bool      `json:"-" gorm:"is_deleted"`
 }
