@@ -970,6 +970,7 @@ func (userReceiver *UserController) HandleBookNow(c echo.Context) error {
 		HotelID:          reqBookNow.HotelID,
 		ToDate:           reqBookNow.ToDate,
 		UserId:           reqBookNow.UserId,
+		RoomTypeID:       reqBookNow.RoomTypeID,
 	}
 	result, err := userReceiver.UserRepo.AddToCart(reqAddToCart)
 	if err != nil || !result {
