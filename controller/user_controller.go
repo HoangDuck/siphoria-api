@@ -950,7 +950,7 @@ func (userReceiver *UserController) HandleApplyVoucher(c echo.Context) error {
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /users/apply-voucher [post]
+// @Router /users/book-now [post]
 func (userReceiver *UserController) HandleBookNow(c echo.Context) error {
 	reqBookNow := req.RequestBookNow{}
 	//binding

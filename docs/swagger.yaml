@@ -1857,6 +1857,39 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: voucher
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestApplyVoucher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle apply voucher
+      tags:
+      - user-service
+  /users/book-now:
+    post:
+      consumes:
+      - application/json
+      parameters:
       - description: payment
         in: body
         name: data
