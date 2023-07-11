@@ -21,7 +21,4 @@ type UserRank struct {
 	CreatedAt time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"updated_at"`
 	ExpiredAt time.Time `json:"expired_at" gorm:"expired_at"`
-	//DurationYear  int       `json:"duration_year" gorm:"duration_year"`
-	//DurationMonth int       `json:"duration_month" gorm:"duration_month"`
-	//DurationDay   int       `json:"duration_day" gorm:"duration_day"`
 }
