@@ -154,6 +154,9 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 			}
 		} else if arraySplitOrderId[2] == "update-rank" {
 			isUpdateRank = true
+			// Defining location using FixedZone method
+			location := time.FixedZone("UTC-7", -6*56*34)
+			tempTime := time.Now()
 			userRank = model.UserRank{
 				ID:        paymentID,
 				UserId:    arraySplitOrderId[4],
@@ -161,6 +164,9 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 				BeginAt:   time.Now(),
 				CreatedAt: time.Now(),
 				UpdatedAt: time.Now(),
+				ExpiredAt: time.Date(tempTime.Year()+1, tempTime.Month(),
+					tempTime.Day(), tempTime.Hour(), tempTime.Minute(),
+					tempTime.Second(), 0, location),
 			}
 		} else {
 			payment = model.Payment{
