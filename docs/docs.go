@@ -1992,15 +1992,15 @@ const docTemplate = `{
                 "tags": [
                     "user-service"
                 ],
-                "summary": "Handle apply voucher",
+                "summary": "Handle book",
                 "parameters": [
                     {
-                        "description": "voucher",
+                        "description": "payment",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.RequestApplyVoucher"
+                            "$ref": "#/definitions/req.RequestBookNow"
                         }
                     }
                 ],
@@ -3027,6 +3027,38 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "session_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestBookNow": {
+            "type": "object",
+            "properties": {
+                "from_date": {
+                    "type": "string"
+                },
+                "hotel_id": {
+                    "type": "string"
+                },
+                "number_of_adults": {
+                    "type": "integer"
+                },
+                "number_of_children": {
+                    "type": "integer"
+                },
+                "number_of_rooms": {
+                    "type": "integer"
+                },
+                "rate_plan_id": {
+                    "type": "string"
+                },
+                "room_type_id": {
+                    "type": "string"
+                },
+                "to_date": {
+                    "type": "string"
+                },
+                "userId": {
                     "type": "string"
                 }
             }

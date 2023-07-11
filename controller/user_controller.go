@@ -939,3 +939,53 @@ func (userReceiver *UserController) HandleApplyVoucher(c echo.Context) error {
 	}
 	return response.Ok(c, "Áp dụng voucher thành công", "")
 }
+
+// HandleBookNow godoc
+// @Summary Handle book
+// @Tags user-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestBookNow true "payment"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /users/apply-voucher [post]
+func (userReceiver *UserController) HandleBookNow(c echo.Context) error {
+	reqBookNow := req.RequestBookNow{}
+	//binding
+	if err := c.Bind(&reqBookNow); err != nil {
+		logger.Error("Error binding data", zap.Error(err))
+		return response.BadRequest(c, err.Error(), nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	reqBookNow.UserId = claims.UserId
+	reqAddToCart := req.RequestAddToCart{
+		FromDate:         reqBookNow.FromDate,
+		NumberOfAdults:   reqBookNow.NumberOfAdults,
+		NumberOfChildren: reqBookNow.NumberOfChildren,
+		NumberOfRooms:    reqBookNow.NumberOfRooms,
+		RatePlanID:       reqBookNow.RatePlanID,
+		HotelID:          reqBookNow.HotelID,
+		ToDate:           reqBookNow.ToDate,
+		UserId:           reqBookNow.UserId,
+	}
+	result, err := userReceiver.UserRepo.AddToCart(reqAddToCart)
+	if err != nil || !result {
+		return response.InternalServerError(c, "Đặt phòng thất bại", nil)
+	}
+	customer := model.User{
+		ID: claims.UserId,
+	}
+	_, err = userReceiver.PaymentRepo.CancelSessionPayment(claims.UserId)
+	if err != nil {
+		return response.InternalServerError(c, "Tạo thanh toán thất bại", nil)
+	}
+	customerResult, err := userReceiver.UserRepo.CreatePaymentFromCart(customer)
+	if err != nil {
+		logger.Error("Error get profile data", zap.Error(err))
+		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
+	}
+	return response.Ok(c, "Tạo thanh toán thành công", customerResult)
+}

@@ -74,6 +74,7 @@ func (api *API) SetupRouter() {
 	user.POST("/wallets", api.UserController.HandleTopUp, middleware.JWTMiddleWare())
 	user.GET("/top-up", api.UserController.HandleGetTopUp, middleware.JWTMiddleWare())
 	user.POST("/apply-voucher", api.UserController.HandleApplyVoucher, middleware.JWTMiddleWare())
+	user.POST("/book-now", api.UserController.HandleBookNow, middleware.JWTMiddleWare())
 
 	hotel := request.Group("/hotels")
 	hotel.GET("/", api.HotelController.HandleGetHotelPartner, middleware.JWTMiddleWare())

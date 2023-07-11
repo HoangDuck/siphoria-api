@@ -93,6 +93,27 @@ definitions:
       session_id:
         type: string
     type: object
+  req.RequestBookNow:
+    properties:
+      from_date:
+        type: string
+      hotel_id:
+        type: string
+      number_of_adults:
+        type: integer
+      number_of_children:
+        type: integer
+      number_of_rooms:
+        type: integer
+      rate_plan_id:
+        type: string
+      room_type_id:
+        type: string
+      to_date:
+        type: string
+      userId:
+        type: string
+    type: object
   req.RequestCancelBooking:
     properties:
       payment_id:
@@ -1836,12 +1857,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: voucher
+      - description: payment
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/req.RequestApplyVoucher'
+          $ref: '#/definitions/req.RequestBookNow'
       produces:
       - application/json
       responses:
@@ -1861,7 +1882,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.Response'
-      summary: Handle apply voucher
+      summary: Handle book
       tags:
       - user-service
   /users/cancel-booking:
