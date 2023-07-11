@@ -147,10 +147,14 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 	for i := 0; i < len(hotel.RoomTypes); i++ {
 		listRoomNightsJson := []res.RoomNight{}
 		for x := 0; x < len(hotel.RoomTypes[i].RoomNights); x++ {
+			count, err := hotelController.RoomRepo.CountLockRoomByAvailabilityDay(hotel.RoomTypes[i].RoomNights[x].ID, hotel.RoomTypes[i].RoomNights[x].AvailabilityAt)
+			if err != nil {
+				count = 0
+			}
 			tempRoomNightModel := res.RoomNight{
 				ID:             hotel.RoomTypes[i].RoomNights[x].ID,
-				Inventory:      hotel.RoomTypes[i].RoomNights[x].Inventory,
-				Remain:         hotel.RoomTypes[i].RoomNights[x].Remain,
+				Inventory:      hotel.RoomTypes[i].RoomNights[x].Inventory - count,
+				Remain:         hotel.RoomTypes[i].RoomNights[x].Remain - count,
 				AvailabilityAt: hotel.RoomTypes[i].RoomNights[x].AvailabilityAt.String(),
 				UpdatedAt:      hotel.RoomTypes[i].RoomNights[x].UpdatedAt.Unix(),
 			}

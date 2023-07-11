@@ -5,6 +5,7 @@ import (
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
+	"time"
 )
 
 type RoomRepo interface {
@@ -22,4 +23,5 @@ type RoomRepo interface {
 	GetListRatePackages(c echo.Context, ratePlanId string) ([]model.RatePackage, error)
 	GetRatePlanByRoomTypeFilter(queryModel *query.DataQueryModel) ([]model.RatePlan, error)
 	UpdateLockRoom()
+	CountLockRoomByAvailabilityDay(roomTypeId string, availabilityAt time.Time) (int, error)
 }

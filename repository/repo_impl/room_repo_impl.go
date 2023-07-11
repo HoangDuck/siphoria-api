@@ -22,6 +22,18 @@ type RoomRepoImpl struct {
 	sql *db.Sql
 }
 
+func (roomReceiver *RoomRepoImpl) CountLockRoomByAvailabilityDay(roomTypeId string, availabilityAt time.Time) (int, error) {
+	var count int64
+	err := roomReceiver.sql.Db.Model(&model.LockRoom{}).Where("room_type_id = ? "+
+		"AND availability_at = ? AND expired = false "+
+		"AND lock_from >= ? AND ? <= lock_to", roomTypeId, availabilityAt, time.Now(), time.Now()).Count(&count)
+	if err.Error != nil {
+		logger.Error("Error count lock room", zap.Error(err.Error))
+		return int(count), err.Error
+	}
+	return int(count), nil
+}
+
 func (roomReceiver *RoomRepoImpl) UpdateLockRoom() {
 	logger.Info("Update lock room")
 	err := roomReceiver.sql.Db.Where("lock_to < current_timestamp AND expired = false").Updates(model.LockRoom{Expired: true})
