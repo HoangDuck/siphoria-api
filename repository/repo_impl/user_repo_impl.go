@@ -19,6 +19,16 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) GetListRank() ([]model.Rank, error) {
+	var listWallet []model.Rank
+	err := userReceiver.sql.Db.Model(&model.Rank{}).Find(&listWallet)
+	if err.Error != nil {
+		logger.Error("Error get list payment url ", zap.Error(err.Error))
+		return listWallet, err.Error
+	}
+	return listWallet, nil
+}
+
 func (userReceiver *UserRepoImpl) GetUserWallet(user model.User) (model.Wallet, error) {
 	var wallet model.Wallet
 	err := userReceiver.sql.Db.Where("user_id = ?", user.ID).Find(&wallet)

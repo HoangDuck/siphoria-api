@@ -130,8 +130,10 @@ func (paymentReceiver *PaymentController) CreatePaymentWithMomo(c echo.Context) 
 
 func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) error {
 	isAddMoneyToWallet := false
+	isUpdateRank := false
 	var payment model.Payment
 	var walletTransaction model.WalletTransaction
+	var userRank model.UserRank
 	dataFromVNPay := c.QueryParams()
 	vnpayService := services.GetVNPayServiceInstance()
 	resultCheckSignature := vnpayService.CheckSignatureResultVNPay(c)
@@ -150,6 +152,16 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 			walletTransaction = model.WalletTransaction{
 				ID: paymentID,
 			}
+		} else if arraySplitOrderId[2] == "update-rank" {
+			isUpdateRank = true
+			userRank = model.UserRank{
+				ID:        paymentID,
+				UserId:    arraySplitOrderId[4],
+				RankId:    arraySplitOrderId[3],
+				BeginAt:   time.Now(),
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}
 		} else {
 			payment = model.Payment{
 				SessionId: paymentID,
@@ -162,6 +174,12 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 				_, err := paymentReceiver.PaymentRepo.UpdateWalletTransactionStatus(walletTransaction)
 				if err != nil {
 					logger.Info("redirect result payment vnpay update status payment")
+					http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
+					return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
+				}
+			} else if isUpdateRank {
+				_, err := paymentReceiver.PaymentRepo.UpdateUserRank(userRank)
+				if err != nil {
 					http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
 					return c.Redirect(http.StatusInternalServerError, redirectMomoUrl)
 				}
@@ -202,8 +220,10 @@ func (paymentReceiver *PaymentController) GetResultPaymentVNPay(c echo.Context) 
 func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) error {
 	logger.Info("Receive result from momo")
 	isAddMoneyToWallet := false
+	isUpdateRank := false
 	var payment model.Payment
 	var walletTransaction model.WalletTransaction
+	var userRank model.UserRank
 	jsonRequestMomo := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&jsonRequestMomo)
 	if err != nil {
@@ -220,6 +240,16 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 			walletTransaction = model.WalletTransaction{
 				ID: paymentID,
 			}
+		} else if arraySplitOrderId[2] == "update-rank" {
+			isUpdateRank = true
+			userRank = model.UserRank{
+				ID:        paymentID,
+				UserId:    arraySplitOrderId[4],
+				RankId:    arraySplitOrderId[3],
+				BeginAt:   time.Now(),
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}
 		} else {
 			payment = model.Payment{
 				SessionId: paymentID,
@@ -232,6 +262,11 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 				_, err := paymentReceiver.PaymentRepo.UpdateWalletTransactionStatus(walletTransaction)
 				if err != nil {
 					logger.Info("redirect result payment vnpay update status payment")
+					return response.InternalServerError(c, "Thanh toán thất bại", nil)
+				}
+			} else if isUpdateRank {
+				_, err := paymentReceiver.PaymentRepo.UpdateUserRank(userRank)
+				if err != nil {
 					return response.InternalServerError(c, "Thanh toán thất bại", nil)
 				}
 			} else {

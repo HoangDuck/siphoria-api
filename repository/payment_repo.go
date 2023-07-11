@@ -27,6 +27,7 @@ type PaymentRepo interface {
 	UpdateWalletTransactionStatus(walletTransaction model.WalletTransaction) (model.WalletTransaction, error)
 	GetUserWalletInfo(userId string) (model.Wallet, error)
 	ApplyVoucherPayments(requestApplyVoucher req.RequestApplyVoucher) (bool, error)
+	UpdateUserRank(userRank model.UserRank) (bool, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)
 	//UpdatePayment(payment model.Payment) (model.Payment, error)

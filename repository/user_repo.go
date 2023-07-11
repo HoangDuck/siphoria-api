@@ -25,5 +25,6 @@ type UserRepo interface {
 	UpdateReview(review model.Review) (model.Review, error)
 	DeleteReview(review model.Review) (bool, error)
 	GetUserWallet(user model.User) (model.Wallet, error)
+	GetListRank() ([]model.Rank, error)
 	//CheckProfileCustomerExistByIdentify(user model.User) (model.User, error)
 }

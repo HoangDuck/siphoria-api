@@ -26,6 +26,15 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) UpdateUserRank(userRank model.UserRank) (bool, error) {
+	result := paymentReceiver.sql.Db.Model(&model.UserRank{}).Create(&userRank)
+	if result.Error != nil {
+		logger.Error("Get payment data", zap.Error(result.Error))
+		return false, result.Error
+	}
+	return true, nil
+}
+
 func (paymentReceiver *PaymentRepoImpl) ApplyVoucherPayments(requestApplyVoucher req.RequestApplyVoucher) (bool, error) {
 	err := paymentReceiver.sql.Db.Exec("call sp_applyvoucher(?,?);",
 		requestApplyVoucher.Code, requestApplyVoucher.SessionId)
@@ -333,7 +342,7 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentListByCondition(sessionId stri
 //			logger.Error("Get payment data", zap.Error(result.Error))
 //			return payment, custom_error.PaymentNotSaved
 //		}
-//		return payment, nil
+//		return payment, nilcreate
 //	}
 //
 //	func (paymentReceiver *PaymentRepoImpl) UpdatePayment(payment model.Payment) (model.Payment, error) {
