@@ -249,6 +249,7 @@ func (paymentReceiver *PaymentController) GetResultPaymentMomo(c echo.Context) e
 				BeginAt:   time.Now(),
 				CreatedAt: time.Now(),
 				UpdatedAt: time.Now(),
+				ExpiredAt: time.Now().AddDate(1, 0, 0),
 			}
 		} else {
 			payment = model.Payment{
