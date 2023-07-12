@@ -147,7 +147,7 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 	for i := 0; i < len(hotel.RoomTypes); i++ {
 		listRoomNightsJson := []res.RoomNight{}
 		for x := 0; x < len(hotel.RoomTypes[i].RoomNights); x++ {
-			count, err := hotelController.RoomRepo.CountLockRoomByAvailabilityDay(hotel.RoomTypes[i].RoomNights[x].ID, hotel.RoomTypes[i].RoomNights[x].ID)
+			count, err := hotelController.RoomRepo.CountLockRoomByAvailabilityDay(hotel.RoomTypes[i].ID, hotel.RoomTypes[i].RoomNights[x].ID)
 			if err != nil {
 				count = 0
 			}
