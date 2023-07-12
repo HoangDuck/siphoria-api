@@ -758,6 +758,55 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 			ResponseTime: time.Now().Unix(),
 			ResultCode:   0,
 		})
+	} else if paymentMethod == "siphoria" {
+		wallet, err := userReceiver.UserRepo.GetUserWallet(model.User{
+			ID: claims.UserId,
+		})
+		if err != nil {
+			return response.InternalServerError(c, "Tạo thanh toán thất bại", nil)
+		}
+		if wallet.Balance < totalPrice {
+			return response.BadRequest(c, "Tiền trong ví không đủ", nil)
+		}
+
+		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectPaymentUrl()
+		if err != nil {
+			return response.InternalServerError(c, err.Error(), nil)
+		}
+		arraySplitOrderId := strings.Split(sessionMessage, "_")
+		if arraySplitOrderId[2] == "update-rank" {
+			location := time.FixedZone("UTC-7", -6*56*34)
+			tempTime := time.Now()
+			rankIdUser, _ := utils.GetNewId()
+			userRank := model.UserRank{
+				ID:        rankIdUser,
+				UserId:    arraySplitOrderId[4],
+				RankId:    arraySplitOrderId[3],
+				BeginAt:   tempTime,
+				CreatedAt: tempTime,
+				UpdatedAt: tempTime,
+				ExpiredAt: time.Date(tempTime.Year()+1, tempTime.Month(),
+					tempTime.Day(), tempTime.Hour(), tempTime.Minute(),
+					tempTime.Second(), 0, location),
+			}
+			_, err := userReceiver.PaymentRepo.UpdateUserRank(userRank)
+			if err != nil {
+				return response.InternalServerError(c, "Thanh toán thất bại", nil)
+			}
+		} else {
+			payment := model.Payment{
+				SessionId: sessionMessage,
+				Status:    "paid",
+			}
+			_, err = userReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
+			if err != nil {
+				return response.InternalServerError(c, "Thanh toán thất bại", nil)
+			}
+		}
+
+		logger.Info("redirect result payment vnpay")
+		http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
+		return response.Ok(c, "Thanh toán thành công", "")
 	}
 	return response.BadRequest(c, "Phương thức thanh toán chưa được hỗ trợ", nil)
 }
