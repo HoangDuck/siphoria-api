@@ -22,11 +22,11 @@ type RoomRepoImpl struct {
 	sql *db.Sql
 }
 
-func (roomReceiver *RoomRepoImpl) CountLockRoomByAvailabilityDay(roomTypeId string, availabilityAt time.Time) (int, error) {
+func (roomReceiver *RoomRepoImpl) CountLockRoomByAvailabilityDay(roomTypeId string, roomNightsId string) (int, error) {
 	var count int64
 	err := roomReceiver.sql.Db.Model(&model.LockRoom{}).Where("room_type_id = ? "+
-		"AND availability_at = ? AND expired = false "+
-		"AND lock_from >= ? AND ? <= lock_to", roomTypeId, availabilityAt, time.Now(), time.Now()).Count(&count)
+		"AND room_nights_id = ? AND expired = false "+
+		"AND lock_from >= ? AND ? <= lock_to", roomTypeId, roomNightsId, time.Now(), time.Now()).Count(&count)
 	if err.Error != nil {
 		logger.Error("Error count lock room", zap.Error(err.Error))
 		return int(count), err.Error
