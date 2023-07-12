@@ -30,6 +30,7 @@ func (roomReceiver *RoomRepoImpl) CountLockRoomByAvailabilityDay(roomTypeId stri
 		logger.Error("Error count lock room", zap.Error(err.Error))
 		return int(count), err.Error
 	}
+	logger.Info(string(int(count)))
 	return int(count), nil
 }
 
