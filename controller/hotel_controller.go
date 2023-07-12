@@ -153,7 +153,7 @@ func (hotelController *HotelController) HandleGetHotelById(c echo.Context) error
 			}
 			tempRoomNightModel := res.RoomNight{
 				ID:             hotel.RoomTypes[i].RoomNights[x].ID,
-				Inventory:      hotel.RoomTypes[i].RoomNights[x].Inventory - count,
+				Inventory:      hotel.RoomTypes[i].RoomNights[x].Inventory,
 				Remain:         hotel.RoomTypes[i].RoomNights[x].Remain - count,
 				AvailabilityAt: hotel.RoomTypes[i].RoomNights[x].AvailabilityAt.String(),
 				UpdatedAt:      hotel.RoomTypes[i].RoomNights[x].UpdatedAt.Unix(),
