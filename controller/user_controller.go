@@ -796,8 +796,9 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 			}
 		} else {
 			payment := model.Payment{
-				SessionId: sessionMessage,
-				Status:    "paid",
+				SessionId:     sessionMessage,
+				Status:        "paid",
+				PaymentMethod: "Siphoria",
 			}
 			_, err = userReceiver.PaymentRepo.UpdatePaymentStatusByBookingID(payment)
 			if err != nil {
@@ -805,7 +806,7 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 			}
 		}
 
-		logger.Info("redirect result payment vnpay")
+		logger.Info("redirect result payment siphoria")
 		return response.Ok(c, "Thanh toán thành công", res.DataPaymentRes{
 			Amount:       int(totalPrice),
 			Message:      "Thanh toán thành công",
