@@ -1022,7 +1022,7 @@ func (userReceiver *UserController) HandleBookNow(c echo.Context) error {
 	}
 	result, err := userReceiver.UserRepo.AddToCart(reqAddToCart)
 	if err != nil || !result {
-		return response.InternalServerError(c, "Đặt phòng thất bại", nil)
+		return response.InternalServerError(c, "Đặt phòng thất bại", err.Error())
 	}
 	customer := model.User{
 		ID: claims.UserId,
