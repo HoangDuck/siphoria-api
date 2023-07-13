@@ -11,12 +11,16 @@ import (
 )
 
 func LoadConfig(cfg *model.Config, env *string) {
+	//file env(.yml) path
 	var filePath string
+	//check if environment is "dbdev" load file env.dev.yml
 	if *env == "dbdev" {
 		filePath = fmt.Sprintf("../env.%s.yml", "dev")
 		fmt.Println("loading config from ", filePath)
 
 	} else {
+		//check if environment is "dev" or "pro" load file env.dev.yml or env.pro.yml
+		//depend on command run program "make dev" --> load env.dev.yml; "make pro" --> load env.pro.yml
 		filePath = fmt.Sprintf("../env.%s.yml", *env)
 		fmt.Println("loading config from ", filePath)
 	}
