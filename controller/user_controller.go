@@ -775,6 +775,7 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 			return response.InternalServerError(c, err.Error(), nil)
 		}
 		arraySplitOrderId := strings.Split(sessionMessage, "_")
+		logger.Info("log payment siphoria wallet" + sessionMessage)
 		if arraySplitOrderId[1] == "update-rank" {
 			location := time.FixedZone("UTC-7", -6*56*34)
 			tempTime := time.Now()
