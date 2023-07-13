@@ -720,7 +720,7 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 		}
 		condition := map[string]interface{}{
 			"booking-info":        "VNPay",
-			"amount":              int(totalPrice) * 100,
+			"amount":              int(totalPrice),
 			"booking-description": "paymentsiphoria",
 			"ipn-url":             vnpayUrl,
 			"redirect-url":        "",
@@ -775,14 +775,14 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 			return response.InternalServerError(c, err.Error(), nil)
 		}
 		arraySplitOrderId := strings.Split(sessionMessage, "_")
-		if arraySplitOrderId[2] == "update-rank" {
+		if arraySplitOrderId[1] == "update-rank" {
 			location := time.FixedZone("UTC-7", -6*56*34)
 			tempTime := time.Now()
 			rankIdUser, _ := utils.GetNewId()
 			userRank := model.UserRank{
 				ID:        rankIdUser,
-				UserId:    arraySplitOrderId[4],
-				RankId:    arraySplitOrderId[3],
+				UserId:    arraySplitOrderId[3],
+				RankId:    arraySplitOrderId[2],
 				BeginAt:   tempTime,
 				CreatedAt: tempTime,
 				UpdatedAt: tempTime,
