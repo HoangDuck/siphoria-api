@@ -149,7 +149,7 @@ func (userReceiver *UserController) HandleAddToCart(c echo.Context) error {
 	}
 	reqAddToCart.UserId = claims.UserId
 	result, err := userReceiver.UserRepo.AddToCart(reqAddToCart)
-	logger.Info("Add to cart logger " + err.Error())
+	//logger.Info("Add to cart logger " + err.Error())
 	if err != nil || !result {
 		return response.InternalServerError(c, "Thêm giỏ hàng thất bại", nil)
 	}
