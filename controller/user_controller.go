@@ -806,8 +806,16 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 		}
 
 		logger.Info("redirect result payment vnpay")
-		http.Redirect(c.Response(), c.Request(), redirectMomoUrl, http.StatusTemporaryRedirect)
-		return response.Ok(c, "Thanh toán thành công", "")
+		return response.Ok(c, "Thanh toán thành công", res.DataPaymentRes{
+			Amount:       int(totalPrice),
+			Message:      "Thanh toán thành công",
+			OrderID:      "",
+			PartnerCode:  "",
+			PayURL:       redirectMomoUrl,
+			RequestID:    "",
+			ResponseTime: time.Now().Unix(),
+			ResultCode:   0,
+		})
 	}
 	return response.BadRequest(c, "Phương thức thanh toán chưa được hỗ trợ", nil)
 }
