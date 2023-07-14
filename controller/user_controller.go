@@ -770,6 +770,7 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 		if wallet.Balance < totalPrice {
 			return response.BadRequest(c, "Tiền trong ví không đủ", nil)
 		}
+		logger.Info(fmt.Sprintf("%v", totalPrice))
 
 		redirectMomoUrl, err := userReceiver.PaymentRepo.GetRedirectPaymentUrl()
 		if err != nil {
@@ -777,6 +778,7 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 		}
 		arraySplitOrderId := strings.Split(sessionMessage, "_")
 		logger.Info("log payment siphoria wallet" + sessionMessage)
+		logger.Info(arraySplitOrderId[1])
 		if arraySplitOrderId[1] == "update-rank" {
 			location := time.FixedZone("UTC-7", -6*56*34)
 			tempTime := time.Now()
