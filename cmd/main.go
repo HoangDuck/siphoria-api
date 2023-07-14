@@ -80,7 +80,7 @@ func main() {
 	InitSchedulerGoCron(sql, echoInstance)
 
 	//log export port running app
-	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(os.Getenv("PORT"))))
+	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(":%s", os.Getenv("PORT"))))
 }
 
 func InitSchedulerGoCron(sql *db.Sql, echoInstance *echo.Echo) {
