@@ -800,7 +800,7 @@ func (userReceiver *UserController) HandlePaymentMethod(c echo.Context, totalPri
 			}
 		} else {
 			payment := model.Payment{
-				SessionId:     sessionMessage,
+				SessionId:     arraySplitOrderId[0],
 				Status:        "paid",
 				PaymentMethod: "Siphoria",
 			}
