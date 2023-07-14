@@ -28,12 +28,13 @@ func init() {
 	if err != nil {
 		return
 	}
-	//set variable from cmd and check dev, fast or production
+	//set variable from cmd and check dev or production
 	flag.StringVar(&env, "env", "pro", "env = pro | dev")
 	flag.Parse()
-	//load config info from file
+	//load config info from file env.dev.yml or env.pro.yml
 	config.LoadConfig(&ConfigInfo, &env)
 	config.SetupEnv(&ConfigInfo)
+	//set configure data to configInfo variable - global variable
 	services.ConfigInfo = &ConfigInfo
 }
 
@@ -52,32 +53,38 @@ func init() {
 // @host https://siphoria-api-production.up.railway.app
 // @BasePath /api
 func main() {
+	//initialize firebase instance
 	services.InitFirebase()
-	//initialize DB
+	//initialize database instance
 	sql := new(db.Sql)
+	//connect service to database
 	sql.Connect(&ConfigInfo)
+	//if program run in "dbdev" environment, it runs migration to create, modify tables by definition of models
+	//if program doesn't run in "dbdev" environment, it skips running migration
 	boolEnableMigrate := env == "dbdev"
 	if boolEnableMigrate {
 		sql.SetupDB()
 	}
-
-	//init echo framework
+	//initialize echo framework instance
 	echoInstance := echo.New()
+	//initialize swagger instance
 	echoInstance.GET("/swagger/*", echoSwagger.WrapHandler)
+	//Add validation, middlewares to program
 	ConfigureMiddlewaresAndValidator(echoInstance)
 
-	//init routers
+	//initialize routers
 	var api *router.API
+	//initialize controllers
 	InitController(api, sql, echoInstance)
 	//init go cron (scheduler)
 	InitSchedulerGoCron(sql, echoInstance)
 
 	//log export port running app
-	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(":%s", os.Getenv("PORT"))))
+	echoInstance.Logger.Fatal(echoInstance.Start(fmt.Sprintf(os.Getenv("PORT"))))
 }
 
 func InitSchedulerGoCron(sql *db.Sql, echoInstance *echo.Echo) {
-	//init go cron (scheduler)
+	//initialize go cron instance (scheduler)
 	cronInstance := cron.New()
 	schedulerGoCronService := services.SchedulerGoCronService{
 		Echo:     echoInstance,
@@ -88,51 +95,65 @@ func InitSchedulerGoCron(sql *db.Sql, echoInstance *echo.Echo) {
 }
 
 func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
+	//initialize authentication controller with account repository, feature: login, sign up ,...
 	accountController := controller.AuthController{
 		AccountRepo: repo_impl.NewAccountRepo(sql),
 	}
+	//initialize user controller with user repository, payment repository to get user, payment data.
+	//feature: add to cart, edit profile,...
 	userController := controller.UserController{
 		UserRepo:    repo_impl.NewUserRepo(sql),
 		PaymentRepo: repo_impl.NewPaymentRepo(sql),
 	}
-
+	//initialize logger handler
+	//feature: view logger system
 	logsHandler := controller.LogsHandler{}
-
+	//initialize Administrator controller with Admin repository
 	adminController := controller.AdminController{
 		AdminRepo: repo_impl.NewAdminRepo(sql),
 	}
+	//initialize notification controller with notifications repository
+	//feature: get user's notifications data
 	notificationController := controller.NotificationController{
 		NotificationRepo: repo_impl.NewNotificationRepo(sql),
 	}
+	//initialize hotel controller with hotel repository
+	//feature: get data information details hotel
 	hotelController := controller.HotelController{
 		HotelRepo: repo_impl.NewHotelRepo(sql),
 		RoomRepo:  repo_impl.NewRoomRepo(sql),
 	}
-
+	//initialize file upload service, using cloudinary
+	//feature: upload images.
 	uploadService := services.FileUploadService{
 		Echo: echoInstance,
 	}
-
+	//initialize push notification service, using firebase
+	//feature: push notifications, api push notifications to Firebase --> Firebase push to Frontend.
 	pushNotificationService := services.NotificationService{
 		Echo: echoInstance,
 	}
-
+	//initialize room controller with room repository
 	roomController := controller.RoomController{
 		RoomRepo: repo_impl.NewRoomRepo(sql),
 	}
-
+	//initialize rateplan controller with rateplan repository
+	//rateplan is a package of services, using with booking a roomtype
+	//For example: You book roomtype A with rateplan A (free buffet, refundable)
+	//You book roomtype A with rateplan A (not refundable)
 	ratePlanController := controller.RatePlanController{
 		RatePlanRepo: repo_impl.NewRatePlanRepo(sql),
 	}
-
+	//initialize voucher controller with voucher repository
 	voucherController := controller.VoucherController{
 		VoucherRepo: repo_impl.NewVoucherRepo(sql),
 	}
-
+	//initialize payment controller with payment repository
+	//a payment is a hotel booking
 	paymentController := controller.PaymentController{
 		PaymentRepo: repo_impl.NewPaymentRepo(sql),
 	}
-
+	//api variables
 	api = &router.API{
 		Echo:                   echoInstance,
 		AuthController:         accountController,
@@ -148,11 +169,12 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		VoucherController:      voucherController,
 		PaymentController:      paymentController,
 	}
-
+	//set up routers with functions in controllers
 	api.SetupRouter()
 }
 
-func ConfigureMiddlewaresAndValidator(echoInstance *echo.Echo) { //init validation for app
+func ConfigureMiddlewaresAndValidator(echoInstance *echo.Echo) {
+	//init validation for app
 	structValidator := validator.NewStructValidator()
 	structValidator.CustomValidate()
 	echoInstance.Validator = structValidator
