@@ -26,5 +26,6 @@ type UserRepo interface {
 	DeleteReview(review model.Review) (bool, error)
 	GetUserWallet(user model.User) (model.Wallet, error)
 	GetListRank() ([]model.Rank, error)
+	CreatePaymentBookNow(requestBookNow req.RequestAddToCart) (bool, error)
 	//CheckProfileCustomerExistByIdentify(user model.User) (model.User, error)
 }

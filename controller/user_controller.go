@@ -148,6 +148,7 @@ func (userReceiver *UserController) HandleAddToCart(c echo.Context) error {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	reqAddToCart.UserId = claims.UserId
+	reqAddToCart.IsBookNow = false
 	result, err := userReceiver.UserRepo.AddToCart(reqAddToCart)
 	//logger.Info("Add to cart logger " + err.Error())
 	if err != nil || !result {
@@ -1019,6 +1020,10 @@ func (userReceiver *UserController) HandleBookNow(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
 	reqBookNow.UserId = claims.UserId
+	sessionId, err := utils.GetNewId()
+	if err != nil {
+		return response.InternalServerError(c, "Tạo thanh toán thất bại", nil)
+	}
 	reqAddToCart := req.RequestAddToCart{
 		FromDate:         reqBookNow.FromDate,
 		NumberOfAdults:   reqBookNow.NumberOfAdults,
@@ -1029,22 +1034,13 @@ func (userReceiver *UserController) HandleBookNow(c echo.Context) error {
 		ToDate:           reqBookNow.ToDate,
 		UserId:           reqBookNow.UserId,
 		RoomTypeID:       reqBookNow.RoomTypeID,
+		IsBookNow:        true,
+		SessionId:        sessionId,
 	}
-	result, err := userReceiver.UserRepo.AddToCart(reqAddToCart)
-	if err != nil || !result {
-		return response.InternalServerError(c, "Đặt phòng thất bại", err.Error())
-	}
-	customer := model.User{
-		ID: claims.UserId,
-	}
-	_, err = userReceiver.PaymentRepo.CancelSessionPayment(claims.UserId)
-	if err != nil {
-		return response.InternalServerError(c, "Tạo thanh toán thất bại", nil)
-	}
-	customerResult, err := userReceiver.UserRepo.CreatePaymentFromCart(customer)
+	_, err = userReceiver.UserRepo.CreatePaymentBookNow(reqAddToCart)
 	if err != nil {
 		logger.Error("Error get profile data", zap.Error(err))
 		return response.InternalServerError(c, "Tải dữ liệu thất bại", nil)
 	}
-	return response.Ok(c, "Tạo thanh toán thành công", customerResult)
+	return response.Ok(c, "Tạo thanh toán thành công", sessionId)
 }

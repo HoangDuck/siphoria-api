@@ -19,6 +19,44 @@ type UserRepoImpl struct {
 	sql *db.Sql
 }
 
+func (userReceiver *UserRepoImpl) CreatePaymentBookNow(requestBookNow req.RequestAddToCart) (bool, error) {
+	for i := 0; i < requestBookNow.NumberOfRooms; i++ {
+		cartId, _ := utils.GetNewId()
+		dateBeginAt, _ := time.Parse("2006-01-02", requestBookNow.FromDate)
+		dateEndAt, _ := time.Parse("2006-01-02", requestBookNow.ToDate)
+
+		cart := model.AddCart{
+			ID:          cartId,
+			StartAt:     dateBeginAt,
+			EndAt:       dateEndAt,
+			AdultNum:    requestBookNow.NumberOfAdults,
+			ChildrenNum: requestBookNow.NumberOfChildren,
+			RoomTypeId:  requestBookNow.RoomTypeID,
+			RatePlanId:  requestBookNow.RatePlanID,
+			HotelId:     requestBookNow.HotelID,
+			UserId:      requestBookNow.UserId,
+			IsBookNow:   requestBookNow.IsBookNow,
+			SessionId:   requestBookNow.SessionId,
+		}
+		err := userReceiver.sql.Db.Exec("call sp_addpaymentbooknow(?,?,?,?,?,?,?,?,?,?);",
+			cart.ID,
+			cart.StartAt,
+			cart.EndAt,
+			cart.AdultNum,
+			cart.ChildrenNum,
+			cart.RatePlanId,
+			cart.RoomTypeId,
+			cart.HotelId,
+			cart.UserId,
+			cart.SessionId)
+		if err.Error != nil {
+			return false, err.Error
+		}
+	}
+
+	return true, nil
+}
+
 func (userReceiver *UserRepoImpl) GetListRank() ([]model.Rank, error) {
 	var listWallet []model.Rank
 	err := userReceiver.sql.Db.Model(&model.Rank{}).Find(&listWallet)
@@ -219,6 +257,7 @@ func (userReceiver *UserRepoImpl) AddToCart(requestAddCart req.RequestAddToCart)
 			RatePlanId:  requestAddCart.RatePlanID,
 			HotelId:     requestAddCart.HotelID,
 			UserId:      requestAddCart.UserId,
+			IsBookNow:   requestAddCart.IsBookNow,
 		}
 		err := userReceiver.sql.Db.Exec("call sp_addtocart(?,?,?,?,?,?,?,?,?);",
 			cart.ID,

@@ -12,6 +12,8 @@ type AddCart struct {
 	UserId      string    `json:"user_id"`
 	RoomTypeId  string    `json:"room_type_id"`
 	HotelId     string    `json:"hotel_id"`
+	IsBookNow   bool      `json:"-"`
+	SessionId   string    `json:"-"`
 }
 
 type Cart struct {

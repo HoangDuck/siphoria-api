@@ -92,6 +92,8 @@ type RequestAddToCart struct {
 	HotelID          string `json:"hotel_id"`
 	ToDate           string `json:"to_date"`
 	UserId           string
+	IsBookNow        bool   `json:"-"`
+	SessionId        string `json:"-"`
 }
 
 type RequestUpdatePaymentStatus struct {
