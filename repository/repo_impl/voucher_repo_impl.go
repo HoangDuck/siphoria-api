@@ -52,6 +52,7 @@ func (voucherReceiver *VoucherRepoImpl) DeleteVoucher(voucher model.Voucher) (bo
 
 func (voucherReceiver *VoucherRepoImpl) UpdateVoucher(voucher model.Voucher) (model.Voucher, error) {
 	err := voucherReceiver.sql.Db.Model(&voucher).Updates(voucher)
+	err = voucherReceiver.sql.Db.Select("activated").Model(&voucher).Updates(voucher)
 	if err.Error != nil {
 		logger.Error("Error update user failed ", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
