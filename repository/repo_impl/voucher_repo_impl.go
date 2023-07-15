@@ -35,6 +35,13 @@ func (voucherReceiver *VoucherRepoImpl) SaveBatchVoucher(listRoomTypeId []string
 	if err != nil {
 		return listTempVoucherExcept, err
 	}
+	errUpdateException := voucherReceiver.sql.Db.
+		Where("voucher_id = ? AND room_type_id not in ?", listRoomTypeId).
+		Update("is_deleted", true)
+
+	if errUpdateException.Error != nil {
+		return listTempVoucherExcept, errUpdateException.Error
+	}
 	return listTempVoucherExcept, nil
 }
 
