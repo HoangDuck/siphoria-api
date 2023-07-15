@@ -624,7 +624,22 @@ func (hotelController *HotelController) HandleGetReviewByHotel(c echo.Context) e
 	})
 }
 
+// HandleGetVouchersByHotel godoc
+// @Summary Get list voucher by hotel
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 422 {object} res.Response
+// @Router /hotels/:id/vouchers [get]
 func (hotelController *HotelController) HandleGetVouchersByHotel(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) ||
+		security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
 	var listVoucher []model.Voucher
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"hotel_id", "hotel", "id", "", "created_at", "updated_at", "-", "excepts", "is_deleted",
@@ -634,7 +649,7 @@ func (hotelController *HotelController) HandleGetVouchersByHotel(c echo.Context)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listVoucher)
 	}
-	return response.Ok(c, "Lấy danh sách yêu cầu voucher thành công", struct {
+	return response.Ok(c, "Lấy danh sách yêu cầu  thành công", struct {
 		Data   []model.Voucher `json:"data"`
 		Paging res.PagingModel `json:"paging"`
 	}{

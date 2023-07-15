@@ -23,8 +23,7 @@ type HotelRepoImpl struct {
 func (hotelReceiver *HotelRepoImpl) GetVoucherByHotelFilter(queryModel *query.DataQueryModel) ([]model.Voucher, error) {
 	var listVoucher []model.Voucher
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Voucher{}, queryModel.ListIgnoreColumns)
-	err = err.Where("hotel_id = ?", queryModel.DataId)
-	err = err.Where("activated = ?", true)
+	err = err.Preload("Hotel").Where("hotel_id = ?", queryModel.DataId)
 	var countTotalRows int64
 	err.Model(model.Voucher{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
