@@ -27,20 +27,30 @@ func (voucherReceiver *VoucherRepoImpl) SaveBatchVoucher(listRoomTypeId []string
 			IsDeleted:  false,
 		})
 	}
-	logger.Info(listTempVoucherExcept[0].RoomTypeId)
-	err := voucherReceiver.sql.Db.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "voucher_id"}, {Name: "room_type_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "is_deleted"}),
-	}).Create(&listTempVoucherExcept).Error
-	if err != nil {
-		return listTempVoucherExcept, err
-	}
-	errUpdateException := voucherReceiver.sql.Db.
-		Where("voucher_id = ? AND room_type_id not in ?", listRoomTypeId).
-		Update("is_deleted", true)
+	if len(listRoomTypeId) > 0 {
+		//logger.Info(listTempVoucherExcept[0].RoomTypeId)
+		err := voucherReceiver.sql.Db.Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "voucher_id"}, {Name: "room_type_id"}},
+			DoUpdates: clause.AssignmentColumns([]string{"updated_at", "is_deleted"}),
+		}).Create(&listTempVoucherExcept).Error
+		if err != nil {
+			return listTempVoucherExcept, err
+		}
+		errUpdateException := voucherReceiver.sql.Db.Model(&model.VoucherExcept{}).
+			Where("voucher_id = ? AND room_type_id not in ?", voucherId, listRoomTypeId).
+			Update("is_deleted", true)
 
-	if errUpdateException.Error != nil {
-		return listTempVoucherExcept, errUpdateException.Error
+		if errUpdateException.Error != nil {
+			return listTempVoucherExcept, errUpdateException.Error
+		}
+	} else {
+		errUpdateException := voucherReceiver.sql.Db.Model(&model.VoucherExcept{}).
+			Where("voucher_id = ?", voucherId).
+			Update("is_deleted", true)
+
+		if errUpdateException.Error != nil {
+			return listTempVoucherExcept, errUpdateException.Error
+		}
 	}
 	return listTempVoucherExcept, nil
 }
