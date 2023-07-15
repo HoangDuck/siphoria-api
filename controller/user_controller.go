@@ -996,7 +996,7 @@ func (userReceiver *UserController) HandleApplyVoucher(c echo.Context) error {
 	result, err := userReceiver.PaymentRepo.ApplyVoucherPayments(reqApplyVoucher)
 	if !result {
 		logger.Error("Error get profile data", zap.Error(err))
-		return response.InternalServerError(c, "Tải dữ liệu thất bại", err)
+		return response.InternalServerError(c, "Áp dụng voucher thất bại", err)
 	}
 	return response.Ok(c, "Áp dụng voucher thành công", "")
 }
