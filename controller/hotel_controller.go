@@ -623,3 +623,27 @@ func (hotelController *HotelController) HandleGetReviewByHotel(c echo.Context) e
 		},
 	})
 }
+
+func (hotelController *HotelController) HandleGetVouchersByHotel(c echo.Context) error {
+	var listVoucher []model.Voucher
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"hotel_id", "hotel", "id", "", "created_at", "updated_at", "-", "excepts", "is_deleted",
+	}, &model.Voucher{})
+	dataQueryModel.DataId = c.Param("id")
+	listVoucher, err := hotelController.HotelRepo.GetVoucherByHotelFilter(&dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listVoucher)
+	}
+	return response.Ok(c, "Lấy danh sách yêu cầu voucher thành công", struct {
+		Data   []model.Voucher `json:"data"`
+		Paging res.PagingModel `json:"paging"`
+	}{
+		Data: listVoucher,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
+}

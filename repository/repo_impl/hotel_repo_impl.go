@@ -20,6 +20,31 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
+func (hotelReceiver *HotelRepoImpl) GetVoucherByHotelFilter(queryModel *query.DataQueryModel) ([]model.Voucher, error) {
+	var listVoucher []model.Voucher
+	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Voucher{}, queryModel.ListIgnoreColumns)
+	err = err.Where("hotel_id = ?", queryModel.DataId)
+	err = err.Where("activated = ?", true)
+	var countTotalRows int64
+	err.Model(model.Voucher{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	err = err.Find(&listVoucher)
+	for index := 0; index < len(listVoucher); index++ {
+		var tempListVoucherExcept []model.VoucherExcept
+		errVoucherExcept := hotelReceiver.sql.Db.Where("voucher_id = ? AND is_deleted = false", listVoucher[index].ID).Find(&tempListVoucherExcept)
+		if errVoucherExcept.Error != nil {
+			logger.Error("Error get list voucher except url ", zap.Error(err.Error))
+			continue
+		}
+		listVoucher[index].Excepts = tempListVoucherExcept
+	}
+	if err.Error != nil {
+		logger.Error("Error get list voucher url ", zap.Error(err.Error))
+		return listVoucher, err.Error
+	}
+	return listVoucher, nil
+}
+
 func (hotelReceiver *HotelRepoImpl) GetHotelById(context echo.Context) (model.Hotel, error) {
 	var hotel model.Hotel
 	err := hotelReceiver.sql.Db.Preload("HotelFacility").Where("id = ?", context.Param("id")).Find(&hotel)
