@@ -27,6 +27,7 @@ func (voucherReceiver *VoucherRepoImpl) SaveBatchVoucher(listRoomTypeId []string
 			IsDeleted:  false,
 		})
 	}
+	logger.Info(listTempVoucherExcept[0].RoomTypeId)
 	err := voucherReceiver.sql.Db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "voucher_id"}, {Name: "room_type_id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "is_deleted"}),

@@ -13,7 +13,7 @@ type Voucher struct {
 	CreatedAt time.Time       `json:"created_at" gorm:"created_at"`
 	UpdatedAt time.Time       `json:"updated_at" gorm:"updated_at"`
 	HotelId   string          `json:"hotel_id"`
-	Hotel     Hotel           `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Hotel     *Hotel          `json:"hotel,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	IsDeleted bool            `json:"-" gorm:"is_deleted"`
 	Excepts   []VoucherExcept `json:"excepts" gorm:"-"`
 }
@@ -22,8 +22,8 @@ type VoucherExcept struct {
 	CreatedAt  time.Time `json:"created_at" gorm:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" gorm:"updated_at"`
 	VoucherId  string    `json:"voucher_id" gorm:"primary_key"`
-	Voucher    Voucher   `json:"voucher" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Voucher    *Voucher  `json:"voucher,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomTypeId string    `json:"room_type_id" gorm:"primary_key"`
-	RoomType   RoomType  `json:"room_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomType   *RoomType `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	IsDeleted  bool      `json:"-" gorm:"is_deleted"`
 }
