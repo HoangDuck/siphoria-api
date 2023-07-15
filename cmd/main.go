@@ -120,8 +120,9 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 	//initialize hotel controller with hotel repository
 	//feature: get data information details hotel
 	hotelController := controller.HotelController{
-		HotelRepo: repo_impl.NewHotelRepo(sql),
-		RoomRepo:  repo_impl.NewRoomRepo(sql),
+		HotelRepo:   repo_impl.NewHotelRepo(sql),
+		RoomRepo:    repo_impl.NewRoomRepo(sql),
+		VoucherRepo: repo_impl.NewVoucherRepo(sql),
 	}
 	//initialize file upload service, using cloudinary
 	//feature: upload images.
