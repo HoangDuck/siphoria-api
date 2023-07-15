@@ -20,8 +20,9 @@ import (
 )
 
 type HotelController struct {
-	HotelRepo repository.HotelRepo
-	RoomRepo  repository.RoomRepo
+	HotelRepo   repository.HotelRepo
+	RoomRepo    repository.RoomRepo
+	VoucherRepo repository.VoucherRepo
 }
 
 // HandleGetRoomTypeByHotel godoc

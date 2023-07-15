@@ -65,6 +65,12 @@ func (voucherController *VoucherController) HandleSaveVoucher(c echo.Context) er
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
+
+	listVoucherExcept, err := voucherController.VoucherRepo.SaveBatchVoucher(reqAddVoucher.ExceptRoom, result.ID)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	result.Excepts = listVoucherExcept
 	return response.Ok(c, "Lưu thành công", result)
 }
 
@@ -114,6 +120,12 @@ func (voucherController *VoucherController) HandleUpdateVoucher(c echo.Context) 
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
+
+	listVoucherExcept, err := voucherController.VoucherRepo.SaveBatchVoucher(reqUpdateVoucher.ExceptRoom, result.ID)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), nil)
+	}
+	result.Excepts = listVoucherExcept
 	return response.Ok(c, "Lưu thành công", result)
 }
 

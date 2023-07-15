@@ -3,14 +3,38 @@ package repo_impl
 import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"hotel-booking-api/db"
 	"hotel-booking-api/logger"
 	"hotel-booking-api/model"
 	"hotel-booking-api/repository"
+	"time"
 )
 
 type VoucherRepoImpl struct {
 	sql *db.Sql
+}
+
+func (voucherReceiver *VoucherRepoImpl) SaveBatchVoucher(listRoomTypeId []string, voucherId string) ([]model.VoucherExcept, error) {
+	var listTempVoucherExcept []model.VoucherExcept
+	listTempVoucherExcept = []model.VoucherExcept{}
+	for index := 0; index < len(listRoomTypeId); index++ {
+		listTempVoucherExcept = append(listTempVoucherExcept, model.VoucherExcept{
+			CreatedAt:  time.Now(),
+			UpdatedAt:  time.Now(),
+			VoucherId:  voucherId,
+			RoomTypeId: listRoomTypeId[index],
+			IsDeleted:  false,
+		})
+	}
+	err := voucherReceiver.sql.Db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "voucher_id"}, {Name: "room_type_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "is_deleted"}),
+	}).Create(&listTempVoucherExcept).Error
+	if err != nil {
+		return listTempVoucherExcept, err
+	}
+	return listTempVoucherExcept, nil
 }
 
 func (voucherReceiver *VoucherRepoImpl) DeleteVoucher(voucher model.Voucher) (bool, error) {
