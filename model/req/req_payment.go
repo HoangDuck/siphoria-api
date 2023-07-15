@@ -2,7 +2,7 @@ package req
 
 type RequestPaymentList struct {
 	CustomerName  string  `json:"customer_name"`
-	Amount        float32 `json:"amount"`
+	Amount        float32 `json:"amount" validate:"required,min=0"`
 	PaymentMethod string  `json:"payment_method"`
 	PaymentTime   string  `json:"payment_time"`
 	StatusPayment string  `json:"status_payment"`
