@@ -12,6 +12,7 @@ type RequestAddVoucher struct {
 }
 
 type RequestUpdateVoucher struct {
+	HotelId    string   `json:"hotel_id"`
 	Name       string   `json:"name"`
 	Discount   float32  `json:"discount"`
 	Activated  bool     `json:"activated"`

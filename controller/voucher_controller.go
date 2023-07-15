@@ -96,19 +96,15 @@ func (voucherController *VoucherController) HandleUpdateVoucher(c echo.Context) 
 	if !(security.CheckRole(claims, model.HOTELIER, false) || security.CheckRole(claims, model.MANAGER, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
-	voucherId, err := utils.GetNewId()
-	if err != nil {
-		return response.InternalServerError(c, err.Error(), nil)
-	}
 	dateBeginAt, err := time.Parse("2006-01-02", reqUpdateVoucher.BeginAt)
 	dateEndAt, err := time.Parse("2006-01-02", reqUpdateVoucher.EndAt)
 	if err != nil {
 	}
 	voucher := model.Voucher{
-		ID:        voucherId,
+		ID:        c.Param("id"),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		HotelId:   c.Param("id"),
+		HotelId:   reqUpdateVoucher.HotelId,
 		Name:      reqUpdateVoucher.Name,
 		Discount:  reqUpdateVoucher.Discount,
 		Activated: reqUpdateVoucher.Activated,
