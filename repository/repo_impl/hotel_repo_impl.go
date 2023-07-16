@@ -113,12 +113,12 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 	to := context.QueryParam("to")
 	city := context.QueryParam("city")
 	rating := context.QueryParam("rating")
-	value, errValue := strconv.ParseFloat(context.QueryParam("min"), 32)
+	value, errValue := strconv.ParseFloat(context.QueryParam("min_price"), 32)
 	if errValue != nil {
 		value = 0.0
 	}
 	min := float32(value)
-	value, errValue = strconv.ParseFloat(context.QueryParam("max"), 32)
+	value, errValue = strconv.ParseFloat(context.QueryParam("max_price"), 32)
 	if errValue != nil {
 		value = math.MaxInt64
 	}
