@@ -5,6 +5,7 @@ import (
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
+	"hotel-booking-api/model/res"
 )
 
 type HotelRepo interface {
@@ -21,4 +22,5 @@ type HotelRepo interface {
 	GetReviewsByHotel(queryModel *query.DataQueryModel) ([]model.Review, error)
 	GetHotelById(context echo.Context) (model.Hotel, error)
 	GetVoucherByHotelFilter(queryModel *query.DataQueryModel) ([]model.Voucher, error)
+	GetTotalReviewByHotel(context echo.Context) (res.TotalReviews, error)
 }

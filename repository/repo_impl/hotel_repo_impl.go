@@ -10,6 +10,7 @@ import (
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
+	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/utils"
 	"strconv"
@@ -18,6 +19,35 @@ import (
 
 type HotelRepoImpl struct {
 	sql *db.Sql
+}
+
+func (hotelReceiver *HotelRepoImpl) GetTotalReviewByHotel(context echo.Context) (res.TotalReviews, error) {
+	hotelId := context.QueryParam("id")
+	if hotelId == "" {
+		return res.TotalReviews{}, nil
+	}
+	var resultReviews res.TotalReviews
+	var resultAvgRating float32
+	var totalRatingCount, totalRatingFiveStart, totalRatingFourStart, totalRatingThreeStart, totalRatingTwoStart, totalRatingOneStart int64
+	err := hotelReceiver.sql.Db.Model(&model.Review{}).Select("coalesce(AVG(rating),0) as rating_avg").Where("hotel_id = ?", hotelId).Find(&resultAvgRating)
+	err = hotelReceiver.sql.Db.Model(&model.Review{}).Where("hotel_id = ?", hotelId).Count(&totalRatingCount)
+	err = hotelReceiver.sql.Db.Model(&model.Review{}).Where("hotel_id = ? AND rating = 5", hotelId).Count(&totalRatingFiveStart)
+	err = hotelReceiver.sql.Db.Model(&model.Review{}).Where("hotel_id = ? AND rating = 4", hotelId).Count(&totalRatingFourStart)
+	err = hotelReceiver.sql.Db.Model(&model.Review{}).Where("hotel_id = ? AND rating = 3", hotelId).Count(&totalRatingThreeStart)
+	err = hotelReceiver.sql.Db.Model(&model.Review{}).Where("hotel_id = ? AND rating = 2", hotelId).Count(&totalRatingTwoStart)
+	err = hotelReceiver.sql.Db.Model(&model.Review{}).Where("hotel_id = ? AND rating = 1", hotelId).Count(&totalRatingOneStart)
+	if err.Error != nil {
+		return resultReviews, err.Error
+	}
+	resultReviews = res.TotalReviews{
+		Average:       resultAvgRating,
+		OneStarRate:   float32(totalRatingOneStart / totalRatingCount),
+		TwoStarRate:   float32(totalRatingTwoStart / totalRatingCount),
+		ThreeStarRate: float32(totalRatingThreeStart / totalRatingCount),
+		FourStarRate:  float32(totalRatingFourStart / totalRatingCount),
+		FiveStarRate:  float32(totalRatingFiveStart / totalRatingCount),
+	}
+	return resultReviews, nil
 }
 
 func (hotelReceiver *HotelRepoImpl) GetVoucherByHotelFilter(queryModel *query.DataQueryModel) ([]model.Voucher, error) {

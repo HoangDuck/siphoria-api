@@ -674,7 +674,7 @@ func (hotelController *HotelController) HandleGetVouchersByHotel(c echo.Context)
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /hotels/revenue [patch]
+// @Router /hotels/revenue [post]
 func (hotelController *HotelController) HandleGetStatisticRevenue(c echo.Context) error {
 	reqGetRevenue := req.RequestGetRevenue{}
 	if err := c.Bind(&reqGetRevenue); err != nil {
@@ -720,4 +720,21 @@ func (hotelController *HotelController) HandleGetStatisticRevenue(c echo.Context
 			Offset:     dataQueryModel.Limit,
 		},
 	})
+}
+
+// HandleGetTotalReviews godoc
+// @Summary get total reviews by hotel
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /hotels/total [get]
+func (hotelController *HotelController) HandleGetTotalReviews(c echo.Context) error {
+	result, err := hotelController.HotelRepo.GetTotalReviewByHotel(c)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), result)
+	}
+	return response.Ok(c, "Lấy danh sách đánh giá thành công", result)
 }
