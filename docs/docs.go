@@ -1205,7 +1205,7 @@ const docTemplate = `{
             }
         },
         "/hotels/revenue": {
-            "post": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],

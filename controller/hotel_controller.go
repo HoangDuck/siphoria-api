@@ -674,18 +674,19 @@ func (hotelController *HotelController) HandleGetVouchersByHotel(c echo.Context)
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /hotels/revenue [post]
+// @Router /hotels/revenue [get]
 func (hotelController *HotelController) HandleGetStatisticRevenue(c echo.Context) error {
-	reqGetRevenue := req.RequestGetRevenue{}
-	if err := c.Bind(&reqGetRevenue); err != nil {
-		return response.BadRequest(c, "Yêu cầu không hợp lệ", nil)
-	}
-	logger.Info("LIMIT query param " + c.QueryParam("offset"))
+
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*model.JwtCustomClaims)
 	if !(security.CheckRole(claims, model.HOTELIER, false) ||
 		security.CheckRole(claims, model.MANAGER, false)) {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	reqGetRevenue := req.RequestGetRevenue{
+		ID:   c.QueryParam("id"),
+		From: c.QueryParam("from"),
+		To:   c.QueryParam("to"),
 	}
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"room_type",

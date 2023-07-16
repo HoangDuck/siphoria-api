@@ -1384,7 +1384,7 @@ paths:
       tags:
       - hotel-service
   /hotels/revenue:
-    post:
+    get:
       consumes:
       - application/json
       parameters:

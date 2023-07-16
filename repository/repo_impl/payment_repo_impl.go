@@ -29,9 +29,10 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, reqGetRevenue req.RequestGetRevenue, queryModel *query.DataQueryModel) ([]model.PaymentRevenueStatistic, float32, float32, error) {
 	var listPaymentStatistic []model.PaymentRevenueStatistic
 	err := paymentReceiver.sql.Db.Raw("SELECT * FROM vw_hotels_revenue"+
-		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) order by created_at DESC  "+
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND id LIKE CONCAT('%', ?, '%') order by created_at DESC  "+
 		" offset ? Limit ?;",
-		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To, queryModel.Page, queryModel.Limit)
+		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To, context.QueryParam("search"),
+		queryModel.Page, queryModel.Limit)
 	err = err.Scan(&listPaymentStatistic)
 	var unpaid, paid float32
 	err = paymentReceiver.sql.Db.Raw("SELECT coalesce(sum(total_price),0) FROM vw_hotels_revenue"+
