@@ -154,6 +154,9 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 	if err.Error != nil {
 		return listHotelData, err.Error
 	}
+	if listHotelData == nil {
+		return []model.HotelSearch{}, nil
+	}
 	return listHotelData, nil
 }
 
