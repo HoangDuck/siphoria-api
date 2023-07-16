@@ -1456,28 +1456,6 @@ paths:
       summary: Get hotel mobile
       tags:
       - hotel-service
-  /hotels/total:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/res.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/res.Response'
-      summary: get total reviews by hotel
-      tags:
-      - hotel-service
   /payment/create-momo:
     get:
       consumes:
@@ -1691,6 +1669,28 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Get reviews by hotel
+      tags:
+      - hotel-service
+  /reviews/total:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: get total reviews by hotel
       tags:
       - hotel-service
   /room/:id/rateplans:
