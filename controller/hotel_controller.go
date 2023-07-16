@@ -731,11 +731,38 @@ func (hotelController *HotelController) HandleGetStatisticRevenue(c echo.Context
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /reviews/total [get]
+// @Router /rev/total [get]
 func (hotelController *HotelController) HandleGetTotalReviews(c echo.Context) error {
 	result, err := hotelController.HotelRepo.GetTotalReviewByHotel(c)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), result)
 	}
 	return response.Ok(c, "Lấy danh sách đánh giá thành công", result)
+}
+
+func (hotelController *HotelController) HandleGetListCheckInByHotel(c echo.Context) error {
+	var listPaymentCheckIn []model.Payment
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"id", "user_id", "user", "room_type_id", "room_type",
+		"voucher_id", "voucher", "payout_request_id", "payout_request",
+		"hotel_id", "hotel", "rate_plan_id", "rate_plan", "created_at",
+		"updated_at", "cart_id", "payment_details", "-",
+	}, &model.Payment{})
+	dataQueryModel.DataId = c.QueryParam("id")
+	listPaymentCheckIn, err := hotelController.HotelRepo.GetListCheckInByHotel(c, &dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), listPaymentCheckIn)
+	}
+	return response.Ok(c, "Lấy danh sách yêu cầu  thành công", struct {
+		Data   []model.Payment `json:"data"`
+		Paging res.PagingModel `json:"paging"`
+	}{
+		Data: listPaymentCheckIn,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
 }

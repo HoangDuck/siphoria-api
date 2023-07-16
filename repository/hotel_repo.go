@@ -23,4 +23,5 @@ type HotelRepo interface {
 	GetHotelById(context echo.Context) (model.Hotel, error)
 	GetVoucherByHotelFilter(queryModel *query.DataQueryModel) ([]model.Voucher, error)
 	GetTotalReviewByHotel(context echo.Context) (res.TotalReviews, error)
+	GetListCheckInByHotel(context echo.Context, queryModel *query.DataQueryModel) ([]model.Payment, error)
 }

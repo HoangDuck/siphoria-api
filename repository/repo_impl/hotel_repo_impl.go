@@ -21,6 +21,11 @@ type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
+func (hotelReceiver *HotelRepoImpl) GetListCheckInByHotel(context echo.Context, queryModel *query.DataQueryModel) ([]model.Payment, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (hotelReceiver *HotelRepoImpl) GetTotalReviewByHotel(context echo.Context) (res.TotalReviews, error) {
 	hotelId := context.QueryParam("id")
 	if hotelId == "" {
@@ -107,6 +112,8 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 	to := context.QueryParam("to")
 	city := context.QueryParam("city")
 	rating := context.QueryParam("rating")
+	min := context.QueryParam("min")
+	max := context.QueryParam("max")
 	n_o_r := 1
 	if context.QueryParam("n_o_r") != "" {
 		temp_n_o_r, err := strconv.ParseInt(context.QueryParam("n_o_r"), 10, 32)
@@ -134,7 +141,7 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 	if rating == "" {
 		rating = "1,2,3,4,5"
 	}
-	err := hotelReceiver.sql.Db.Raw("select * from fn_searchhotel(?,?,?,?,?,?,?::text)", from, to, n_o_r, n_o_a, n_o_c, city, rating).Scan(&listHotelData)
+	err := hotelReceiver.sql.Db.Raw("select * from fn_searchhotel(?,?,?,?,?,?,?::text,?,?)", from, to, n_o_r, n_o_a, n_o_c, city, rating, min, max).Scan(&listHotelData)
 	if err.Error != nil {
 		return listHotelData, err.Error
 	}
