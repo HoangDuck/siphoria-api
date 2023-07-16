@@ -21,8 +21,9 @@ func GetQueryDataModel(c echo.Context, listIgnoreColumns []string, modelStruct a
 	//limit item can get
 	tempValueLimit := c.QueryParam("offset")
 	limit, err := strconv.ParseInt(tempValueLimit, 10, 32)
-	if err != nil {
+	if err != nil || tempValueLimit == "" {
 		model.Limit = math.MaxInt32
+		limit = math.MaxInt32
 	}
 	//page index
 	tempValuePage := c.QueryParam("page")

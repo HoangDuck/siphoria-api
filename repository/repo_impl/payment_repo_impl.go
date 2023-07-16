@@ -26,6 +26,27 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, reqGetRevenue req.RequestGetRevenue, queryModel *query.DataQueryModel) ([]model.PaymentRevenueStatistic, float32, float32, error) {
+	var listPaymentStatistic []model.PaymentRevenueStatistic
+	err := paymentReceiver.sql.Db.Raw("SELECT * FROM vw_hotels_revenue"+
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) order by created_at DESC  "+
+		" offset ? Limit ?;",
+		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To, queryModel.Page, queryModel.Limit)
+	err = err.Scan(&listPaymentStatistic)
+	var unpaid, paid float32
+	err = paymentReceiver.sql.Db.Raw("SELECT coalesce(sum(total_price),0) FROM vw_hotels_revenue"+
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND payout_status in ('unsent','sent')",
+		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To).Scan(&unpaid)
+	err = paymentReceiver.sql.Db.Raw("SELECT coalesce(sum(total_price),0) FROM vw_hotels_revenue"+
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND payout_status = 'paid'",
+		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To).Scan(&paid)
+	if err.Error != nil {
+		logger.Error("Get payment data", zap.Error(err.Error))
+		return listPaymentStatistic, 0, 0, err.Error
+	}
+	return listPaymentStatistic, unpaid, paid, nil
+}
+
 func (paymentReceiver *PaymentRepoImpl) UpdateUserRank(userRank model.UserRank) (bool, error) {
 	result := paymentReceiver.sql.Db.Model(&model.UserRank{}).Create(&userRank)
 	if result.Error != nil {

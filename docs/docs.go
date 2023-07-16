@@ -1170,6 +1170,85 @@ const docTemplate = `{
                 }
             }
         },
+        "/hotels/:id/vouchers": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "Get list voucher by hotel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels/revenue": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "get statistic revenue by hotel",
+                "parameters": [
+                    {
+                        "description": "hotel",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.RequestGetRevenue"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/hotels/search": {
             "get": {
                 "consumes": [
@@ -3015,6 +3094,11 @@ const docTemplate = `{
         },
         "req.RequestAddToCart": {
             "type": "object",
+            "required": [
+                "number_of_adults",
+                "number_of_children",
+                "number_of_rooms"
+            ],
             "properties": {
                 "from_date": {
                     "type": "string"
@@ -3023,13 +3107,16 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "number_of_adults": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "number_of_children": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "number_of_rooms": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "rate_plan_id": {
                     "type": "string"
@@ -3063,6 +3150,12 @@ const docTemplate = `{
                 "end_at": {
                     "type": "string"
                 },
+                "except_room": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "hotel_id": {
                     "type": "string"
                 },
@@ -3084,6 +3177,11 @@ const docTemplate = `{
         },
         "req.RequestBookNow": {
             "type": "object",
+            "required": [
+                "number_of_adults",
+                "number_of_children",
+                "number_of_rooms"
+            ],
             "properties": {
                 "from_date": {
                     "type": "string"
@@ -3092,13 +3190,16 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "number_of_adults": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "number_of_children": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "number_of_rooms": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "rate_plan_id": {
                     "type": "string"
@@ -3387,6 +3488,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "rate_plan_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.RequestGetRevenue": {
+            "type": "object",
+            "properties": {
+                "from": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "to": {
                     "type": "string"
                 }
             }
@@ -3790,6 +3905,15 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "end_at": {
+                    "type": "string"
+                },
+                "except_room": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "hotel_id": {
                     "type": "string"
                 },
                 "name": {

@@ -69,3 +69,9 @@ type RequestUpdateHotel struct {
 type RequestCreatePayout struct {
 	Payments string `json:"payments"`
 }
+
+type RequestGetRevenue struct {
+	ID   string `json:"id"`
+	From string `json:"from"`
+	To   string `json:"to"`
+}

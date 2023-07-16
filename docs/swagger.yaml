@@ -55,10 +55,13 @@ definitions:
       hotel_id:
         type: string
       number_of_adults:
+        minimum: 1
         type: integer
       number_of_children:
+        minimum: 0
         type: integer
       number_of_rooms:
+        minimum: 1
         type: integer
       rate_plan_id:
         type: string
@@ -68,6 +71,10 @@ definitions:
         type: string
       userId:
         type: string
+    required:
+    - number_of_adults
+    - number_of_children
+    - number_of_rooms
     type: object
   req.RequestAddVoucher:
     properties:
@@ -81,6 +88,10 @@ definitions:
         type: number
       end_at:
         type: string
+      except_room:
+        items:
+          type: string
+        type: array
       hotel_id:
         type: string
       name:
@@ -100,10 +111,13 @@ definitions:
       hotel_id:
         type: string
       number_of_adults:
+        minimum: 1
         type: integer
       number_of_children:
+        minimum: 0
         type: integer
       number_of_rooms:
+        minimum: 1
         type: integer
       rate_plan_id:
         type: string
@@ -113,6 +127,10 @@ definitions:
         type: string
       userId:
         type: string
+    required:
+    - number_of_adults
+    - number_of_children
+    - number_of_rooms
     type: object
   req.RequestCancelBooking:
     properties:
@@ -295,6 +313,15 @@ definitions:
   req.RequestGetRatePlan:
     properties:
       rate_plan_id:
+        type: string
+    type: object
+  req.RequestGetRevenue:
+    properties:
+      from:
+        type: string
+      id:
+        type: string
+      to:
         type: string
     type: object
   req.RequestNewPasswordReset:
@@ -561,6 +588,12 @@ definitions:
       discount:
         type: number
       end_at:
+        type: string
+      except_room:
+        items:
+          type: string
+        type: array
+      hotel_id:
         type: string
       name:
         type: string
@@ -1326,6 +1359,57 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Get room type by hotel
+      tags:
+      - hotel-service
+  /hotels/:id/vouchers:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get list voucher by hotel
+      tags:
+      - hotel-service
+  /hotels/revenue:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: hotel
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestGetRevenue'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: get statistic revenue by hotel
       tags:
       - hotel-service
   /hotels/search:

@@ -123,6 +123,7 @@ func InitController(api *router.API, sql *db.Sql, echoInstance *echo.Echo) {
 		HotelRepo:   repo_impl.NewHotelRepo(sql),
 		RoomRepo:    repo_impl.NewRoomRepo(sql),
 		VoucherRepo: repo_impl.NewVoucherRepo(sql),
+		PaymentRepo: repo_impl.NewPaymentRepo(sql),
 	}
 	//initialize file upload service, using cloudinary
 	//feature: upload images.

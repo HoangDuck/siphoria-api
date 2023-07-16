@@ -28,6 +28,7 @@ type PaymentRepo interface {
 	GetUserWalletInfo(userId string) (model.Wallet, error)
 	ApplyVoucherPayments(requestApplyVoucher req.RequestApplyVoucher) (bool, error)
 	UpdateUserRank(userRank model.UserRank) (bool, error)
+	GetHotelRevenue(context echo.Context, reqGetRevenue req.RequestGetRevenue, queryModel *query.DataQueryModel) ([]model.PaymentRevenueStatistic, float32, float32, error)
 	//GetBillPayment(payment model.Payment) (model.Payment, error)
 	//SavePayment(payment model.Payment) (model.Payment, error)
 	//UpdatePayment(payment model.Payment) (model.Payment, error)

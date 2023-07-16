@@ -91,6 +91,7 @@ func (api *API) SetupRouter() {
 	hotel.GET("/payouts/:id", api.HotelController.HandleGetPayoutRequestByHotel, middleware.JWTMiddleWare())
 	hotel.GET("/reviews/:id", api.HotelController.HandleGetReviewByHotel)
 	hotel.GET("/:id/vouchers", api.HotelController.HandleGetVouchersByHotel, middleware.JWTMiddleWare())
+	hotel.POST("/revenue", api.HotelController.HandleGetStatisticRevenue, middleware.JWTMiddleWare())
 
 	room := request.Group("/rooms")
 	room.GET("/welcome-room", func(context echo.Context) error {

@@ -23,6 +23,7 @@ type HotelController struct {
 	HotelRepo   repository.HotelRepo
 	RoomRepo    repository.RoomRepo
 	VoucherRepo repository.VoucherRepo
+	PaymentRepo repository.PaymentRepo
 }
 
 // HandleGetRoomTypeByHotel godoc
@@ -655,6 +656,63 @@ func (hotelController *HotelController) HandleGetVouchersByHotel(c echo.Context)
 		Paging res.PagingModel `json:"paging"`
 	}{
 		Data: listVoucher,
+		Paging: res.PagingModel{
+			TotalItems: dataQueryModel.TotalRows,
+			TotalPages: dataQueryModel.TotalPages,
+			Page:       dataQueryModel.PageViewIndex,
+			Offset:     dataQueryModel.Limit,
+		},
+	})
+}
+
+// HandleGetStatisticRevenue godoc
+// @Summary get statistic revenue by hotel
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestGetRevenue true "hotel"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /hotels/revenue [patch]
+func (hotelController *HotelController) HandleGetStatisticRevenue(c echo.Context) error {
+	reqGetRevenue := req.RequestGetRevenue{}
+	if err := c.Bind(&reqGetRevenue); err != nil {
+		return response.BadRequest(c, "Yêu cầu không hợp lệ", nil)
+	}
+	logger.Info("LIMIT query param " + c.QueryParam("offset"))
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) ||
+		security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	dataQueryModel := utils.GetQueryDataModel(c, []string{
+		"room_type",
+	}, &model.PaymentRevenueStatistic{})
+	listRevenue, unpaid, paid, err := hotelController.PaymentRepo.GetHotelRevenue(c, reqGetRevenue, &dataQueryModel)
+	if err != nil {
+		return response.InternalServerError(c, err.Error(), err)
+	}
+	return response.Ok(c, "Lấy dữ liệu thống kê thành công", struct {
+		Data    []model.PaymentRevenueStatistic `json:"data"`
+		Summary struct {
+			Revenue     float32 `json:"revenue"`
+			PaidCount   float32 `json:"paid_count"`
+			UnpaidCount float32 `json:"unpaid_count"`
+		} `json:"summary"`
+		Paging res.PagingModel `json:"paging"`
+	}{
+		Data: listRevenue,
+		Summary: struct {
+			Revenue     float32 `json:"revenue"`
+			PaidCount   float32 `json:"paid_count"`
+			UnpaidCount float32 `json:"unpaid_count"`
+		}{
+			Revenue:     unpaid + paid,
+			PaidCount:   paid,
+			UnpaidCount: unpaid,
+		},
 		Paging: res.PagingModel{
 			TotalItems: dataQueryModel.TotalRows,
 			TotalPages: dataQueryModel.TotalPages,

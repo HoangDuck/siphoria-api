@@ -84,3 +84,19 @@ type PayoutRequest struct {
 	Payer        User      `json:"payer" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PaymentList  string    `json:"payment_list" gorm:"payment_list"`
 }
+
+type PaymentRevenueStatistic struct {
+	ID             string    `json:"id" gorm:"id"`
+	CreatedAt      time.Time `json:"created_at" gorm:"created_at"`
+	StartAt        time.Time `json:"start_at" gorm:"start_at"`
+	EndAt          time.Time `json:"end_at" gorm:"end_at"`
+	RoomTypeId     string    `json:"room_type_id" gorm:"room_type_id"`
+	RoomType       *RoomType `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomTypeName   string    `json:"room_type_name" gorm:"room_type_name"`
+	TotalPrice     float32   `json:"total_price" gorm:"total_price"`
+	CommissionRate float32   `json:"commission_rate" gorm:"commission_rate"`
+	PaymentStatus  string    `json:"payment_status" gorm:"payment_status"`
+	HotelId        string    `json:"hotel_id" gorm:"hotel_id"`
+	HotelName      string    `json:"hotel_name" gorm:"hotel_name"`
+	PayoutStatus   string    `json:"payout_status" gorm:"payout_status"`
+}
