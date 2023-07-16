@@ -13,6 +13,7 @@ import (
 	"hotel-booking-api/model/res"
 	"hotel-booking-api/repository"
 	"hotel-booking-api/utils"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -119,7 +120,7 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 	min := float32(value)
 	value, errValue = strconv.ParseFloat(context.QueryParam("max"), 32)
 	if errValue != nil {
-		value = 0.0
+		value = math.MaxInt64
 	}
 	max := float32(value)
 	n_o_r := 1
