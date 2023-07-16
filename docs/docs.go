@@ -979,7 +979,7 @@ const docTemplate = `{
                 "tags": [
                     "hotel-service"
                 ],
-                "summary": "Get payout request by hotel",
+                "summary": "Get hotel by Id",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1182,6 +1182,40 @@ const docTemplate = `{
                     "hotel-service"
                 ],
                 "summary": "Get list voucher by hotel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels/payouts/:id": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotel-service"
+                ],
+                "summary": "Get payout request by hotel",
                 "responses": {
                     "200": {
                         "description": "OK",

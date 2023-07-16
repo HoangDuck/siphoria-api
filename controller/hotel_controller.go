@@ -562,7 +562,7 @@ func (hotelController *HotelController) HandleUpdateHotel(c echo.Context) error 
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 422 {object} res.Response
-// @Router /hotels/:id [get]
+// @Router /hotels/payouts/:id [get]
 func (hotelController *HotelController) HandleGetPayoutRequestByHotel(c echo.Context) error {
 	var listPayoutRequest []model.PayoutRequest
 	token := c.Get("user").(*jwt.Token)
