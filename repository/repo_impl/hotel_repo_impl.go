@@ -39,6 +39,9 @@ func (hotelReceiver *HotelRepoImpl) GetTotalReviewByHotel(context echo.Context) 
 	if err.Error != nil {
 		return resultReviews, err.Error
 	}
+	if totalRatingCount == 0 {
+		totalRatingCount = 1
+	}
 	resultReviews = res.TotalReviews{
 		Average:       resultAvgRating,
 		OneStarRate:   float32(totalRatingOneStart / totalRatingCount),

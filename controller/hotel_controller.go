@@ -731,7 +731,7 @@ func (hotelController *HotelController) HandleGetStatisticRevenue(c echo.Context
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /hotels/total [get]
+// @Router /reviews/total [get]
 func (hotelController *HotelController) HandleGetTotalReviews(c echo.Context) error {
 	result, err := hotelController.HotelRepo.GetTotalReviewByHotel(c)
 	if err != nil {
