@@ -83,6 +83,7 @@ type PayoutRequest struct {
 	PayerId      string    `json:"payer_id"`
 	Payer        User      `json:"payer" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PaymentList  string    `json:"payment_list" gorm:"payment_list"`
+	IsDeleted    bool      `json:"-" gorm:"is_deleted"`
 }
 
 type PaymentRevenueStatistic struct {

@@ -18,10 +18,10 @@ type AdminRepoImpl struct {
 
 func (u *AdminRepoImpl) GetPayoutRequest(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
 	var listPayoutRequest []model.PayoutRequest
-	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
-	err = err.Preload("Hotel").Preload("User").Preload("User")
+	err := GenerateQueryGetData(u.sql, queryModel, &model.PayoutRequest{}, queryModel.ListIgnoreColumns)
+	err = err.Preload("Hotel").Preload("Pettioner").Preload("Payer")
 	var countTotalRows int64
-	err.Model(model.PayoutRequest{}).Count(&countTotalRows)
+	err.Model(&model.PayoutRequest{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
 	err = err.Find(&listPayoutRequest)
 	if err.Error != nil {

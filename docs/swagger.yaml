@@ -137,6 +137,11 @@ definitions:
       payment_id:
         type: string
     type: object
+  req.RequestCheckInPayment:
+    properties:
+      payment_id:
+        type: string
+    type: object
   req.RequestCreateHotel:
     properties:
       activate:
@@ -1381,6 +1386,56 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: Get list voucher by hotel
+      tags:
+      - hotel-service
+  /hotels/checkin:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: get list check in by
+      tags:
+      - hotel-service
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: payment
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/req.RequestCheckInPayment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Handle update check in booking
       tags:
       - hotel-service
   /hotels/payouts/:id:
