@@ -576,6 +576,7 @@ func (hotelController *HotelController) HandleGetPayoutRequestByHotel(c echo.Con
 		"pettioner", "hotel", "payer", "", "created_at", "updated_at", "-", "open_at", "close_at",
 	}, &model.Hotel{})
 	dataQueryModel.UserId = claims.UserId
+	dataQueryModel.DataId = c.Param("id")
 	listPayoutRequest, err := hotelController.HotelRepo.GetPayoutRequestByHotel(&dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listPayoutRequest)
