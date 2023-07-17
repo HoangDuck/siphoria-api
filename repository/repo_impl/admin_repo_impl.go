@@ -10,6 +10,7 @@ import (
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
 	"hotel-booking-api/repository"
+	"strings"
 )
 
 type AdminRepoImpl struct {
@@ -24,6 +25,9 @@ func (u *AdminRepoImpl) GetPayoutRequest(queryModel *query.DataQueryModel) ([]mo
 	err.Model(&model.PayoutRequest{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
 	err = err.Find(&listPayoutRequest)
+	for index := 0; index < len(listPayoutRequest); index++ {
+		listPayoutRequest[index].PaymentListArray = strings.Split(listPayoutRequest[index].PaymentList, ",")
+	}
 	if err.Error != nil {
 		logger.Error("Error get list hotel work url ", zap.Error(err.Error))
 		return listPayoutRequest, err.Error

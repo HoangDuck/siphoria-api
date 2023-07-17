@@ -211,6 +211,9 @@ func (hotelReceiver *HotelRepoImpl) GetPayoutRequestByHotel(queryModel *query.Da
 	err.Model(&model.PayoutRequest{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
 	err = err.Find(&listPayoutRequest)
+	for index := 0; index < len(listPayoutRequest); index++ {
+		listPayoutRequest[index].PaymentListArray = strings.Split(listPayoutRequest[index].PaymentList, ",")
+	}
 	if err.Error != nil {
 		logger.Error("Error get list room type url ", zap.Error(err.Error))
 		return listPayoutRequest, err.Error
@@ -396,6 +399,7 @@ func (hotelReceiver *HotelRepoImpl) CreateRequestPayout(payoutRequest model.Payo
 	err := hotelReceiver.sql.Db.Raw("select * from fn_calculateTotalPricePayment(?,?) as total_price", payoutRequest.HotelId, strings.Join(paymentIds, ",")).Scan(&result)
 	payoutRequest.TotalPrice = float32(result)
 	payoutRequest.PaymentList = strings.Join(paymentIds, ",")
+	payoutRequest.PaymentListArray = paymentIds
 	err = hotelReceiver.sql.Db.Model(&model.Payment{}).Where("id IN ?", paymentIds).Update("payout_request_id", payoutRequest.ID)
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))

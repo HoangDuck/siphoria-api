@@ -68,22 +68,23 @@ type PaymentDetail struct {
 }
 
 type PayoutRequest struct {
-	ID           string    `json:"id" gorm:"primary_key"`
-	OpenAt       time.Time `json:"open_at" gorm:"open_at"`
-	CloseAt      time.Time `json:"close_at" gorm:"close_at"`
-	Resolve      bool      `json:"resolve" gorm:"resolve"`
-	TotalRequest int       `json:"total_request" gorm:"total_request"`
-	TotalPrice   float32   `json:"total_price" gorm:"total_price"`
-	CreatedAt    time.Time `json:"created_at" gorm:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at" gorm:"updated_at"`
-	HotelId      string    `json:"hotel_id"`
-	Hotel        Hotel     `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	PettionerId  string    `json:"pettioner_id"`
-	Pettioner    User      `json:"pettioner" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	PayerId      string    `json:"payer_id"`
-	Payer        *User     `json:"payer,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	PaymentList  string    `json:"payment_list" gorm:"payment_list"`
-	IsDeleted    bool      `json:"-" gorm:"is_deleted"`
+	ID               string    `json:"id" gorm:"primary_key"`
+	OpenAt           time.Time `json:"open_at" gorm:"open_at"`
+	CloseAt          time.Time `json:"close_at" gorm:"close_at"`
+	Resolve          bool      `json:"resolve" gorm:"resolve"`
+	TotalRequest     int       `json:"total_request" gorm:"total_request"`
+	TotalPrice       float32   `json:"total_price" gorm:"total_price"`
+	CreatedAt        time.Time `json:"created_at" gorm:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at" gorm:"updated_at"`
+	HotelId          string    `json:"hotel_id"`
+	Hotel            Hotel     `json:"hotel" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PettionerId      string    `json:"pettioner_id"`
+	Pettioner        User      `json:"pettioner" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PayerId          string    `json:"payer_id"`
+	Payer            *User     `json:"payer,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PaymentList      string    `json:"-" gorm:"payment_list"`
+	PaymentListArray []string  `json:"payment_list" gorm:"-"`
+	IsDeleted        bool      `json:"-" gorm:"is_deleted"`
 }
 
 type PaymentRevenueStatistic struct {
