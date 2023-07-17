@@ -45,10 +45,22 @@ func (paymentReceiver *PaymentRepoImpl) UpdateCheckInBookingPayment(reqCheckInPa
 
 func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, reqGetRevenue req.RequestGetRevenue, queryModel *query.DataQueryModel) ([]model.PaymentRevenueStatistic, float32, float32, error) {
 	var listPaymentStatistic []model.PaymentRevenueStatistic
+	var payoutStatusFilter []string
+	payoutStatusFilter = []string{}
+
+	if context.QueryParam("type") != "" {
+		payoutStatusFilter = append(payoutStatusFilter, context.QueryParam("type"))
+	} else {
+		payoutStatusFilter = append(payoutStatusFilter, "paid")
+		payoutStatusFilter = append(payoutStatusFilter, "unsent")
+		payoutStatusFilter = append(payoutStatusFilter, "sent")
+	}
 	err := paymentReceiver.sql.Db.Raw("SELECT * FROM vw_hotels_revenue"+
-		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND id LIKE CONCAT('%', ?, '%') order by created_at DESC  "+
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND id LIKE CONCAT('%', ?, '%') "+
+		"AND payout_status in ? "+
+		"order by created_at DESC "+
 		" offset ? Limit ?;",
-		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To, context.QueryParam("search"),
+		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To, context.QueryParam("search"), payoutStatusFilter,
 		queryModel.Page, queryModel.Limit)
 	err = err.Scan(&listPaymentStatistic)
 	var unpaid, paid float32
