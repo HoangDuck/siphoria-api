@@ -517,6 +517,7 @@ func (hotelController *HotelController) HandleSendRequestPaymentHotel(c echo.Con
 		Resolve:      false,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
+		IsDeleted:    false,
 	}
 	payoutRequestResult, err := hotelController.HotelRepo.CreateRequestPayout(payoutRequest, listPaymentId)
 

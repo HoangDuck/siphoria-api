@@ -81,7 +81,7 @@ type PayoutRequest struct {
 	PettionerId  string    `json:"pettioner_id"`
 	Pettioner    User      `json:"pettioner" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PayerId      string    `json:"payer_id"`
-	Payer        User      `json:"payer" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Payer        *User     `json:"payer,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PaymentList  string    `json:"payment_list" gorm:"payment_list"`
 	IsDeleted    bool      `json:"-" gorm:"is_deleted"`
 }
