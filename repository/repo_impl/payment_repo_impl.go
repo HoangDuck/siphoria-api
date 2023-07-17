@@ -45,6 +45,7 @@ func (paymentReceiver *PaymentRepoImpl) UpdateCheckInBookingPayment(reqCheckInPa
 
 func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, reqGetRevenue req.RequestGetRevenue, queryModel *query.DataQueryModel) ([]model.PaymentRevenueStatistic, float32, float32, error) {
 	var listPaymentStatistic []model.PaymentRevenueStatistic
+	listPaymentStatistic = []model.PaymentRevenueStatistic{}
 	var payoutStatusFilter []string
 	payoutStatusFilter = []string{}
 	var totalItem int64
