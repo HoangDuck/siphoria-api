@@ -750,7 +750,7 @@ func (hotelController *HotelController) HandleGetTotalReviews(c echo.Context) er
 // @Failure 500 {object} res.Response
 // @Router /hotels/checkin [get]
 func (hotelController *HotelController) HandleGetListCheckInByHotel(c echo.Context) error {
-	var listPaymentCheckIn []model.Payment
+	var listPaymentCheckIn []res.PaymentCheckInStatistic
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"id", "user_id", "user", "room_type_id", "room_type",
 		"voucher_id", "voucher", "payout_request_id", "payout_request",
@@ -763,7 +763,7 @@ func (hotelController *HotelController) HandleGetListCheckInByHotel(c echo.Conte
 		return response.InternalServerError(c, err.Error(), listPaymentCheckIn)
 	}
 	return response.Ok(c, "Lấy danh sách check in thành công", struct {
-		Data    []model.Payment `json:"data"`
+		Data    []res.PaymentCheckInStatistic `json:"data"`
 		Summary struct {
 			CheckIn   int `json:"check_in"`
 			CheckedIn int `json:"checked_in"`

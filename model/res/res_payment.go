@@ -42,3 +42,12 @@ type PaymentDetailResponse struct {
 	AdultNum    int       `json:"adult_num"`
 	ChildrenNum int       `json:"children_num"`
 }
+
+type PaymentCheckInStatistic struct {
+	ID         string          `json:"payment_id" gorm:"id"`
+	StartAt    time.Time       `json:"start_at" gorm:"start_at"`
+	UserId     string          `json:"user_id" gorm:"user_id"`
+	User       *model.User     `json:"user,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoomTypeId string          `json:"room_type_id" gorm:"room_type_id"`
+	RoomType   *model.RoomType `json:"room,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
