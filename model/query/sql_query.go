@@ -22,7 +22,7 @@ type DataQueryModel struct {
 }
 
 type ResultTotalPrice struct {
-	Sum float32 `gorm:"total_price"`
+	Sum float64 `gorm:"total_price"`
 }
 
 type GroupNumberRoomByRoomType struct {
