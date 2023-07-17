@@ -68,3 +68,7 @@ type RequestAddMoneyTopUp struct {
 	Amount float32 `json:"amount"`
 	Method string  `json:"method"`
 }
+
+type RequestCheckInPayment struct {
+	PaymentId string `json:"payment_id"`
+}

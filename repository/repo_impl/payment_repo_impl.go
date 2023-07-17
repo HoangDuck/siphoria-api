@@ -26,6 +26,23 @@ func NewPaymentRepo(sql *db.Sql) repository.PaymentRepo {
 	}
 }
 
+func (paymentReceiver *PaymentRepoImpl) UpdateCheckInBookingPayment(reqCheckInPayment req.RequestCheckInPayment) (bool, error) {
+	payment := model.Payment{
+		ID:     reqCheckInPayment.PaymentId,
+		Status: "checked",
+	}
+	err := paymentReceiver.sql.Db.Where("id = ?", reqCheckInPayment.PaymentId).Updates(payment)
+	if err.Error != nil {
+		logger.Error("Error update wallet transaction payment", zap.Error(err.Error))
+		if err.Error == gorm.ErrRecordNotFound {
+			return false, custom_error.PaymentNotFound
+		}
+
+		return false, custom_error.PaymentNotUpdated
+	}
+	return true, nil
+}
+
 func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, reqGetRevenue req.RequestGetRevenue, queryModel *query.DataQueryModel) ([]model.PaymentRevenueStatistic, float32, float32, error) {
 	var listPaymentStatistic []model.PaymentRevenueStatistic
 	err := paymentReceiver.sql.Db.Raw("SELECT * FROM vw_hotels_revenue"+

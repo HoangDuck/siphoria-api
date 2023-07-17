@@ -731,7 +731,7 @@ func (hotelController *HotelController) HandleGetStatisticRevenue(c echo.Context
 // @Success 200 {object} res.Response
 // @Failure 400 {object} res.Response
 // @Failure 500 {object} res.Response
-// @Router /rev/total [get]
+// @Router /reviews/total [get]
 func (hotelController *HotelController) HandleGetTotalReviews(c echo.Context) error {
 	result, err := hotelController.HotelRepo.GetTotalReviewByHotel(c)
 	if err != nil {
@@ -740,6 +740,15 @@ func (hotelController *HotelController) HandleGetTotalReviews(c echo.Context) er
 	return response.Ok(c, "Lấy danh sách đánh giá thành công", result)
 }
 
+// HandleGetListCheckInByHotel godoc
+// @Summary get list check in by
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /hotels/checkin [get]
 func (hotelController *HotelController) HandleGetListCheckInByHotel(c echo.Context) error {
 	var listPaymentCheckIn []model.Payment
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
@@ -749,15 +758,26 @@ func (hotelController *HotelController) HandleGetListCheckInByHotel(c echo.Conte
 		"updated_at", "cart_id", "payment_details", "-",
 	}, &model.Payment{})
 	dataQueryModel.DataId = c.QueryParam("id")
-	listPaymentCheckIn, err := hotelController.HotelRepo.GetListCheckInByHotel(c, &dataQueryModel)
+	listPaymentCheckIn, checkInCount, checkedInCount, err := hotelController.HotelRepo.GetListCheckInByHotel(c, &dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listPaymentCheckIn)
 	}
-	return response.Ok(c, "Lấy danh sách yêu cầu  thành công", struct {
-		Data   []model.Payment `json:"data"`
+	return response.Ok(c, "Lấy danh sách check in thành công", struct {
+		Data    []model.Payment `json:"data"`
+		Summary struct {
+			CheckIn   int `json:"check_in"`
+			CheckedIn int `json:"checked_in"`
+		} `json:"summary"`
 		Paging res.PagingModel `json:"paging"`
 	}{
 		Data: listPaymentCheckIn,
+		Summary: struct {
+			CheckIn   int `json:"check_in"`
+			CheckedIn int `json:"checked_in"`
+		}{
+			CheckIn:   checkInCount,
+			CheckedIn: checkedInCount,
+		},
 		Paging: res.PagingModel{
 			TotalItems: dataQueryModel.TotalRows,
 			TotalPages: dataQueryModel.TotalPages,
@@ -765,4 +785,32 @@ func (hotelController *HotelController) HandleGetListCheckInByHotel(c echo.Conte
 			Offset:     dataQueryModel.Limit,
 		},
 	})
+}
+
+// HandleCheckInBooking godoc
+// @Summary Handle update check in booking
+// @Tags hotel-service
+// @Accept  json
+// @Produce  json
+// @Param data body req.RequestCheckInPayment true "payment"
+// @Success 200 {object} res.Response
+// @Failure 400 {object} res.Response
+// @Failure 500 {object} res.Response
+// @Router /hotels/checkin [post]
+func (hotelController *HotelController) HandleCheckInBooking(c echo.Context) error {
+	reqCheckInPayment := req.RequestCheckInPayment{}
+	if err := c.Bind(&reqCheckInPayment); err != nil {
+		return response.BadRequest(c, "Yêu cầu không hợp lệ", nil)
+	}
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*model.JwtCustomClaims)
+	if !(security.CheckRole(claims, model.HOTELIER, false) ||
+		security.CheckRole(claims, model.MANAGER, false)) {
+		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
+	}
+	result, err := hotelController.PaymentRepo.UpdateCheckInBookingPayment(reqCheckInPayment)
+	if err != nil || !result {
+		return response.Ok(c, "Check in thất bại", nil)
+	}
+	return response.Ok(c, "Check in thành công", nil)
 }

@@ -16,15 +16,64 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type HotelRepoImpl struct {
 	sql *db.Sql
 }
 
-func (hotelReceiver *HotelRepoImpl) GetListCheckInByHotel(context echo.Context, queryModel *query.DataQueryModel) ([]model.Payment, error) {
-	//TODO implement me
-	panic("implement me")
+func (hotelReceiver *HotelRepoImpl) GetListCheckInByHotel(context echo.Context, queryModel *query.DataQueryModel) ([]model.Payment, int, int, error) {
+	var listPayment []model.Payment
+	var totalPaid, totalChecked int64
+	totalPaid = 0
+	totalChecked = 0
+	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
+	err = err.Select("id", "room_type_id", "room_type", "start_at", "user_id", "user").
+		Preload("RoomType").Preload("User").
+		Where("hotel_id = ?", queryModel.DataId)
+	if context.QueryParam("from") != "" {
+		err = err.Where("start_at <= ?", context.QueryParam("from"))
+		//hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "paid").
+		//	Where("start_at <= ?", context.QueryParam("from")).
+		//	Count(&totalPaid)
+		//hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "checked").
+		//	Where("start_at <= ?", context.QueryParam("from")).
+		//	Count(&totalChecked)
+	}
+	if context.QueryParam("to") != "" {
+		err = err.Where("end_at >= ?", context.QueryParam("to"))
+		//hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "paid").
+		//	Where("end_at >= ?", context.QueryParam("to")).
+		//	Count(&totalPaid)
+		//hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "checked").
+		//	Where("end_at >= ?", context.QueryParam("to")).
+		//	Count(&totalChecked)
+	}
+	//if context.QueryParam("from") != "" && context.QueryParam("to") != "" {
+	//	hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "paid").
+	//		Where("start_at <= ? AND end_at >= ?", context.QueryParam("from"), context.QueryParam("to")).
+	//		Count(&totalPaid)
+	//	hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "checked").
+	//		Where("start_at <= ? AND end_at >= ?", context.QueryParam("from"), context.QueryParam("to")).
+	//		Count(&totalChecked)
+	//}
+	hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "paid").
+		Where("start_at = ?", time.Now()).
+		Count(&totalPaid)
+	hotelReceiver.sql.Db.Model(&model.Payment{}).Where("status = ?", "checked").
+		Where("start_at = ?", time.Now()).
+		Count(&totalChecked)
+	var countTotalRows int64
+	err.Model(model.Payment{}).Count(&countTotalRows)
+	queryModel.TotalRows = int(countTotalRows)
+	err = err.Find(&listPayment)
+
+	if err.Error != nil {
+		logger.Error("Error get list voucher url ", zap.Error(err.Error))
+		return listPayment, int(totalPaid), int(totalChecked), err.Error
+	}
+	return listPayment, int(totalPaid), int(totalChecked), nil
 }
 
 func (hotelReceiver *HotelRepoImpl) GetTotalReviewByHotel(context echo.Context) (res.TotalReviews, error) {

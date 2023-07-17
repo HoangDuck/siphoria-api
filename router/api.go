@@ -93,6 +93,7 @@ func (api *API) SetupRouter() {
 	hotel.GET("/:id/vouchers", api.HotelController.HandleGetVouchersByHotel, middleware.JWTMiddleWare())
 	hotel.GET("/revenue", api.HotelController.HandleGetStatisticRevenue, middleware.JWTMiddleWare())
 	hotel.GET("/checkin", api.HotelController.HandleGetListCheckInByHotel)
+	hotel.POST("/checkin", api.HotelController.HandleCheckInBooking, middleware.JWTMiddleWare())
 
 	review := request.Group("/reviews")
 	review.GET("/total", api.HotelController.HandleGetTotalReviews)
