@@ -391,9 +391,10 @@ func (hotelReceiver *HotelRepoImpl) SaveHotel(requestAddHotel req.RequestCreateH
 }
 
 func (hotelReceiver *HotelRepoImpl) CreateRequestPayout(payoutRequest model.PayoutRequest, paymentIds []string) (model.PayoutRequest, error) {
-	var result query.ResultTotalPrice
+	//var result query.ResultTotalPrice
+	var result float64
 	err := hotelReceiver.sql.Db.Raw("select * from fn_calculateTotalPricePayment(?,?) as total_price", payoutRequest.HotelId, strings.Join(paymentIds, ",")).Scan(&result)
-	payoutRequest.TotalPrice = float32(result.Sum)
+	payoutRequest.TotalPrice = float32(result)
 	payoutRequest.PaymentList = strings.Join(paymentIds, ",")
 	err = hotelReceiver.sql.Db.Model(&model.Payment{}).Where("id IN ?", paymentIds).Update("payout_request_id", payoutRequest.ID)
 	if err.Error != nil {
