@@ -94,7 +94,7 @@ func (u *AdminRepoImpl) UpdateCommissionRatingHotel(hotel model.Hotel) (model.Ho
 }
 
 func (u *AdminRepoImpl) ApprovePayoutRequestHotel(hotelPayoutRequest model.PayoutRequest) (model.PayoutRequest, error) {
-	err := u.sql.Db.Model(&hotelPayoutRequest).Updates(hotelPayoutRequest)
+	err := u.sql.Db.Model(&hotelPayoutRequest).Where("id = ?", hotelPayoutRequest.ID).Updates(hotelPayoutRequest)
 	if err.Error != nil {
 		logger.Error("Error update payment failed ", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {

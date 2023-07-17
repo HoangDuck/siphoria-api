@@ -364,6 +364,7 @@ func (adminController *AdminController) HandleApprovePayoutHotel(c echo.Context)
 	}
 
 	hotelPayoutRequest = model.PayoutRequest{
+		ID:      c.Param("id"),
 		PayerId: claims.UserId,
 		Resolve: reqApprovePayout.Resolve,
 	}
