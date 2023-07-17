@@ -74,8 +74,8 @@ func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, re
 		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To).Scan(&paid)
 
 	err = paymentReceiver.sql.Db.Raw("SELECT coalesce(count(id),0) FROM vw_hotels_revenue"+
-		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?)",
-		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To).Scan(&totalItem)
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND payout_status in ?",
+		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To, payoutStatusFilter).Scan(&totalItem)
 	queryModel.TotalRows = int(totalItem)
 	if err.Error != nil {
 		logger.Error("Get payment data", zap.Error(err.Error))
