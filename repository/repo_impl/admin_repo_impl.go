@@ -19,7 +19,7 @@ type AdminRepoImpl struct {
 func (u *AdminRepoImpl) GetPayoutRequest(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
 	var listPayoutRequest []model.PayoutRequest
 	err := GenerateQueryGetData(u.sql, queryModel, &model.Hotel{}, queryModel.ListIgnoreColumns)
-	err = err.Preload("Hotel").Preload("User").Preload("toán")
+	err = err.Preload("Hotel").Preload("User").Preload("User")
 	var countTotalRows int64
 	err.Model(model.PayoutRequest{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
