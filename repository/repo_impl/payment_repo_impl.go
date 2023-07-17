@@ -47,6 +47,7 @@ func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, re
 	var listPaymentStatistic []model.PaymentRevenueStatistic
 	var payoutStatusFilter []string
 	payoutStatusFilter = []string{}
+	var totalItem int64
 
 	if context.QueryParam("type") != "" {
 		payoutStatusFilter = append(payoutStatusFilter, context.QueryParam("type"))
@@ -55,6 +56,7 @@ func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, re
 		payoutStatusFilter = append(payoutStatusFilter, "unsent")
 		payoutStatusFilter = append(payoutStatusFilter, "sent")
 	}
+	totalItem = 0
 	err := paymentReceiver.sql.Db.Raw("SELECT * FROM vw_hotels_revenue"+
 		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND id LIKE CONCAT('%', ?::text, '%') "+
 		"AND payout_status in ? "+
@@ -70,6 +72,11 @@ func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, re
 	err = paymentReceiver.sql.Db.Raw("SELECT coalesce(sum(total_price),0) FROM vw_hotels_revenue"+
 		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND payout_status = 'paid'",
 		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To).Scan(&paid)
+
+	err = paymentReceiver.sql.Db.Raw("SELECT coalesce(count(id),0) FROM vw_hotels_revenue"+
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?)",
+		reqGetRevenue.ID, reqGetRevenue.From, reqGetRevenue.To).Scan(&totalItem)
+	queryModel.TotalRows = int(totalItem)
 	if err.Error != nil {
 		logger.Error("Get payment data", zap.Error(err.Error))
 		return listPaymentStatistic, 0, 0, err.Error
