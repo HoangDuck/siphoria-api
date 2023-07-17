@@ -29,7 +29,7 @@ func (hotelReceiver *HotelRepoImpl) GetListCheckInByHotel(context echo.Context, 
 	totalPaid = 0
 	totalChecked = 0
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.Payment{}, queryModel.ListIgnoreColumns)
-	err = err.Select("id", "room_type_id", "room_type", "start_at", "user_id", "user").
+	err = err.Select("id", "room_type_id", "start_at", "user_id", "user").
 		Preload("RoomType").Preload("User").
 		Where("hotel_id = ?", queryModel.DataId)
 	if context.QueryParam("from") != "" {

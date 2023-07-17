@@ -32,7 +32,7 @@ type Payment struct {
 	TotalDay        int             `json:"total_day" gorm:"total_day"`
 	Status          string          `json:"status" gorm:"status"`
 	UserId          string          `json:"user_id"`
-	User            User            `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	User            *User           `json:"user,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	RoomTypeId      string          `json:"room_type_id"`
 	RoomType        *RoomType       `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	VoucherId       string          `json:"voucher_id"`

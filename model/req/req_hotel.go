@@ -67,7 +67,7 @@ type RequestUpdateHotel struct {
 }
 
 type RequestCreatePayout struct {
-	Payments string `json:"payments"`
+	Payments []string `json:"payments"`
 }
 
 type RequestGetRevenue struct {

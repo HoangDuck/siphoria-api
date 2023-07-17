@@ -165,7 +165,7 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentDetail(payment model.Payment) 
 		EndAt:          tempPayment.EndAt,
 		TotalDay:       tempPayment.TotalDay,
 		UpdatedAt:      tempPayment.UpdatedAt,
-		User:           &tempPayment.User,
+		User:           tempPayment.User,
 		RoomType:       tempPayment.RoomType,
 		Hotel:          tempPayment.Hotel,
 	}
@@ -284,7 +284,7 @@ func (paymentReceiver *PaymentRepoImpl) GetPaymentFilter(context echo.Context, q
 			EndAt:          listTempPayment[index].EndAt,
 			TotalDay:       listTempPayment[index].TotalDay,
 			UpdatedAt:      listTempPayment[index].UpdatedAt,
-			User:           &listTempPayment[index].User,
+			User:           listTempPayment[index].User,
 			RoomType:       listTempPayment[index].RoomType,
 			RatePlan:       listTempPayment[index].RatePlan,
 			Hotel:          listTempPayment[index].Hotel,

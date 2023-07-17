@@ -506,7 +506,7 @@ func (hotelController *HotelController) HandleSendRequestPaymentHotel(c echo.Con
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), nil)
 	}
-	listPaymentId := utils.DecodeJSONArray(reqCreatePayout.Payments, true)
+	listPaymentId := reqCreatePayout.Payments
 
 	payoutRequest := model.PayoutRequest{
 		ID:           payoutRequestId,
