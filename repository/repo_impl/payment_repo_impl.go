@@ -56,7 +56,7 @@ func (paymentReceiver *PaymentRepoImpl) GetHotelRevenue(context echo.Context, re
 		payoutStatusFilter = append(payoutStatusFilter, "sent")
 	}
 	err := paymentReceiver.sql.Db.Raw("SELECT * FROM vw_hotels_revenue"+
-		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND id LIKE CONCAT('%', ?, '%') "+
+		" WHERE hotel_id = ? AND (created_at >= ? AND created_at<=?) AND id LIKE CONCAT('%', ?::text, '%') "+
 		"AND payout_status in ? "+
 		"order by created_at DESC "+
 		" offset ? Limit ?;",
