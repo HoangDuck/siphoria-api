@@ -215,7 +215,7 @@ func (paymentReceiver *PaymentRepoImpl) GetWalletTopUp(userId string) (model.Wal
 }
 
 func (paymentReceiver *PaymentRepoImpl) CancelBooking(payment model.Payment) (bool, error) {
-	err := paymentReceiver.sql.Db.Model(&payment).Where("payment_id=?", payment.ID).Updates(payment)
+	err := paymentReceiver.sql.Db.Model(&payment).Where("id=?", payment.ID).Updates(payment)
 	if err.Error != nil {
 		logger.Error("Error query data", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {

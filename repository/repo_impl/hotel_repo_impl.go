@@ -215,6 +215,9 @@ func (hotelReceiver *HotelRepoImpl) GetPayoutRequestByHotel(context echo.Context
 	if to != "" {
 		err = err.Where("created_at < ?", to)
 	}
+	if context.QueryParam("type") == "" {
+		err = err.Where("created_at < ?", to)
+	}
 	var countTotalRows int64
 	err.Model(&model.PayoutRequest{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
