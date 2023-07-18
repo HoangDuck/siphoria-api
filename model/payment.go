@@ -36,7 +36,7 @@ type Payment struct {
 	RoomTypeId      string          `json:"room_type_id"`
 	RoomType        *RoomType       `json:"room_type,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	VoucherId       string          `json:"voucher_id"`
-	Voucher         *Voucher        `json:"voucher,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Voucher         *Voucher        `json:"voucher,omitempty"`
 	PayoutRequestId string          `json:"payout_request_id"`
 	PayoutRequest   *PayoutRequest  `json:"payout_request,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	HotelId         string          `json:"hotel_id"`
