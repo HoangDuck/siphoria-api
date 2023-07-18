@@ -128,7 +128,7 @@ func (hotelReceiver *HotelRepoImpl) GetVoucherByHotelFilter(queryModel *query.Da
 
 func (hotelReceiver *HotelRepoImpl) GetHotelById(context echo.Context) (model.Hotel, error) {
 	var hotel model.Hotel
-	err := hotelReceiver.sql.Db.Preload("HotelFacility").Where("id = ?", context.Param("id")).Find(&hotel)
+	err := hotelReceiver.sql.Db.Preload("HotelFacility").Where("id = ? AND status = ?", context.Param("id"), 1).Find(&hotel)
 	if err.Error != nil {
 		return hotel, err.Error
 	}
