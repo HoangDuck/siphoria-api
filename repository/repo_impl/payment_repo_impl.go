@@ -95,7 +95,7 @@ func (paymentReceiver *PaymentRepoImpl) UpdateUserRank(userRank model.UserRank) 
 }
 
 func (paymentReceiver *PaymentRepoImpl) ApplyVoucherPayments(requestApplyVoucher req.RequestApplyVoucher) (bool, error) {
-	err := paymentReceiver.sql.Db.Exec("call sp_applyvoucher(?,?:text);",
+	err := paymentReceiver.sql.Db.Exec("call sp_applyvoucher_v2(?,?:text);",
 		requestApplyVoucher.Code, requestApplyVoucher.SessionId)
 	if err.Error != nil {
 		return false, err.Error
