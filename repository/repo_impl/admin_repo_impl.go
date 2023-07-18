@@ -119,7 +119,7 @@ func (u *AdminRepoImpl) ApprovePayoutRequestHotel(hotelPayoutRequest model.Payou
 }
 
 func (u *AdminRepoImpl) AcceptHotel(hotel model.Hotel) (model.Hotel, error) {
-	err := u.sql.Db.Model(&hotel).Updates(hotel)
+	err := u.sql.Db.Model(&hotel).Where("id = ?", hotel.ID).Updates(hotel)
 	if err.Error != nil {
 		logger.Error("Error update user failed ", zap.Error(err.Error))
 		if err.Error == gorm.ErrRecordNotFound {
