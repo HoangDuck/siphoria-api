@@ -255,9 +255,9 @@ func (adminController *AdminController) HandleAcceptHotel(c echo.Context) error 
 
 	hotel, err := adminController.AdminRepo.AcceptHotel(hotel)
 	if err != nil {
-		return response.InternalServerError(c, err.Error(), hotel)
+		return response.InternalServerError(c, err.Error(), nil)
 	}
-	return response.Ok(c, "Duyệt khách sạn thành công", hotel)
+	return response.Ok(c, "Duyệt khách sạn thành công", nil)
 }
 
 // HandleUpdateRatingHotel godoc
