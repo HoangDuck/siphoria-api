@@ -851,7 +851,8 @@ func (userReceiver *UserController) HandleCancelBooking(c echo.Context) error {
 		return response.BadRequest(c, "Bạn không có quyền thực hiện chức năng này", nil)
 	}
 	payment := model.Payment{
-		ID: reqCancelBooking.PaymentId,
+		ID:     reqCancelBooking.PaymentId,
+		Status: "cancel",
 	}
 	result, err := userReceiver.PaymentRepo.CancelBooking(payment)
 	if !result {
