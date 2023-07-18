@@ -462,7 +462,7 @@ func (adminController *AdminController) HandleGetPayoutByAdmin(c echo.Context) e
 	dataQueryModel := utils.GetQueryDataModel(c, []string{
 		"pettioner", "hotel", "payer", "", "created_at", "updated_at", "-", "open_at", "close_at",
 	}, &model.PayoutRequest{})
-	listPayout, err := adminController.AdminRepo.GetPayoutRequest(&dataQueryModel)
+	listPayout, err := adminController.AdminRepo.GetPayoutRequest(c, &dataQueryModel)
 	if err != nil {
 		return response.InternalServerError(c, err.Error(), listPayout)
 	}

@@ -1,6 +1,7 @@
 package repo_impl
 
 import (
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"hotel-booking-api/custom_error"
@@ -17,10 +18,18 @@ type AdminRepoImpl struct {
 	sql *db.Sql
 }
 
-func (u *AdminRepoImpl) GetPayoutRequest(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
+func (u *AdminRepoImpl) GetPayoutRequest(context echo.Context, queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
 	var listPayoutRequest []model.PayoutRequest
 	err := GenerateQueryGetData(u.sql, queryModel, &model.PayoutRequest{}, queryModel.ListIgnoreColumns)
 	err = err.Preload("Hotel").Preload("Pettioner").Preload("Payer")
+	from := context.QueryParam("from")
+	to := context.QueryParam("to")
+	if from != "" {
+		err = err.Where("created_at >= ?", from)
+	}
+	if to != "" {
+		err = err.Where("created_at < ?", to)
+	}
 	var countTotalRows int64
 	err.Model(&model.PayoutRequest{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)

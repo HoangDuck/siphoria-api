@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/labstack/echo/v4"
 	"hotel-booking-api/model"
 	"hotel-booking-api/model/query"
 	"hotel-booking-api/model/req"
@@ -19,5 +20,5 @@ type AdminRepo interface {
 	GetHotelWorkByEmployee(queryModel *query.DataQueryModel) ([]model.Hotel, error)
 	DeleteHotelWorkByEmployee(requestDeleteHotelWorkByEmployee req.RequestDeleteHotelWorkByEmployee) (bool, error)
 	SaveHotelWorkByEmployee(hotelWork model.HotelWork) (model.HotelWork, error)
-	GetPayoutRequest(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error)
+	GetPayoutRequest(context echo.Context, queryModel *query.DataQueryModel) ([]model.PayoutRequest, error)
 }

@@ -203,10 +203,18 @@ func (hotelReceiver *HotelRepoImpl) GetListHotelSearch(context echo.Context) ([]
 	return listHotelData, nil
 }
 
-func (hotelReceiver *HotelRepoImpl) GetPayoutRequestByHotel(queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
+func (hotelReceiver *HotelRepoImpl) GetPayoutRequestByHotel(context echo.Context, queryModel *query.DataQueryModel) ([]model.PayoutRequest, error) {
 	var listPayoutRequest []model.PayoutRequest
 	err := GenerateQueryGetData(hotelReceiver.sql, queryModel, &model.PayoutRequest{}, queryModel.ListIgnoreColumns)
 	err = err.Preload("Hotel").Preload("Pettioner").Preload("Payer").Where("hotel_id = ?", queryModel.DataId)
+	from := context.QueryParam("from")
+	to := context.QueryParam("to")
+	if from != "" {
+		err = err.Where("created_at >= ?", from)
+	}
+	if to != "" {
+		err = err.Where("created_at < ?", to)
+	}
 	var countTotalRows int64
 	err.Model(&model.PayoutRequest{}).Count(&countTotalRows)
 	queryModel.TotalRows = int(countTotalRows)
