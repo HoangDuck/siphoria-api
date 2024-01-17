@@ -1,3 +1,5 @@
+#run môi trường production
+#chạy trong docker
 pro:
 	docker rmi -f web-service:1.0
 	docker-compose up

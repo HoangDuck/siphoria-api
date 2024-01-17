@@ -115,6 +115,7 @@ type RequestCreateAccountByAdmin struct {
 	LastName  string `json:"last_name"`
 	Role      string `json:"role" validate:"required"`
 }
+
 type RequestUpdateCommissionRating struct {
 	CommissionRate float32 `json:"commission_rate,omitempty" validate:"required"`
 }
